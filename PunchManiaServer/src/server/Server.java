@@ -31,14 +31,24 @@ public class Server{
 				dis = new DataInputStream(socket.getInputStream());
 				dos = new DataOutputStream(socket.getOutputStream());
 
-			} catch(IOException e) {}
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		public void Calculator(String value) {
+			//Calculate punchforce
 		}
 
+		/*
+		 * Read UTF from embedded system and prints it, sends value to calculator.
+		 * 
+		 */
 		public void run() {
-
 			try {
 				value = dis.readUTF();
 				System.out.println(value);
+				Calculator(value);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -48,7 +58,7 @@ public class Server{
 	public class Connection extends Thread {
 
 		public void run() {
-			System.out.println("Server running, listening to port: " + serverSocket.getLocalPort() + "\n");
+			System.out.println("port: " + serverSocket.getLocalPort() + "\n");
 			while (true) {
 				try {
 					Socket socket = serverSocket.accept();
