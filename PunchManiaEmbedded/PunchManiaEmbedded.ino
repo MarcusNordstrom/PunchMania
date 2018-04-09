@@ -1,4 +1,6 @@
 //INCLUDES
+//Limits
+#include <limits.h>
 //ADXL345
 #include <SparkFun_ADXL345.h> 
 //Ethernet
@@ -8,7 +10,7 @@
 //CONFIG
 //Ethernet
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF }; //Mac address
-IPAddress server(74,125,232,128); //Ip address for server CHANGE LATER
+IPAddress server(74,125,232,128); //Ip address for server                                                     CHANGE LATER
 IPAddress ip(192, 168, 0, 101); //This device
 EthernetClient client;
 //ADXL I2C
@@ -32,7 +34,7 @@ void setup() {
     Ethernet.begin(mac, ip);
   }
   delay(1000);
-  if (client.connect(server, 80)) {
+  if (client.connect(server, 80)) {                                                                         //CHANGE PORT
     Serial.println("connected");
   } else {
     Serial.println("connection failed");
@@ -40,7 +42,10 @@ void setup() {
 }
 String storage = "";
 void loop() {
-  int x,y,z;   // axis variables
+  // axis variables
+  int x = INT_MAX;
+  int y = INT_MAX;
+  int z = INT_MAX;
   adxl.readAccel(&x, &y, &z); //Reads the accelerometer values and stores them in the axis variables
   //if any axis exceeds the hitvalue (both positive and negative) set boolean to true
   if(x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {
@@ -50,18 +55,20 @@ void loop() {
   //if an hit has been detected save values for 1000 cycles then set the boolean and counter to false resp. 0
   if(hit_detected) {
     if(counter < 1000) {
-      counter++;
-      /*Serial.print(x);
-      Serial.print(", ");
-      Serial.print(y);
-      Serial.print(", ");
-      Serial.println(z);*/
-      storage += String(x);
-      storage += ",";
-      storage += String(y);
-      storage += ",";
-      storage += String(z);
-      storage += ";";
+      if(!(x == INT_MAX || y == INT_MAX || z == INT_MAX)) {    //Extra safety for null values
+        counter++;
+        /*Serial.print(x);
+        Serial.print(", ");
+        Serial.print(y);
+        Serial.print(", ");
+        Serial.println(z);*/
+        storage += String(x);
+        storage += ",";
+        storage += String(y);
+        storage += ",";
+        storage += String(z);
+        storage += ";";
+      }
     } else {
       counter = 0;
       hit_detected = false;
@@ -69,6 +76,9 @@ void loop() {
       //Serial.println(storage);
       storage = "";
     }
-  }
-
+  } /*else {       EXPERIMENTAL UNTESTED UNIT FOR DUPLEX COMUNICATION
+    while(client.connected() && client.available()) {
+      char c = client.read();
+      Serial.print(c);
+    }*/
 }
