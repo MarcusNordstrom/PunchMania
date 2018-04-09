@@ -26,6 +26,9 @@ public class Server{
 		private DataInputStream dis;
 		private String value;
 
+		/*
+		 * Creates the streams for values recived from IS, and stream for sending values.
+		 */
 		public ClientHandler(Socket socket) {
 			try {
 				dis = new DataInputStream(socket.getInputStream());
@@ -56,6 +59,11 @@ public class Server{
 	}
 
 	public class Connection extends Thread {
+		
+		/*
+		 * Waiting for connection, if connection is made new clienthandler is created with socket recived as parameter.
+		 * clienthandler run method is started.
+		 */
 
 		public void run() {
 			System.out.println("port: " + serverSocket.getLocalPort() + "\n");
