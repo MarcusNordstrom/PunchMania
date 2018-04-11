@@ -44,6 +44,7 @@ public class Client implements Observer {
 
 	public void updateUI() {
 		test = JOptionPane.showInputDialog("skriv");
+		System.out.println("client: " + test);
 		uiHS.updateHighScore(test);
 	}
 
