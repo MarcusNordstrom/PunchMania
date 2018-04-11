@@ -5,15 +5,18 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Observable;
+import java.util.Observer;
 
 
-public class Server{
+
+public class Server implements Observer{
 	private ServerSocket serverSocketIs;
 	private ServerSocket serverSocketClient;
 	private ConnectionClient connectionClient = new ConnectionClient();
 	private ConnectionIs connectionIs = new ConnectionIs();
 
-	public Server(int portIs, int portClient) {
+	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
 			serverSocketIs = new ServerSocket(portIs);
 			serverSocketClient = new ServerSocket(portClient);
@@ -22,13 +25,21 @@ public class Server{
 		}
 		connectionIs.start();
 		connectionClient.start();
+		
+		serverui.addManager(this);
 	}
 
 	public void Calculator(String value) {
 
 	}
-
-
+	/**
+	 * Command from the 
+	 */
+	public void cmd() {
+		
+	}
+	
+	
 	private class Is implements Runnable {
 		private DataOutputStream dos;
 		private DataInputStream dis;
@@ -126,6 +137,12 @@ public class Server{
 	}
 
 	public static void main(String[] args) {
-		Server server = new Server(12345, 12346);
+		Server server = new Server(12345, 12346, new ServerUI());
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		
+		
 	}
 }
