@@ -1,21 +1,20 @@
 package client;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.JOptionPane;
 
 
 
 
-public class Client implements Observer {
+public class Client {
 	private Socket socket;
-	private DataInputStream dis; 
+	private ObjectInputStream ois; 
 	private int data = 0;
 	private String test;
 	private UIHighScore uiHS;
+	private DataReader dr;
 
 
 	public Client(UIHighScore uiHS) {
@@ -25,21 +24,23 @@ public class Client implements Observer {
 	public Client(String ip, int port) {
 		try {
 			socket = new Socket(ip, port);
-			dis = new DataInputStream(socket.getInputStream());
-
-
+			ois = new ObjectInputStream(socket.getInputStream());
+			dr = new DataReader();
+			dr.start();
 		} catch (IOException e) {}
 	}
 
-
-	public void update(Observable o, Object arg) {
-		try {
-			data = dis.readInt();
-			System.out.println(data);
-		} catch (IOException e) {
-			e.printStackTrace();
+	
+	private class DataReader extends Thread {
+		public void run() {
+			try {
+				ois = new ObjectInputStream(socket.getInputStream());
+				System.out.println("Reading data...");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
-
+		
 	}
 
 
@@ -54,8 +55,8 @@ public class Client implements Observer {
 		Client client = null;
 		client = new Client("IPADRESS",12346);
 
-			UIHighScore uiHS = new UIHighScore();
-			Client cli = new Client(uiHS);
-			cli.updateUI();
+		UIHighScore uiHS = new UIHighScore();
+		Client cli = new Client(uiHS);
+		cli.updateUI();
 	}
 }
