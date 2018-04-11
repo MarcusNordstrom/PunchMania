@@ -6,19 +6,18 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 
-
-
 public class Client {
 	private Socket socket;
 	private ObjectInputStream ois; 
-	private int data = 0;
-	private String test;
+	private String test, name;
 	private UIHighScore uiHS;
+	private UIQueue uiQ;
 	private DataReader dr;
 
 
-	public Client(UIHighScore uiHS) {
+	public Client(UIHighScore uiHS, UIQueue uiQ) {
 		this.uiHS = uiHS;
+		this.uiQ = uiQ;
 	}
 
 	public Client(String ip, int port) {
@@ -30,7 +29,7 @@ public class Client {
 		} catch (IOException e) {}
 	}
 
-	
+
 	private class DataReader extends Thread {
 		public void run() {
 			try {
@@ -40,23 +39,32 @@ public class Client {
 				e1.printStackTrace();
 			}
 		}
-		
+
 	}
 
 
-	public void updateUI() {
-		test = JOptionPane.showInputDialog("skriv");
-		System.out.println("client: " + test);
+	public void updateUIHighScore() {
+		test = JOptionPane.showInputDialog("skriv till High Score");
+		System.out.println(test + " skrivs in i High Score");
 		uiHS.updateHighScore(test);
+	}
+
+	public void updateUIQueue() {
+		name = JOptionPane.showInputDialog("Lägg i kö");
+		System.out.println(name + " läggs till i kön");
+		uiQ.updateQueue(name);
 	}
 
 
 	public static void main(String[] args) throws IOException {
 		Client client = null;
-		client = new Client("127.0.0.1",12346);
+		client = new Client("83.249.10.9",12346);
 
+		
 		UIHighScore uiHS = new UIHighScore();
-		Client cli = new Client(uiHS);
-		cli.updateUI();
+		UIQueue uiQ = new UIQueue();
+		Client cli = new Client(uiHS, uiQ);
+		cli.updateUIHighScore();
+		cli.updateUIQueue();
 	}
 }
