@@ -23,11 +23,16 @@ public class Server{
 		connectionIs.start();
 		connectionClient.start();
 	}
-	
+
+	public void Calculator(String value) {
+
+	}
+
+
 	private class Is implements Runnable {
 		private DataOutputStream dos;
 		private DataInputStream dis;
-		
+
 		public Is(Socket socket) {
 			try {
 				dis = new DataInputStream(socket.getInputStream());
@@ -39,9 +44,8 @@ public class Server{
 		}
 
 		public void run() {
-			
+
 		}
-		
 	}
 
 	private class Client implements Runnable{
@@ -61,26 +65,23 @@ public class Server{
 				e.printStackTrace();
 			}
 		}
-		
-		public void Calculator(String value) {
-			
-			
-		}
 
 		/*
 		 * Read UTF from embedded system and prints it, sends value to calculator.
 		 */
 		public void run() {
 			try {
-				value = dis.readUTF();
-				System.out.println(value);
-				Calculator(value);
+				while(true) {
+					value = dis.readUTF();
+					System.out.println(value);
+					Calculator(value);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	private class ConnectionIs extends Thread {
 		/*
 		 * Waiting for connection, if connection is made new clienthandler is created with socket recived as parameter.
@@ -91,6 +92,7 @@ public class Server{
 			while (true) {
 				try {
 					Socket  socketIs = serverSocketIs.accept();
+					System.out.println("embedded!!!");
 					Is is = new Is (socketIs);
 					is.run();
 
@@ -99,7 +101,7 @@ public class Server{
 				}
 			}
 		}
-		
+
 	}
 
 	private class ConnectionClient extends Thread {
@@ -112,6 +114,7 @@ public class Server{
 			while (true) {
 				try {
 					Socket  socketClient = serverSocketClient.accept();
+					System.out.println("CLIENT!!");
 					Client ch = new Client (socketClient);
 					ch.run();
 
@@ -121,8 +124,8 @@ public class Server{
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		Server server = new Server(12345, 23456);
+		Server server = new Server(12345, 12346);
 	}
 }
