@@ -53,8 +53,8 @@ public class UIQueue extends JPanel implements ActionListener {
 
 	
 	/**
-	 * When pushing the button a new name will be written in the queue list.
-	 * The name is taken from the text field. 
+	 * When pushing the button a new string will be written on a new line in the queue list.
+	 * The string is taken from the text field. 
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSend) {
@@ -67,8 +67,8 @@ public class UIQueue extends JPanel implements ActionListener {
 
 	
 	/**
-	 * Updates the queue list with a name coming from the client. 
-	 * @param name  : a name from client adding to queue list. 
+	 * Updates the queue list with a string coming from the client. 
+	 * @param name  : a string from client adding to queue list. 
 	 */
 	public void updateQueue(String name) {
 		names += counter + ": " + name + "\n";

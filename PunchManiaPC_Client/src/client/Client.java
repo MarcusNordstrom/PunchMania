@@ -19,7 +19,7 @@ public class Client {
 		this.uiHS = uiHS;
 		this.uiQ = uiQ;
 	}
-
+	
 	public Client(String ip, int port) {
 		try {
 			socket = new Socket(ip, port);
@@ -42,13 +42,20 @@ public class Client {
 
 	}
 
-
+	
+	/**
+	 * Sending a string to the high score list
+	 */
 	public void updateUIHighScore() {
 		test = JOptionPane.showInputDialog("skriv till High Score");
 		System.out.println(test + " skrivs in i High Score");
 		uiHS.updateHighScore(test);
 	}
 
+	
+	/**
+	 * Sending a string to the queue list. 
+	 */
 	public void updateUIQueue() {
 		name = JOptionPane.showInputDialog("Lägg i kö");
 		System.out.println(name + " läggs till i kön");
@@ -60,7 +67,6 @@ public class Client {
 		Client client = null;
 		client = new Client("83.249.10.9",12346);
 
-		
 		UIHighScore uiHS = new UIHighScore();
 		UIQueue uiQ = new UIQueue();
 		Client cli = new Client(uiHS, uiQ);

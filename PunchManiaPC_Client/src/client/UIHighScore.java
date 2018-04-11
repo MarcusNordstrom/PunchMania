@@ -21,8 +21,8 @@ public class UIHighScore extends JPanel {
 	
 	
 	/**
-	 * Updating the high score with a name sent from the client. 
-	 * @param info : a name from client adding to high score. 
+	 * Updating the high score with a string sent from the client. 
+	 * @param info : a string from client adding to high score. 
 	 */
 	public void updateHighScore(String info) {
 		taNames.setText(info);
