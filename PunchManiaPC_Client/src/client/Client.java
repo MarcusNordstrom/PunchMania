@@ -1,13 +1,10 @@
 package client;
 
-import java.awt.Dimension;
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 
