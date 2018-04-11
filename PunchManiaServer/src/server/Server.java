@@ -5,27 +5,52 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Server
-	{
-		private ServerSocket serverSocketIs;
-		private ServerSocket serverSocketClient;
-		private ConnectionClient connectionClient = new ConnectionClient();
-		private ConnectionIs connectionIs = new ConnectionIs();
+
+
+public class Server implements Observer{
+	private ServerSocket serverSocketIs;
+	private ServerSocket serverSocketClient;
+	private ConnectionClient connectionClient = new ConnectionClient();
+	private ConnectionIs connectionIs = new ConnectionIs();
+
+	public Server(int portIs, int portClient, ServerUI serverui) {
+		try {
+			serverSocketIs = new ServerSocket(portIs);
+			serverSocketClient = new ServerSocket(portClient);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		connectionIs.start();
+		connectionClient.start();
 		
-		public Server(int portIs, int portClient)
-			{
-				try
-					{
-						serverSocketIs = new ServerSocket(portIs);
-						serverSocketClient = new ServerSocket(portClient);
-					}
-				catch (IOException e)
-					{
-						e.printStackTrace();
-					}
-				connectionIs.start();
-				connectionClient.start();
+		serverui.addManager(this);
+	}
+
+	public void Calculator(String value) {
+
+	}
+	/**
+	 * Command from the 
+	 */
+	public void cmd() {
+		
+	}
+	
+	
+	private class Is implements Runnable {
+		private DataOutputStream dos;
+		private DataInputStream dis;
+
+		public Is(Socket socket) {
+			try {
+				dis = new DataInputStream(socket.getInputStream());
+				dos = new DataOutputStream(socket.getOutputStream());
+
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
 			
 		public void Calculator(String value)
@@ -171,3 +196,14 @@ public class Server
 				Server server = new Server(12345, 12346);
 			}
 	}
+
+	public static void main(String[] args) {
+		Server server = new Server(12345, 12346, new ServerUI());
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		
+		
+	}
+}
