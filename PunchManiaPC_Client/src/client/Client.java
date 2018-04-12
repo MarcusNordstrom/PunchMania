@@ -40,7 +40,7 @@ public class Client {
 		public void run() {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
-				System.out.println("Reading data...");
+				System.out.println("DataReader@Client.java: Reading data...");
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
