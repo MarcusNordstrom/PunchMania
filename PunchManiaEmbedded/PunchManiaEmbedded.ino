@@ -1,6 +1,4 @@
 //INCLUDES
-//Limits
-#include <limits.h>
 //ADXL345
 #include <SparkFun_ADXL345.h> 
 //Ethernet
@@ -10,7 +8,7 @@
 //CONFIG
 //Ethernet
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Mac address
-IPAddress server(192, 168, 1, 35); //Ip address for server                                                     CHANGE LATER
+IPAddress server(192, 168, 1, 13); //Ip address for server                                                     CHANGE LATER
 IPAddress ip(192, 168, 1, 101); //This device
 EthernetClient client;
 //ADXL I2C
@@ -21,6 +19,8 @@ int hitValue = 250;
 boolean hit_detected = false;
 //Counter for the cycles
 int counter = 0;
+//String for storage of all values
+String storage = "";
 void setup() {
   //DEBUG - REMOVE LATER
   Serial.begin(9600);
@@ -46,7 +46,6 @@ void setup() {
   Serial.println("Status: ");
   Serial.println(status);
 }
-String storage = "";
 void loop() {
   // axis variables
   int x, y, z;
@@ -62,7 +61,6 @@ void loop() {
   //if an hit has been detected save values for 1000 cycles then set the boolean and counter to false resp. 0
   if(hit_detected) {
     if(counter < 1000) {
-      //if(!(x == INT_MAX || y == INT_MAX || z == INT_MAX)) {    //Extra safety for null values
         counter++;
         /*Serial.print(x);
         Serial.print(", ");
@@ -75,11 +73,10 @@ void loop() {
         storage += ",";
         storage += String(z);
         storage += ";";
-      //}
     } else {
       counter = 0;
       hit_detected = false;
-      client.print(storage);
+      client.println(storage);
       Serial.println(storage);
       storage = "";
     }

@@ -29,6 +29,7 @@ public class ServerUI extends JPanel {
 		taCmdArea.setForeground(Color.WHITE);
 		tfCmdField.setBackground(Color.BLACK);
 		tfCmdField.setForeground(Color.WHITE);
+		
 
 		add(taCmdArea, BorderLayout.CENTER);
 		add(tfCmdField, BorderLayout.SOUTH);
@@ -51,6 +52,7 @@ public class ServerUI extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					readCmd();
+					tfCmdField.setText("");
 				}
 
 			}
@@ -60,22 +62,61 @@ public class ServerUI extends JPanel {
 				String[] cmd = fullCmd.split(" ");
 
 				switch (cmd[0]) {
-				case "print":
-					print(fullCmd, 5);
-					break;
+					case "print":
+						print(fullCmd, 5);
+						break;
+						
+					case "getHSList":
+						getHSList();
+						break;
+						
+					case "getScore":
+						getScore(cmd[1]);
+						break;
+						
+					case "clear":
+						clear();
+						break;
+						
+					case "remove":
+						remove(cmd);
+						break;
+					case "exit":
+						System.exit(0);
+						break;
 					
-				case "getHSList":
-					getHSList();
-					break;
-					
-				case "getScore":
-					getScore(cmd[1]);
-					break;
-					
-				default:
-					print("unknown command: " + fullCmd, 0);
+					case "add":
+						add(cmd);
+						break;
+						
+					default:
+						print("unknown command: " + fullCmd, 0);
 				}
 
+			}
+
+			private void add(String[] cmd) {
+				
+				HighScoreList hl = server.getHSList();
+				for(int i = 1; i < cmd.length;i+=2) {
+					hl.add(cmd[i], Integer.parseInt(cmd[i+1]));
+					print("Adding : " + cmd[i] , 0);
+				}
+				getHSList();
+			}
+
+			private void remove(String[] cmd) {
+				HighScoreList hl = server.getHSList();
+				for(int i = 1; i < cmd.length;i++) {
+					hl.remove(cmd[i]);
+					print("Removing : " + cmd[i] , 0);
+				}
+				getHSList();
+			}
+
+			private void clear() {
+				taCmdArea.setText("");
+				
 			}
 
 			private void getScore(String string) {
