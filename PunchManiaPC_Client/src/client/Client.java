@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import javax.swing.JOptionPane;
 
+import common.HighScoreList;
+
 
 public class Client {
 	private Socket socket;
@@ -13,8 +15,10 @@ public class Client {
 	private UIHighScore uiHS;
 	private UIQueue uiQ;
 	private DataReader dr;
+	
+	private HighScoreList hsl;
 
-
+	public Client() {}
 	public Client(UIHighScore uiHS, UIQueue uiQ) {
 		this.uiHS = uiHS;
 		this.uiQ = uiQ;
@@ -42,6 +46,23 @@ public class Client {
 
 	}
 
+	
+	/**
+	 * hämta arrayList 
+	 */
+	public void getArrayList() {
+		hsl = new HighScoreList();
+		hsl.add("Sebbe", 10);
+		hsl.add("Sebbe", 10);
+		hsl.add("Sebbe", 15);
+		hsl.add("Benji", 5);
+		hsl.add("Stefan", 15);
+		
+		System.out.println(hsl.getTopTen().size());
+	}
+	
+	
+	
 	
 	/**
 	 * Sending a string to the high score list
@@ -72,5 +93,8 @@ public class Client {
 		Client cli = new Client(uiHS, uiQ);
 		cli.updateUIHighScore();
 		cli.updateUIQueue();
+		
+		Client cli1 = new Client();
+		cli1.getArrayList();
 	}
 }
