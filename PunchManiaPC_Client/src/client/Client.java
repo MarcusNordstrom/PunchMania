@@ -15,9 +15,9 @@ public class Client {
     private UIHighScore uiHS;
     private UIQueue uiQ;
     private DataReader dr;
-    
+
     private static String ip = "81.225.239.63";
-    private static int port = 4480; 
+    private static int port = 4480;
 
     private HighScoreList hsl;
     private Queue queue;
@@ -27,20 +27,21 @@ public class Client {
      */
     public Client() {
     }
-    
+
     /**
      * Constructs using the given UIHighScore and UIQueue
+     * 
      * @param uiHS
      * @param uiQ
      */
-
     public Client(UIHighScore uiHS, UIQueue uiQ) {
 	this.uiHS = uiHS;
 	this.uiQ = uiQ;
     }
-    
+
     /**
      * Constructs using a given IP-address and port
+     * 
      * @param ip
      * @param port
      */
@@ -54,11 +55,12 @@ public class Client {
 	} catch (IOException e) {
 	}
     }
-/**
- * Constructor
- *
- */
-    
+
+    /**
+     * Constructor
+     *
+     */
+
     private class DataReader extends Thread {
 	public void run() {
 	    try {
@@ -104,6 +106,13 @@ public class Client {
 
 	uiQ.updateQueue(name);
     }
+
+    /**
+     * Executes the client using a static ip and port
+     * 
+     * @param args
+     * @throws IOException
+     */
 
     public static void main(String[] args) throws IOException {
 	Client client = null;
