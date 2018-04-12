@@ -11,7 +11,10 @@ public class HighScoreList {
 	public HighScoreList() {
 		ul = new ArrayList<UserList>();
 	}
-
+	
+	/**
+	 * Sorts the list of users according to their score, highest first
+	 */
 	public void sort() {
 		Collections.sort(ul, new Comparator<UserList>() {
 			@Override
@@ -20,16 +23,30 @@ public class HighScoreList {
 			}
 		});
 	}
-
+	
+	/**
+	 * Adds a single user
+	 * @param user
+	 * @param score
+	 */
 	public void add(String user, int score) {
 		ul.add(new UserList(score, user));
 		sort();
 	}
 	
+	/**
+	 * Adds an array of users
+	 * @param arg
+	 */
+	
 	public void add(ArrayList<UserList> arg) {
 		ul.addAll(arg);
 	}
-
+	
+	/**
+	 * Removes all users whose name matches with the given string
+	 * @param user
+	 */
 	public void remove(String user) {
 		ArrayList<UserList> temp = new ArrayList<UserList>();
 		int i = 0;
@@ -46,7 +63,11 @@ public class HighScoreList {
 	public int size() {
 		return ul.size();
 	}
-
+	
+	/**
+	 * Prints all the stored users and their score
+	 */
+	
 	public void syso() {
 		for (UserList u : ul) {
 			System.out.println(u.getUser() + " " + u.getScore());
@@ -54,10 +75,15 @@ public class HighScoreList {
 		System.out.println();
 	}
 	
+	/**
+	 * Returns a specific user from the list
+	 * @param i : Location in the list
+	 * @return
+	 */
 	public UserList getUser(int i) {
 		return ul.get(i);
 	}
-
+	
 	public ArrayList<UserList> getTopTen() {
 		ArrayList<UserList> ret = new ArrayList<UserList>();
 		if (ul.size() >= 10) {
