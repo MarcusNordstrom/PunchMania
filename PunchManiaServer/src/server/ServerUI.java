@@ -68,17 +68,37 @@ public class ServerUI extends JPanel {
 					getHSList();
 					break;
 					
+				case "getScore":
+					getScore(cmd[1]);
+					break;
+					
 				default:
 					print("unknown command: " + fullCmd, 0);
 				}
 
 			}
 
+			private void getScore(String string) {
+				
+				HighScoreList hl = server.getHSList();
+				print(string,0);
+				int j = 0;
+				for(int i = 0; i < hl.size();i++) {
+					if(string.equals(hl.getUser(i).getUser())) {
+						print(""+hl.getUser(i).getScore(),0);
+						j++;
+					}
+				}
+				if(j==0) {
+					print("No score logged for this user",0);
+				}
+			}
+
 			private void getHSList() {
 				HighScoreList hl = server.getHSList();
 				String ret = "";
 				for(int i = 0; i < hl.size();i++) {
-					ret += hl.getUser(i).getUser() + "\n";
+					ret += hl.getUser(i).getUser() + "  " + hl.getUser(i).getScore() + "\n";
 				}
 				print(ret , 0);
 				
