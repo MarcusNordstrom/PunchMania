@@ -53,6 +53,10 @@ public class HighScoreList {
 		}
 		System.out.println();
 	}
+	
+	public UserList getUser(int i) {
+		return ul.get(i);
+	}
 
 	public ArrayList<UserList> getTopTen() {
 		ArrayList<UserList> ret = new ArrayList<UserList>();
@@ -68,23 +72,6 @@ public class HighScoreList {
 		return ret;
 	}
 
-	private class UserList {
-		private int score;
-		private String user;
-
-		private UserList(int score, String user) {
-			this.score = score;
-			this.user = user;
-		}
-
-		private int getScore() {
-			return score;
-		}
-
-		private String getUser() {
-			return user;
-		}
-	}
 
 	public static void main(String[] args) {
 		HighScoreList hl = new HighScoreList();

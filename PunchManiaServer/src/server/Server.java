@@ -1,10 +1,13 @@
 package server;
 
+import java.awt.Dimension;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import javax.swing.JFrame;
 
 import common.HighScoreList;
 
@@ -160,6 +163,16 @@ public class Server {
 	}
 
 	public static void main(String[] args) {
-		Server server = new Server(12345, 12346, new ServerUI());
+		JFrame frame = new JFrame();
+		ServerUI serverui = new ServerUI();
+		frame = new JFrame("PUNCH MANIA");
+		frame.setResizable(false);
+		frame.setPreferredSize(new Dimension(500, 600));
+		frame.add(serverui);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Server server = new Server(12345, 12346, serverui);
 	}
 }

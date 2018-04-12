@@ -1,6 +1,5 @@
 package server;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,12 +12,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class ServerUI extends JPanel{
-	
+import common.HighScoreList;
+
+public class ServerUI extends JPanel {
+
 	private JTextArea taCmdArea = new JTextArea();
 	private JTextField tfCmdField = new JTextField();
 	private Server server;
-	
+
 	public ServerUI() {
 		setLayout(new BorderLayout());
 		setBackground(Color.BLACK);
@@ -28,49 +29,76 @@ public class ServerUI extends JPanel{
 		taCmdArea.setForeground(Color.WHITE);
 		tfCmdField.setBackground(Color.BLACK);
 		tfCmdField.setForeground(Color.WHITE);
-		
-		add(taCmdArea,BorderLayout.CENTER);
+
+		add(taCmdArea, BorderLayout.CENTER);
 		add(tfCmdField, BorderLayout.SOUTH);
-		
+
 		tfCmdField.addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					readCmd();
 				}
-				
+
 			}
 
 			private void readCmd() {
-				// TODO Auto-generated method stub
+				String fullCmd = tfCmdField.getText();
+				String[] cmd = fullCmd.split(" ");
+
+				switch (cmd[0]) {
+				case "print":
+					print(fullCmd, 5);
+					break;
+					
+				case "getHSList":
+					getHSList();
+					break;
+					
+				default:
+					print("unknown command: " + fullCmd, 0);
+				}
+
+			}
+
+			private void getHSList() {
+				HighScoreList hl = server.getHSList();
+				String ret = "";
+				for(int i = 0; i < hl.size();i++) {
+					ret += hl.getUser(i).getUser() + "\n";
+				}
+				print(ret , 0);
 				
+			}
+
+			private void print(String fullCmd, int i) {
+				taCmdArea.setText(taCmdArea.getText() + fullCmd.substring(i) + "\n");
 			}
 		});
 	}
-	
+
 	public void addManager(Server server) {
 		this.server = server;
 	}
-	
-	
-	public static void main(String[] args) {		
+
+	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame = new JFrame("PUNCH MANIA");
 		frame.setResizable(false);
-		frame.setPreferredSize(new Dimension(500,600));
+		frame.setPreferredSize(new Dimension(500, 600));
 		frame.add(new ServerUI());
 		frame.pack();
 		frame.setLocationRelativeTo(null);
