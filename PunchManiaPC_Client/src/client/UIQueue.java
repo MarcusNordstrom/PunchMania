@@ -67,13 +67,12 @@ public class UIQueue extends JPanel implements ActionListener {
 
 	
 	/**
-	 * Updates the queue list with a string coming from the client. 
+	 * Updates the queue list from the client. 
 	 * @param name  : a string from client adding to queue list. 
 	 */
 	public void updateQueue(String name) {
-		names += counter + ": " + name + "\n";
-		counter++;
-		taQueue.setText(names);
+		taQueue.setText(name);
+		
 
 		JFrame frame = new JFrame();
 		frame = new JFrame("PUNCH MANIA");

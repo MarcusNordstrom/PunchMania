@@ -4,26 +4,28 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import javax.swing.JOptionPane;
-
 import common.HighScoreList;
-
+import common.Queue;
 
 public class Client {
 	private Socket socket;
 	private ObjectInputStream ois; 
-	private String test, name;
+	private String name = "";
+	private String list = "";
 	private UIHighScore uiHS;
 	private UIQueue uiQ;
 	private DataReader dr;
-	
+
 	private HighScoreList hsl;
+	private Queue queue;
+
 
 	public Client() {}
 	public Client(UIHighScore uiHS, UIQueue uiQ) {
 		this.uiHS = uiHS;
 		this.uiQ = uiQ;
 	}
-	
+
 	public Client(String ip, int port) {
 		try {
 			socket = new Socket(ip, port);
@@ -46,40 +48,38 @@ public class Client {
 
 	}
 
-	
 	/**
-	 * hämta arrayList 
-	 */
-	public void getArrayList() {
-		hsl = new HighScoreList();
-		hsl.add("Sebbe", 10);
-		hsl.add("Sebbe", 10);
-		hsl.add("Sebbe", 15);
-		hsl.add("Benji", 5);
-		hsl.add("Stefan", 15);
-		
-		System.out.println(hsl.getTopTen().size());
-	}
-	
-	
-	
-	
-	/**
-	 * Sending a string to the high score list
+	 * Sending high score to high score list
 	 */
 	public void updateUIHighScore() {
-		test = JOptionPane.showInputDialog("skriv till High Score");
-		System.out.println(test + " skrivs in i High Score");
-		uiHS.updateHighScore(test);
+		hsl = new HighScoreList();
+		hsl.add("A", 10);
+		hsl.add("B", 10);
+		hsl.add("C", 15);
+		hsl.add("D", 5);
+		hsl.add("E", 15);
+
+		for(int i = 0; i < hsl.getTopTen().size(); i++) {
+			list += hsl.getUser(i).getUser() + ", " + hsl.getUser(i).getScore() + "\n";
+		}
+		uiHS.updateHighScore(list);
 	}
 
-	
+
 	/**
-	 * Sending a string to the queue list. 
+	 * Sending queue to queue list. 
 	 */
 	public void updateUIQueue() {
-		name = JOptionPane.showInputDialog("Lägg i kö");
-		System.out.println(name + " läggs till i kön");
+		queue = new Queue();
+		queue.add("A");
+		queue.add("B");
+		queue.add("C");
+		queue.add("D");
+		
+		for (int i = 0; i < 4; i++) {
+			name += queue.peekAt(i) + "\n";
+		}
+
 		uiQ.updateQueue(name);
 	}
 
@@ -93,8 +93,6 @@ public class Client {
 		Client cli = new Client(uiHS, uiQ);
 		cli.updateUIHighScore();
 		cli.updateUIQueue();
-		
-		Client cli1 = new Client();
-		cli1.getArrayList();
+
 	}
 }
