@@ -5,14 +5,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Observable;
-import java.util.Observer;
 
-public class Server implements Observer {
+import common.HighScoreList;
+
+public class Server {
 	private ServerSocket serverSocketIs;
 	private ServerSocket serverSocketClient;
 	private ConnectionClient connectionClient = new ConnectionClient();
 	private ConnectionIs connectionIs = new ConnectionIs();
+	private HighScoreList hsList;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
@@ -23,8 +24,20 @@ public class Server implements Observer {
 		}
 		connectionIs.start();
 		connectionClient.start();
-
+		
+		hsList = newHSList();
 		serverui.addManager(this);
+	}
+
+	private HighScoreList newHSList() {
+		HighScoreList hl = new HighScoreList();
+	
+		hl.add("Sebbe", 10);
+		hl.add("Sebbe", 10);
+		hl.add("Sebbe", 15);
+		hl.add("Benji", 5);
+		hl.add("Stefan", 15);
+		return hl;
 	}
 
 	public void Calculator(String value) {
@@ -36,6 +49,10 @@ public class Server implements Observer {
 	 */
 	public void cmd() {
 
+	}
+	
+	public HighScoreList getHSList() {
+		return hsList;
 	}
 
 	private class Is implements Runnable {
@@ -144,10 +161,5 @@ public class Server implements Observer {
 
 	public static void main(String[] args) {
 		Server server = new Server(12345, 12346, new ServerUI());
-	}
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
-
 	}
 }

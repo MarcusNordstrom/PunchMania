@@ -42,6 +42,10 @@ public class HighScoreList {
 			ul.remove(t);
 		}
 	}
+	
+	public int size() {
+		return ul.size();
+	}
 
 	public void syso() {
 		for (UserList u : ul) {
