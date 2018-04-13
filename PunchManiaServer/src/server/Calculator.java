@@ -12,7 +12,7 @@ public class Calculator {
 	int Z;
 	private String section;
 	private ArrayList<String> splittedString = new ArrayList<String>();
-	
+
 	private ArrayList<Integer> x = new ArrayList<Integer>();
 	private ArrayList<Integer> y = new ArrayList<Integer>();
 	private ArrayList<Integer> z = new ArrayList<Integer>();
@@ -23,6 +23,18 @@ public class Calculator {
 		splitter(values);
 	}
 
+	public static boolean isInteger(String s) {
+		try { 
+			Integer.parseInt(s); 
+		} catch(NumberFormatException e) { 
+			return false; 
+		} catch(NullPointerException e) {
+			return false;
+		}
+		// only got here if we didn't return false
+		return true;
+	}
+
 	public void splitter(String values) {
 
 		for(int i=1; i < values.length(); i++) {
@@ -30,6 +42,7 @@ public class Calculator {
 
 			if(semi == values.charAt(i)) {
 				newString = newString.replaceAll(";", "");
+				newString = newString.replaceAll("\n", "");
 				splittedString.add(newString);
 				newString = "";
 
@@ -39,10 +52,15 @@ public class Calculator {
 		for(int i=0; i < splittedString.size(); i++) {
 			section = splittedString.get(i);
 			String[] dev = section.split(",");
-			
+			boolean validValues = true;
 			for(int x1 = 0; x1 < dev.length; x1+=3) {
 				String xx1 = dev[x1];
-				x.add(Integer.parseInt(xx1));
+				if(isInteger(xx1) && validValues) {
+					x.add(Integer.parseInt(xx1));
+				} else {
+					validValues = false;
+				}
+
 			}
 			for(int y1= 1; y1 <dev.length; y1+=3) {
 				String yy1 = dev[y1];
@@ -57,5 +75,5 @@ public class Calculator {
 		System.out.println(y.toString());
 		System.out.println(z.toString());
 	}
-
 }
+
