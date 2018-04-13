@@ -14,7 +14,7 @@ EthernetClient client;
 //ADXL I2C
 ADXL345 adxl = ADXL345();
 //Over or under this value and log 1000 cycles
-int hitValue = 250;
+int hitValue = 150;
 //Over or under hitValue on any axis
 boolean hit_detected = false;
 //Counter for the cycles

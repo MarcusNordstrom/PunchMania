@@ -75,11 +75,11 @@ public class Server {
 			String oldpacket = ".";
 			while (true) {
 				String packet = null;
-				byte[] string = new byte[1028];
+				byte[] string = new byte[1000];
 				try {
 					dis.readFully(string);
 					String str = new String(string);
-					System.out.println(str);
+					//System.out.println(str);
 					Calculator cal = new Calculator(str);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

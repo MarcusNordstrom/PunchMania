@@ -94,8 +94,17 @@ public class Calculator {
 			avrgY += Math.abs(y.get(o));
 		}
 		avrgY = avrgY/y.size();
-		double component = Math.sqrt((Math.pow(avrgX, 2) + Math.pow(avrgY, 2)));
-		System.out.println("Component of x and y: " + component);
+		double componentXY = Math.sqrt((Math.pow(avrgX, 2) + Math.pow(avrgY, 2)));
+		System.out.println("Component of x and y: " + componentXY);
+		int avrgZ = 0;
+		for(int p=0; p< z.size(); p++) {
+			avrgZ += Math.abs(z.get(p));
+		}
+		avrgZ = avrgZ/z.size();
+		double componentXYZ = Math.sqrt((Math.pow(avrgZ, 2) + Math.pow(componentXY, 2)));
+		System.out.println("Component of x, y and z: " + componentXYZ);
+		int score = (int)(componentXYZ * 10000);
+		System.out.println("SCORE: " + score);
 	}
 }
 
