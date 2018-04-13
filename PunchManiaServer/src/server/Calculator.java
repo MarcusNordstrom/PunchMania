@@ -21,6 +21,7 @@ public class Calculator {
 	public Calculator (String values) {
 
 		splitter(values);
+		force();
 	}
 
 	public static boolean isInteger(String s) {
@@ -81,12 +82,20 @@ public class Calculator {
 				
 			}
 		}
-		System.out.println(x.toString());
-		System.out.println(y.toString());
-		System.out.println(z.toString());
-		System.out.println(x.size());
-		System.out.println(y.size());
-		System.out.println(z.size());
+	}
+	public void force() {
+		int avrgX = 0;
+		for(int i=0; i< x.size(); i++) {
+			avrgX += Math.abs(x.get(i));
+		}
+		avrgX = avrgX/x.size();
+		int avrgY = 0;
+		for(int o=0; o< y.size(); o++) {
+			avrgY += Math.abs(y.get(o));
+		}
+		avrgY = avrgY/y.size();
+		double component = Math.sqrt((Math.pow(avrgX, 2) + Math.pow(avrgY, 2)));
+		System.out.println("Component of x and y: " + component);
 	}
 }
 
