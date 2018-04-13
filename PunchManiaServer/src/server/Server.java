@@ -75,7 +75,7 @@ public class Server {
 			String oldpacket = ".";
 			while (true) {
 				String packet = null;
-				byte[] string = new byte[2000];
+				byte[] string = new byte[1069];
 				try {
 					dis.readFully(string);
 					String str = new String(string);

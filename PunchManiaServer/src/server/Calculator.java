@@ -64,16 +64,29 @@ public class Calculator {
 			}
 			for(int y1= 1; y1 <dev.length; y1+=3) {
 				String yy1 = dev[y1];
-				y.add(Integer.parseInt(yy1));
+				if(isInteger(yy1) && validValues) {
+					y.add(Integer.parseInt(yy1));
+				} else {
+					validValues = false;
+				}
+				
 			}
 			for(int z1= 2; z1 <dev.length; z1+=3) {
 				String zz1 = dev[z1];
-				z.add(Integer.parseInt(zz1));
+				if(isInteger(zz1) && validValues) {
+					z.add(Integer.parseInt(zz1));
+				} else {
+					validValues = false;
+				}
+				
 			}
 		}
 		System.out.println(x.toString());
 		System.out.println(y.toString());
 		System.out.println(z.toString());
+		System.out.println(x.size());
+		System.out.println(y.size());
+		System.out.println(z.size());
 	}
 }
 
