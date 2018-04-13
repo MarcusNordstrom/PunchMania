@@ -37,7 +37,7 @@ public class Calculator {
 
 	public void splitter(String values) {
 
-		for(int i=1; i < values.length(); i++) {
+		for(int i=0; i < values.length(); i++) {
 			newString += values.charAt(i);
 
 			if(semi == values.charAt(i)) {
@@ -49,7 +49,7 @@ public class Calculator {
 			}
 		}
 
-		for(int i=0; i < splittedString.size(); i++) {
+		for(int i=0; i < splittedString.size()-1; i++) {
 			section = splittedString.get(i);
 			String[] dev = section.split(",");
 			boolean validValues = true;

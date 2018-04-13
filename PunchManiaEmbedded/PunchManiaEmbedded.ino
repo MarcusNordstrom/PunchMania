@@ -53,54 +53,52 @@ void setup() {
   Serial.println("Status: ");
   Serial.println(status);
 }
+int calibrationXOffset = 0;
+int calibrationYOffset = 0;
+int calibrationZOffset = 0;
 void loop() {
   // axis variables
   int x, y, z;
   adxl.readAccel(&x, &y, &z); //Reads the accelerometer values and stores them in the axis variables
   //if any axis exceeds the hitvalue (both positive and negative) set boolean to true
-  
-  calibrationXOffset = 0;
-  calibrationYOffset = 0;
-  calibrationZOffset = 0;
   calibrationCounter++;
-  switch(calibrationCounter)) {
+  switch(calibrationCounter) {
 	  case 50:
 	  calibrationXStorage[0] = x;
 	  calibrationYStorage[0] = y;
 	  calibrationZStorage[0] = z;
-	  end;
+	  break;
 	  case 100:
 	  calibrationXStorage[1] = x;
 	  calibrationYStorage[1] = y;
 	  calibrationZStorage[1] = z;
-	  end;
+	  break;
 	  case 150:
 	  calibrationXStorage[2] = x;
 	  calibrationYStorage[2] = y;
 	  calibrationZStorage[2] = z;
-	  end;
+	  break;
 	  case 200:
 	  calibrationXStorage[3] = x;
 	  calibrationYStorage[3] = y;
 	  calibrationZStorage[3] = z;
-	  end;
+	  break;
 	  case 250:
 	  calibrationXStorage[4] = x;
 	  calibrationYStorage[4] = y;
 	  calibrationZStorage[4] = z;
-	  end;
+	  break;
 	  case 300:
 	  calibrationXStorage[5] = x;
 	  calibrationYStorage[5] = y;
 	  calibrationZStorage[5] = z;
-	  calibrationCounter = 0
-	  end;
+	  calibrationCounter = 0;
+	  break;
   }
-  
-  for(loop = 0; loop < 6; loop++) {
-	  calibrationXOffset += calibrationXStorage[loop];
-	  calibrationYOffset += calibrationYStorage[loop];
-	  calibrationZOffset += calibrationZStorage[loop];
+  for(int i = 0; i < 6; i++) {
+	  calibrationXOffset += calibrationXStorage[i];
+	  calibrationYOffset += calibrationYStorage[i];
+	  calibrationZOffset += calibrationZStorage[i];
   }
   calibrationXOffset = calibrationXOffset/6;
   calibrationYOffset = calibrationYOffset/6;
@@ -108,6 +106,11 @@ void loop() {
   x -= calibrationXOffset;
   y -= calibrationYOffset;
   z -= calibrationZOffset;
+  /*Serial.print(x);        //DEBUG CODE
+  Serial.print(", ");
+  Serial.print(y);
+  Serial.print(", ");
+  Serial.println(z);*/
   
   if(x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {
     hit_detected = true;
@@ -120,11 +123,6 @@ void loop() {
   if(hit_detected) {
     if(counter < 1000) {
         counter++;
-        /*Serial.print(x);
-        Serial.print(", ");
-        Serial.print(y);
-        Serial.print(", ");
-        Serial.println(z);*/
         storage += String(x);
         storage += ",";
         storage += String(y);
@@ -134,7 +132,15 @@ void loop() {
     } else {
       counter = 0;
       hit_detected = false;
-      client.println(storage);
+      int storageLengthLeft = 1500 - storage.length() - 1;
+      Serial.println("Storage left:");
+      Serial.println(storageLengthLeft);
+      for(int o = 0; o < storageLengthLeft; o++) {
+        storage += ".";
+      }
+      Serial.println(client.print(storage));
+      client.flush();
+      //client.write(buff, 2000);
       Serial.println(storage);
       storage = "";
     }
