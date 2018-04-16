@@ -14,9 +14,6 @@ public class UIQueue extends JPanel implements ActionListener {
 	private JLabel lblName = new JLabel("Type name to put you in line");
 	private JButton btnSend = new JButton("Put me in line");
 
-	private String name = "";
-	private Client client;
-	
 	private String names = "";
 	private Client client;
 
