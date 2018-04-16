@@ -13,7 +13,7 @@ import common.Message;
 import common.Queue;
 import common.UICallback;
 
-public class Client extends Thread implements UICallback {
+public class Client extends Thread {
 	private Socket socket;
 	private ObjectInputStream ois;
 	private String name = "";
@@ -210,7 +210,4 @@ public class Client extends Thread implements UICallback {
 
 	}
 
-	public void notify(Object arg) {
-
-	}
 }

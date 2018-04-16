@@ -15,8 +15,7 @@ public class UIQueue extends JPanel implements ActionListener {
 	private JButton btnSend = new JButton("Put me in line");
 	
 	private String names = "";
-	private int counter = 1;
-	private UICallback callback = null;
+	private Client client;
 
 
 	/**
@@ -37,12 +36,7 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.add(panelSouth(), BorderLayout.SOUTH);
 		btnSend.addActionListener(this);
 	}
-	public void addCallback(UICallback arg) {
-		this.callback = arg;
-	}
-	public void notifyCallback(String param) {
-		this.callback.notify(param);
-	}
+	
 	
 	/**
 	 * 1 of 2 parts of the panel
@@ -77,10 +71,9 @@ public class UIQueue extends JPanel implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSend) {
-			notifyCallback(tfName.getText());
-			names += counter + ":  " + tfName.getText() + "\n";
-			counter++;
-			taQueue.setText(names);
+			names += tfName.getText();
+			client.sendUser(names);
+			
 			tfName.setText("");
 		}
 	}
