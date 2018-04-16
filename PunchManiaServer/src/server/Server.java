@@ -118,14 +118,15 @@ public class Server {
 		 * Read UTF from embedded system and prints it, sends value to calculator.
 		 */
 		public void run() {
+			boolean connected = true;
 			try {
-				while (true) {
+				while (connected) {
 					Object obj = ois.readObject();
 					if(obj instanceof Message) {
 						Message readMessage = (Message) obj;
 						switch (readMessage.getInstruction()) {
 						case 2:
-							
+							queue.pop();
 							break;
 						case 3:
 							queue.add((String)readMessage.getPayload());
@@ -139,9 +140,10 @@ public class Server {
 					}
 				}
 			} catch (IOException e) {
+				connected = false;
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
+				connected = false;
 				e.printStackTrace();
 			}
 		}
