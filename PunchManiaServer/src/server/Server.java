@@ -63,6 +63,10 @@ public class Server {
 		public void addToQueue(String name) {
 			queue.add(name);
 		}
+		
+		public Queue getQueue() {
+			return queue;
+		}
 	
 
 	public class Client {
@@ -132,6 +136,7 @@ public class Server {
 			
 			public void sendQueue() {
 				try {
+					ui.print("Sending queue to client", 0);
 					oos.writeObject(new Message(queue, Message.NEW_QUEUE));
 					oos.flush();
 				} catch (IOException e) {
@@ -142,6 +147,7 @@ public class Server {
 
 			public void sendHighscore() {
 				try {
+					ui.print("Sending Highscore list to client", 0);
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
 					oos.flush();
 				} catch (IOException e) {
@@ -263,4 +269,6 @@ public class Server {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Server server = new Server(12345, 12346, serverui);
 	}
+
+	
 }

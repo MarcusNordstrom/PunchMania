@@ -13,6 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import common.HighScoreList;
+import common.Queue;
 
 public class ServerUI extends JPanel {
 
@@ -75,18 +76,19 @@ public class ServerUI extends JPanel {
 				getScore(cmd[1]);
 				break;
 				
+			case "getQ":
+				getQ();
+				break;
+				
 			case "clear":
 				clear();
 				break;
 				
-			case "remove":
+			case "removeHS":
 				remove(cmd);
 				break;
-			case "exit":
-				System.exit(0);
-				break;
 			
-			case "add":
+			case "addHS":
 				add(cmd);
 				break;
 				
@@ -94,6 +96,21 @@ public class ServerUI extends JPanel {
 				server.notifyClient();
 				break;
 				
+			case "exit":
+				System.exit(0);
+				break;
+				
+			case "addQ":
+				addQ(cmd);
+				break;
+				
+			case "removeQ":
+				removeQ(cmd);
+				break;
+				
+			case "delay":
+				delayOne();
+				break;
 				
 			default:
 				print("unknown command: " + fullCmd, 0);
@@ -101,14 +118,45 @@ public class ServerUI extends JPanel {
 
 	}
 
+	private void getQ() {
+		Queue q = server.getQueue();
+		print("Queue: ",0);
+		String ret = "";
+		for(int i = 0; i < q.size();i++) {
+			ret += q.peekAt(i) + "\n";
+		}
+		print(ret , 0);
+		
+	}
+	
+	private void removeQ(String[] cmd) {
+		Queue q = server.getQueue();
+		for(int i = 1; i < cmd.length;i++) {
+			q.remove(cmd[i]);
+			print("removing : " + cmd[i] + " from queue" , 0);
+		}
+		
+	}
+	private void addQ(String[] cmd) {
+		Queue q = server.getQueue();
+		for(int i = 1; i < cmd.length;i++) {
+			q.add(cmd[i]);
+			print("Adding : " + cmd[i] + " to queue" , 0);
+		}
+	}
+	
+	private void delayOne() {
+		Queue q = server.getQueue();
+		q.dropOne();
+	}
+	
 	private void add(String[] cmd) {
 		
 		HighScoreList hl = server.getHSList();
 		for(int i = 1; i < cmd.length;i+=2) {
 			hl.add(cmd[i], Integer.parseInt(cmd[i+1]));
-			print("Adding : " + cmd[i] , 0);
+			print("Adding : " + cmd[i] + " to Highscore" , 0);
 		}
-		getHSList();
 	}
 
 	private void remove(String[] cmd) {
@@ -117,7 +165,6 @@ public class ServerUI extends JPanel {
 			hl.remove(cmd[i]);
 			print("Removing : " + cmd[i] , 0);
 		}
-		getHSList();
 	}
 
 	private void clear() {
