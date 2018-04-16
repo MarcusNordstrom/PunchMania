@@ -20,7 +20,9 @@ public class Server {
 	private HighScoreList hsList;
 	private String values;
 	private Client client;
+	private Queue queue;
 	private IS is;
+	private ServerUI ui;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
@@ -30,31 +32,38 @@ public class Server {
 			e.printStackTrace();
 		}
 
-		hsList = newHSList();
-		//serverui.addManager(this);
+		hsList = newHSList();		//temp HS list with users
+		
+		this.ui = serverui;
+		ui.addManager(this);
 
 		client = new Client(serverSocketClient);
 		is = new IS(serverSocketIs);
 	}
 
-	public void notifyClient() {
-		// client.sendHighscore();
-	}
-
-	private HighScoreList newHSList() {
-		HighScoreList hl = new HighScoreList();
-
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 15);
-		hl.add("Benji", 5);
-		hl.add("Stefan", 15);
-		return hl;
-	}
-
-	public HighScoreList getHSList() {
-		return hsList;
-	}
+		public void notifyClient() {
+			// client.sendHighscore();
+		}
+	
+		private HighScoreList newHSList() {
+			HighScoreList hl = new HighScoreList();
+	
+			hl.add("Sebbe", 10);
+			hl.add("Sebbe", 10);
+			hl.add("Sebbe", 15);
+			hl.add("Benji", 5);
+			hl.add("Stefan", 15);
+			return hl;
+		}
+	
+		public HighScoreList getHSList() {
+			return hsList;
+		}
+		
+		public void addToQueue(String name) {
+			queue.add(name);
+		}
+	
 
 	public class Client {
 		private ObjectOutputStream oos;
@@ -76,6 +85,9 @@ public class Server {
 			ch.run();
 		}
 
+		public void sendQueue() {
+			ch.sendQueue();
+		}
 		public void sendHS() {
 			ch.sendHighscore();
 		}
@@ -88,23 +100,47 @@ public class Server {
 			}
 
 			/*
-			 * Read UTF from embedded system and prints it, sends value to calculator.
+			 * Read message from Client and prints it, sends value to calculator.
 			 */
 			public void run() {
 				boolean connected = true;
+				try {
+					oos = new ObjectOutputStream(socket.getOutputStream());
+					sendQueue();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				while (connected) {
 					try {
-						oos = new ObjectOutputStream(socket.getOutputStream());
+						
 						ois = new ObjectInputStream(socket.getInputStream());
-					} catch (IOException e) {
+						Message message = (Message)ois.readObject();
+						switch(message.getInstruction()) {
+						case 3:
+							ui.print("User for queue received from: Client", 0);
+							addToQueue((String)message.getPayload());
+							break;
+						}
+						
+						
+					} catch (IOException | ClassNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
+			
+			public void sendQueue() {
+				try {
+					oos.writeObject(new Message(queue, Message.NEW_QUEUE));
+					oos.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 			public void sendHighscore() {
-
 				try {
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
 					oos.flush();
@@ -124,9 +160,9 @@ public class Server {
 				
 				while (true) {
 					try {
-						System.out.println("port client: " + socket.getLocalPort() + "\n");
+						ui.print("Client-port open on: " + socket.getLocalPort(), 0);
 						Socket socketClient = socket.accept();
-						System.out.println("CLIENT!!");
+						ui.print("Client connected", 0);
 						newHandler(socketClient);
 
 					} catch (IOException e) {
@@ -196,11 +232,12 @@ public class Server {
 			private ISHandler is = null;
 
 			public void run() {
-				System.out.println("port embedded system: " + serverSocketIs.getLocalPort() + "\n");
+				ui.print("", 0);
 				while (true) {
 					try {
+						ui.print("IS-port open on: " + serverSocketIs.getLocalPort(), 0);
 						Socket socketIs = serverSocketIs.accept();
-						System.out.println("embedded!!!");
+						ui.print("Embedded connected", 0);
 						newHandler(socketIs);
 
 					} catch (IOException e) {
