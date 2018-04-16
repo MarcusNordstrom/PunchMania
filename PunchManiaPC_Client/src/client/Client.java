@@ -160,7 +160,13 @@ public class Client extends Thread implements UICallback {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * method retries to establish a connection. 
+	 * @param ip
+	 * @param port
+	 * @throws InterruptedException
+	 */
 	public void retry(String ip, int port) throws InterruptedException {
 		while (!connect(ip, port)) {
 			System.err.print("Reconnecting in ");
