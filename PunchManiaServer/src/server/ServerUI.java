@@ -89,6 +89,11 @@ public class ServerUI extends JPanel {
 						add(cmd);
 						break;
 						
+					case "sendHS":
+						server.notifyClient();
+						break;
+						
+						
 					default:
 						print("unknown command: " + fullCmd, 0);
 				}
