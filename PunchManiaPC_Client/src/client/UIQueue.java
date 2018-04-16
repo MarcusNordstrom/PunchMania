@@ -13,16 +13,17 @@ public class UIQueue extends JPanel implements ActionListener {
 	private JLabel lblQueue = new JLabel("Current queue");
 	private JLabel lblName = new JLabel("Type name to put you in line");
 	private JButton btnSend = new JButton("Put me in line");
-	
+
 	private String names = "";
-	private int counter = 1;
-	private UICallback callback = null;
+	private Client client;
 
 
 	/**
 	 * Creating panel
 	 */
-	public UIQueue() {
+	public UIQueue(Client client) {
+		this.client = client;
+		
 		JFrame frame = new JFrame();
 		frame = new JFrame("PUNCH MANIA");
 		frame.setResizable(false);
@@ -35,14 +36,10 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.setLayout(new BorderLayout());
 		frame.add(panelCenter(), BorderLayout.CENTER);
 		frame.add(panelSouth(), BorderLayout.SOUTH);
+		
 		btnSend.addActionListener(this);
 	}
-	public void addCallback(UICallback arg) {
-		this.callback = arg;
-	}
-	public void notifyCallback(String param) {
-		this.callback.notify(param);
-	}
+	
 	
 	/**
 	 * 1 of 2 parts of the panel
@@ -57,7 +54,7 @@ public class UIQueue extends JPanel implements ActionListener {
 		return panel;
 	}
 
-	
+
 	/**
 	 * 1 of 2 parts of the panel
 	 * @return panel in bottom
@@ -70,28 +67,27 @@ public class UIQueue extends JPanel implements ActionListener {
 		return panel;
 	}
 
-	
+
 	/**
 	 * When pushing the button a new string will be written on a new line in the queue list.
 	 * The string is taken from the text field. 
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSend) {
-			notifyCallback(tfName.getText());
-			names += counter + ":  " + tfName.getText() + "\n";
-			counter++;
-			taQueue.setText(names);
+			names += tfName.getText();
+			client.sendUser(names);
+			
 			tfName.setText("");
 		}
 	}
 
-	
+
 	/**
 	 * Updates the queue list from the client. 
 	 * @param name  : a string from client adding to queue list. 
 	 */
 	public void updateQueue(String name) {
 		taQueue.setText(name);
-		
+
 	}
 }

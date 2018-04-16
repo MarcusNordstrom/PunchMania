@@ -11,9 +11,8 @@ import javax.swing.JOptionPane;
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
-import common.UICallback;
 
-public class Client extends Thread implements UICallback {
+public class Client extends Thread {
 	private Socket socket;
 	private ObjectInputStream ois;
 	private String name = "";
@@ -29,6 +28,7 @@ public class Client extends Thread implements UICallback {
 
 	private HighScoreList hsl;
 	private Queue queue;
+	
 
 	/**
 	 * Empty constructor
@@ -75,13 +75,15 @@ public class Client extends Thread implements UICallback {
 	 */
 
 	private class DataReader extends Thread {
+		private Client client;
+		
 		public DataReader() {
 			uiHS = new UIHighScore();
 			updateUIHighScore();
-			uiQ = new UIQueue();
-
+			uiQ = new UIQueue(client);
 		}
 
+		
 		public void run() {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
@@ -210,7 +212,4 @@ public class Client extends Thread implements UICallback {
 
 	}
 
-	public void notify(Object arg) {
-
-	}
 }
