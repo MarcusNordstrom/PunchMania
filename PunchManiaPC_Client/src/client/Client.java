@@ -85,9 +85,28 @@ public class Client extends Thread implements UICallback {
 		public void run() {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
+				Object obj = ois.readObject();
+				
+				if(obj instanceof Message) {
+					Message readMessage = (Message) obj;
+					switch (readMessage.getInstruction()) {
+					case 1:
+						System.out.println("Queue! yeah");
+						break;
+					case 2:
+						System.out.println("highscorelist! yeah");
+						break;
+
+					default:
+						break;
+					}
+				}
 				System.out.println("DataReader@Client.java: Reading data...");
 			} catch (IOException e1) {
 				e1.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
@@ -162,7 +181,7 @@ public class Client extends Thread implements UICallback {
 	}
 	
 	/**
-	 * method retries to establish a connection. 
+	 * method retries to establish a connection 
 	 * @param ip
 	 * @param port
 	 * @throws InterruptedException

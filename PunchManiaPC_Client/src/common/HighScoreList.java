@@ -60,6 +60,10 @@ public class HighScoreList {
 		}
 	}
 	
+	/**
+	 * Returns the size of the ArrayList
+	 * @return size
+	 */
 	public int size() {
 		return ul.size();
 	}
@@ -78,7 +82,7 @@ public class HighScoreList {
 	/**
 	 * Returns a specific user from the list
 	 * @param i : Location in the list
-	 * @return
+	 * @return the specific user
 	 */
 	public UserList getUser(int i) {
 		return ul.get(i);
@@ -98,7 +102,10 @@ public class HighScoreList {
 		return ret;
 	}
 
-
+	/**
+	 * Executes the class.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		HighScoreList hl = new HighScoreList();
 		HighScoreList top10 = new HighScoreList();
