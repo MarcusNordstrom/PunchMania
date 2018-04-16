@@ -132,12 +132,12 @@ void loop() {
     } else {
       counter = 0;
       hit_detected = false;
-      int storageLengthLeft = 1500 - storage.length() - 1;
+      //int storageLengthLeft = 1500 - storage.length() - 1;
       //Serial.println("Storage left:");
       //Serial.println(storageLengthLeft);
-      for(int o = 0; o < storageLengthLeft; o++) {
+      /*for(int o = 0; o < storageLengthLeft; o++) {
         storage += ".";
-      }
+      }*/
       Serial.println(client.print(storage));
       client.flush();
       //client.write(buff, 2000);
