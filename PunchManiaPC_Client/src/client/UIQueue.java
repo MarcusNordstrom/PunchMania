@@ -4,9 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import common.UICallback;
-
-
 public class UIQueue extends JPanel implements ActionListener {
 	private JTextArea taQueue = new JTextArea();
 	private JTextField tfName = new JTextField();
@@ -75,7 +72,7 @@ public class UIQueue extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSend) {
 			names += tfName.getText();
-			client.sendUser(names);
+			client.sendUser(names); 								// FUNKAR INTE 
 			
 			tfName.setText("");
 		}
@@ -90,4 +87,7 @@ public class UIQueue extends JPanel implements ActionListener {
 		taQueue.setText(name);
 
 	}
+	
+	
+	
 }
