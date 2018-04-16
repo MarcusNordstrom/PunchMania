@@ -28,6 +28,7 @@ public class Client extends Thread {
 
 	private HighScoreList hsl;
 	private Queue queue;
+	
 
 	/**
 	 * Empty constructor
@@ -74,13 +75,15 @@ public class Client extends Thread {
 	 */
 
 	private class DataReader extends Thread {
+		private Client client;
+		
 		public DataReader() {
 			uiHS = new UIHighScore();
 			updateUIHighScore();
-			uiQ = new UIQueue();
-
+			uiQ = new UIQueue(client);
 		}
 
+		
 		public void run() {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
