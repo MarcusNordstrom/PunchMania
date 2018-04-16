@@ -23,10 +23,6 @@ public class UIQueue extends JPanel implements ActionListener {
 	 * Creating panel
 	 */
 	public UIQueue() {
-		setLayout(new BorderLayout());
-		add(panelCenter(), BorderLayout.CENTER);
-		add(panelSouth(), BorderLayout.SOUTH);
-		btnSend.addActionListener(this);
 		JFrame frame = new JFrame();
 		frame = new JFrame("PUNCH MANIA");
 		frame.setResizable(false);
@@ -36,6 +32,10 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.add(panelCenter(), BorderLayout.CENTER);
+		frame.add(panelSouth(), BorderLayout.SOUTH);
+		btnSend.addActionListener(this);
 	}
 	public void addCallback(UICallback arg) {
 		this.callback = arg;
