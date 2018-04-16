@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -73,7 +74,8 @@ public class Server {
 
 		public void run() {
 			String oldpacket = ".";
-			while (true) {
+			boolean connected = true;
+			while (connected) {
 				String packet = null;
 				byte[] string = new byte[1000];
 				try {
@@ -82,8 +84,7 @@ public class Server {
 					//System.out.println(str);
 					Calculator cal = new Calculator(str);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					connected = false;
 				}
 			}
 		}
@@ -128,13 +129,14 @@ public class Server {
 		 * Waiting for connection, if connection is made new clienthandler is created
 		 * with socket recived as parameter. clienthandler run method is started.
 		 */
+		private Is is = null;
 		public void run() {
 			System.out.println("port embedded system: " + serverSocketIs.getLocalPort() + "\n");
 			while (true) {
 				try {
 					Socket socketIs = serverSocketIs.accept();
 					System.out.println("embedded!!!");
-					Is is = new Is(socketIs);
+					is = new Is(socketIs);
 					is.run();
 
 				} catch (IOException e) {

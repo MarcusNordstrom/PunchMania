@@ -98,7 +98,8 @@ public class Calculator {
 		System.out.println("Component of x and y: " + componentXY);
 		int avrgZ = 0;
 		for(int p=0; p< z.size(); p++) {
-			avrgZ += Math.abs(z.get(p));
+			//avrgZ += Math.abs(z.get(p));
+			avrgZ += z.get(p);
 		}
 		avrgZ = avrgZ/z.size();
 		double componentXYZ = Math.sqrt((Math.pow(avrgZ, 2) + Math.pow(componentXY, 2)));

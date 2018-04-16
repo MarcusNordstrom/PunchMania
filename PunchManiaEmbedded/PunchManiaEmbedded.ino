@@ -133,8 +133,8 @@ void loop() {
       counter = 0;
       hit_detected = false;
       int storageLengthLeft = 1500 - storage.length() - 1;
-      Serial.println("Storage left:");
-      Serial.println(storageLengthLeft);
+      //Serial.println("Storage left:");
+      //Serial.println(storageLengthLeft);
       for(int o = 0; o < storageLengthLeft; o++) {
         storage += ".";
       }
