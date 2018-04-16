@@ -24,7 +24,7 @@ public class Client extends Thread implements UICallback {
 	private ObjectOutputStream oos;
 	private Message message;
 
-	private static String ip = "192.168.1.11";
+	private static String ip = "192.168.1.13";
 	private static int port = 12346;
 
 	private HighScoreList hsl;
@@ -49,7 +49,8 @@ public class Client extends Thread implements UICallback {
 
 	/**
 	 * Constructs using a given IP-address and port
-	 * 
+	 * the constructor also uses the start method to execute the thread which calls the 
+	 * run method.
 	 * @param ip
 	 * @param port
 	 */
@@ -69,8 +70,8 @@ public class Client extends Thread implements UICallback {
 	}
 
 	/**
-	 * Constructor
-	 *
+	 * SubClass
+	 * When the run method is executed it creates a new stream and returns an input stream and reads the data.
 	 */
 
 	private class DataReader extends Thread {
@@ -110,7 +111,7 @@ public class Client extends Thread implements UICallback {
 	}
 
 	/**
-	 * Sending queue to queue list.
+	 * Sending a queue to queue list.
 	 */
 	public void updateUIQueue() {
 		queue = new Queue();
@@ -125,7 +126,11 @@ public class Client extends Thread implements UICallback {
 
 		uiQ.updateQueue(name);
 	}
-
+	
+	/**
+	 * Sends a newly created user to the server and sends a message to the queue.
+	 * @param user
+	 */
 	public void sendUser(String user) {
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
@@ -135,7 +140,13 @@ public class Client extends Thread implements UICallback {
 			System.err.println("Socket interrupted");
 		}
 	}
-
+	
+	/**
+	 * method that uses the given ip and port to check if the connection is established.
+	 * @param ip
+	 * @param port
+	 * @return true or false if connected or not.
+	 */
 	public boolean connect(String ip, int port) {
 		try {
 			socket = new Socket(ip, port);
@@ -149,7 +160,13 @@ public class Client extends Thread implements UICallback {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * method retries to establish a connection. 
+	 * @param ip
+	 * @param port
+	 * @throws InterruptedException
+	 */
 	public void retry(String ip, int port) throws InterruptedException {
 		while (!connect(ip, port)) {
 			System.err.print("Reconnecting in ");
