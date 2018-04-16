@@ -17,11 +17,10 @@ import common.Queue;
 public class Server {
 	private ServerSocket serverSocketIs;
 	private ServerSocket serverSocketClient;
-	private ConnectionClient connectionClient = new ConnectionClient();
-	private ConnectionIs connectionIs = new ConnectionIs(this);
 	private HighScoreList hsList;
 	private String values;
 	private Client client;
+	private IS is;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
@@ -30,17 +29,18 @@ public class Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		connectionIs.start();
-		connectionClient.start();
 
 		hsList = newHSList();
-		serverui.addManager(this);
+		//serverui.addManager(this);
+
+		client = new Client(serverSocketClient);
+		is = new IS(serverSocketIs);
 	}
-	
+
 	public void notifyClient() {
-		client.sendHighscore();
+		// client.sendHighscore();
 	}
-	
+
 	private HighScoreList newHSList() {
 		HighScoreList hl = new HighScoreList();
 
@@ -52,159 +52,166 @@ public class Server {
 		return hl;
 	}
 
-	
 	public HighScoreList getHSList() {
 		return hsList;
 	}
 
-	private class Is implements Runnable {
-		private DataOutputStream dos;
-		private DataInputStream dis;
-		private Server server;
-
-		public Is(Socket socket, Server server) {
-			this.server = server;
-			try {
-				dis = new DataInputStream(socket.getInputStream());
-				dos = new DataOutputStream(socket.getOutputStream());
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		public void run() {
-			String oldpacket = ".";
-			boolean connected = true;
-			while (connected) {
-				String packet = null;
-				byte[] string = new byte[1000];
-				try {
-					dis.readFully(string);
-					String str = new String(string);
-					//System.out.println(str);
-					Calculator cal = new Calculator(str, server);
-				} catch (IOException e) {
-					connected = false;
-				}
-			}
-		}
-	}
-
-	private class Client implements Runnable {
+	public class Client {
 		private ObjectOutputStream oos;
 		private ObjectInputStream ois;
-		private String value;
-		private Queue queue;
-		private Calculator calc;
-		
+		private ServerSocket socket;
+		private ClientHandler ch;
 
 		/*
 		 * Creates the streams for values recived from IS, and stream for sending
 		 * values.
 		 */
-		public Client(Socket socket) {
-			try {
-				ois = new ObjectInputStream(socket.getInputStream());
-				oos = new ObjectOutputStream(socket.getOutputStream());
-				oos.writeObject(queue);
-				oos.flush();
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		public Client(ServerSocket serverSocketClient) {
+			this.socket = serverSocketClient;
+			new ConnectionClient().start();
 		}
-		
 
-		public void sendHighscore() {
-			
-			try {
-				oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
-				oos.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		public void newHandler(Socket socket) {
+			ch = new ClientHandler(socket);
+			ch.run();
 		}
-		/*
-		 * Read UTF from embedded system and prints it, sends value to calculator.
-		 */
-		public void run() {
-			boolean connected = true;
-			try {
+
+		public void sendHS() {
+			ch.sendHighscore();
+		}
+
+		public class ClientHandler implements Runnable {
+			private Socket socket;
+
+			public ClientHandler(Socket socketClient) {
+				this.socket = socketClient;
+			}
+
+			/*
+			 * Read UTF from embedded system and prints it, sends value to calculator.
+			 */
+			public void run() {
+				boolean connected = true;
 				while (connected) {
-					Object obj = ois.readObject();
-					if(obj instanceof Message) {
-						Message readMessage = (Message) obj;
-						switch (readMessage.getInstruction()) {
-					
-						case 3:
-							queue.add((String)readMessage.getPayload());
-							oos.writeObject(new Message(queue, Message.NEW_QUEUE));
-							oos.flush();
-							break;
-							
-						default:
-							break;
-						}
+					try {
+						oos = new ObjectOutputStream(socket.getOutputStream());
+						ois = new ObjectInputStream(socket.getInputStream());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
-			} catch (IOException e) {
-				connected = false;
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				connected = false;
-				e.printStackTrace();
+			}
+
+			public void sendHighscore() {
+
+				try {
+					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
+					oos.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
+
+		private class ConnectionClient extends Thread {
+			/*
+			 * Waiting for connection, if connection is made new clienthandler is created
+			 * with socket recived as parameter. clienthandler run method is started.
+			 */
+			public void run() {
+				
+				while (true) {
+					try {
+						System.out.println("port client: " + socket.getLocalPort() + "\n");
+						Socket socketClient = socket.accept();
+						System.out.println("CLIENT!!");
+						newHandler(socketClient);
+
+					} catch (IOException e) {
+						System.err.println(e);
+					}
+				}
+			}
+		}
+
 	}
 
-	private class ConnectionIs extends Thread {
-		private Server server;
-		/*
-		 * Waiting for connection, if connection is made new clienthandler is created
-		 * with socket recived as parameter. clienthandler run method is started.
-		 */
-		public ConnectionIs(Server server) {
-			this.server = server;
+	public class IS {
+
+		private DataOutputStream dos;
+		private DataInputStream dis;
+		private ISHandler ish;
+
+		public IS(ServerSocket serverSocketIs) {
+
+			new ConnectionIs().start();
+
 		}
-		private Is is = null;
-		public void run() {
-			System.out.println("port embedded system: " + serverSocketIs.getLocalPort() + "\n");
-			while (true) {
+
+		public void newHandler(Socket socket) {
+			ish = new ISHandler(socket);
+			ish.run();
+		}
+
+		public class ISHandler implements Runnable {
+			private Socket socket;
+
+			public ISHandler(Socket socket) {
+				this.socket = socket;
 				try {
-					Socket socketIs = serverSocketIs.accept();
-					System.out.println("embedded!!!");
-					is = new Is(socketIs, server);
-					is.run();
+					dis = new DataInputStream(socket.getInputStream());
+					dos = new DataOutputStream(socket.getOutputStream());
 
 				} catch (IOException e) {
-					System.err.println(e);
+					e.printStackTrace();
+				}
+			}
+
+			public void run() {
+				String oldpacket = ".";
+				boolean connected = true;
+				while (connected) {
+					String packet = null;
+					byte[] string = new byte[1000];
+					try {
+						dis.readFully(string);
+						String str = new String(string);
+						// System.out.println(str);
+					} catch (IOException e) {
+						connected = false;
+					}
+				}
+			}
+		}
+
+		private class ConnectionIs extends Thread {
+
+			/*
+			 * Waiting for connection, if connection is made new clienthandler is created
+			 * with socket recived as parameter. clienthandler run method is started.
+			 */
+
+			private ISHandler is = null;
+
+			public void run() {
+				System.out.println("port embedded system: " + serverSocketIs.getLocalPort() + "\n");
+				while (true) {
+					try {
+						Socket socketIs = serverSocketIs.accept();
+						System.out.println("embedded!!!");
+						newHandler(socketIs);
+
+					} catch (IOException e) {
+						System.err.println(e);
+					}
 				}
 			}
 		}
 	}
 
-	private class ConnectionClient extends Thread {
-		/*
-		 * Waiting for connection, if connection is made new clienthandler is created
-		 * with socket recived as parameter. clienthandler run method is started.
-		 */
-		public void run() {
-			System.out.println("port client: " + serverSocketClient.getLocalPort() + "\n");
-			while (true) {
-				try {
-					Socket socketClient = serverSocketClient.accept();
-					System.out.println("CLIENT!!");
-					Client ch = new Client(socketClient);
-					ch.run();
 
-				} catch (IOException e) {
-					System.err.println(e);
-				}
-			}
-		}
-	}
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
