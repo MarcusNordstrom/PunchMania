@@ -2,15 +2,18 @@ package client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javax.sound.midi.SysexMessage;
 import javax.swing.JOptionPane;
 import common.HighScoreList;
+import common.Message;
 import common.Queue;
+import common.UICallback;
 
-public class Client extends Thread {
+public class Client extends Thread implements UICallback {
 	private Socket socket;
 	private ObjectInputStream ois;
 	private String name = "";
@@ -18,8 +21,10 @@ public class Client extends Thread {
 	private UIHighScore uiHS;
 	private UIQueue uiQ;
 	private DataReader dr;
+	private ObjectOutputStream oos;
+	private Message message;
 
-	private static String ip = "192.168.1.13";
+	private static String ip = "192.168.1.11";
 	private static int port = 12346;
 
 	private HighScoreList hsl;
@@ -69,6 +74,13 @@ public class Client extends Thread {
 	 */
 
 	private class DataReader extends Thread {
+		public DataReader() {
+			uiHS = new UIHighScore();
+			updateUIHighScore();
+			uiQ = new UIQueue();
+
+		}
+
 		public void run() {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
@@ -114,6 +126,16 @@ public class Client extends Thread {
 		uiQ.updateQueue(name);
 	}
 
+	public void sendUser(String user) {
+		try {
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
+			oos.flush();
+		} catch (IOException e) {
+			System.err.println("Socket interrupted");
+		}
+	}
+
 	public boolean connect(String ip, int port) {
 		try {
 			socket = new Socket(ip, port);
@@ -131,7 +153,7 @@ public class Client extends Thread {
 	public void retry(String ip, int port) throws InterruptedException {
 		while (!connect(ip, port)) {
 			System.err.print("Reconnecting in ");
-			for(int i = 10; i >= 0; i--) {
+			for (int i = 10; i >= 0; i--) {
 				System.err.print(i + " ");
 				this.sleep(1000);
 			}
@@ -150,11 +172,9 @@ public class Client extends Thread {
 		Client client = null;
 		client = new Client(ip, port);
 
-		// UIHighScore uiHS = new UIHighScore();
-		// UIQueue uiQ = new UIQueue();
-		// Client cli = new Client(uiHS, uiQ);
-		// cli.updateUIHighScore();
-		// cli.updateUIQueue();
+	}
+
+	public void notify(Object arg) {
 
 	}
 }
