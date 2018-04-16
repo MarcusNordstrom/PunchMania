@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
-import common.UICallback;
 
 public class Client extends Thread {
 	private Socket socket;
