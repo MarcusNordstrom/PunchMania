@@ -8,9 +8,9 @@ public class Message implements Serializable{
 	private Object payload;
 	private int instruction;
 	
-	private int NEW_QUEUE = 1;
-	private int NEW_HIGHSCORELIST = 2;
-	private int NEW_USER_TO_QUEUE = 3;
+	public final int NEW_QUEUE = 1;
+	public final int NEW_HIGHSCORELIST = 2;
+	public final int NEW_USER_TO_QUEUE = 3;
 	
 	public Message(Object payload, int instruction) {
 		this.payload = payload;
