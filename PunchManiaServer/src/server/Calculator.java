@@ -10,16 +10,17 @@ public class Calculator {
 	int X;
 	int Y;
 	int Z;
+	private int score;
 	private String section;
 	private ArrayList<String> splittedString = new ArrayList<String>();
-
+	private Server server;
 	private ArrayList<Integer> x = new ArrayList<Integer>();
 	private ArrayList<Integer> y = new ArrayList<Integer>();
 	private ArrayList<Integer> z = new ArrayList<Integer>();
 
 
-	public Calculator (String values) {
-
+	public Calculator (String values, Server server) {
+		this.server = server;
 		splitter(values);
 		force();
 	}
@@ -104,8 +105,13 @@ public class Calculator {
 		avrgZ = avrgZ/z.size();
 		double componentXYZ = Math.sqrt((Math.pow(avrgZ, 2) + Math.pow(componentXY, 2)));
 		System.out.println("Component of x, y and z: " + componentXYZ);
-		int score = (int)(componentXYZ * 10000);
+		score = (int)(componentXYZ * 10000);
 		System.out.println("SCORE: " + score);
+		server.notifyClient();
+	}
+	
+	public int getScore() {
+		return score;
 	}
 }
 
