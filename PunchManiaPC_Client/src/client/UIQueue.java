@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import common.UICallback;
+
 
 public class UIQueue extends JPanel implements ActionListener {
 	private JTextArea taQueue = new JTextArea();
@@ -11,9 +13,11 @@ public class UIQueue extends JPanel implements ActionListener {
 	private JLabel lblQueue = new JLabel("Current queue");
 	private JLabel lblName = new JLabel("Type name to put you in line");
 	private JButton btnSend = new JButton("Put me in line");
-
+	
 	private String names = "";
 	private int counter = 1;
+	private UICallback callback = null;
+
 
 	/**
 	 * Creating panel
@@ -23,6 +27,21 @@ public class UIQueue extends JPanel implements ActionListener {
 		add(panelCenter(), BorderLayout.CENTER);
 		add(panelSouth(), BorderLayout.SOUTH);
 		btnSend.addActionListener(this);
+		JFrame frame = new JFrame();
+		frame = new JFrame("PUNCH MANIA");
+		frame.setResizable(false);
+		frame.setPreferredSize(new Dimension(500,600));
+		frame.add(this);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	public void addCallback(UICallback arg) {
+		this.callback = arg;
+	}
+	public void notifyCallback(String param) {
+		this.callback.notify(param);
 	}
 	
 	/**
@@ -58,6 +77,7 @@ public class UIQueue extends JPanel implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSend) {
+			notifyCallback(tfName.getText());
 			names += counter + ":  " + tfName.getText() + "\n";
 			counter++;
 			taQueue.setText(names);
@@ -73,15 +93,5 @@ public class UIQueue extends JPanel implements ActionListener {
 	public void updateQueue(String name) {
 		taQueue.setText(name);
 		
-
-		JFrame frame = new JFrame();
-		frame = new JFrame("PUNCH MANIA");
-		frame.setResizable(false);
-		frame.setPreferredSize(new Dimension(500,600));
-		frame.add(this);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
