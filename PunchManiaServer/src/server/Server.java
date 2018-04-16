@@ -18,9 +18,10 @@ public class Server {
 	private ServerSocket serverSocketIs;
 	private ServerSocket serverSocketClient;
 	private ConnectionClient connectionClient = new ConnectionClient();
-	private ConnectionIs connectionIs = new ConnectionIs();
+	private ConnectionIs connectionIs = new ConnectionIs(this);
 	private HighScoreList hsList;
 	private String values;
+	private Client client;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
@@ -35,7 +36,11 @@ public class Server {
 		hsList = newHSList();
 		serverui.addManager(this);
 	}
-
+	
+	public void notifyClient() {
+		client.sendHighscore();
+	}
+	
 	private HighScoreList newHSList() {
 		HighScoreList hl = new HighScoreList();
 
@@ -47,14 +52,7 @@ public class Server {
 		return hl;
 	}
 
-
-	/**
-	 * Command from the
-	 */
-	public void cmd() {
-
-	}
-
+	
 	public HighScoreList getHSList() {
 		return hsList;
 	}
@@ -62,8 +60,10 @@ public class Server {
 	private class Is implements Runnable {
 		private DataOutputStream dos;
 		private DataInputStream dis;
+		private Server server;
 
-		public Is(Socket socket) {
+		public Is(Socket socket, Server server) {
+			this.server = server;
 			try {
 				dis = new DataInputStream(socket.getInputStream());
 				dos = new DataOutputStream(socket.getOutputStream());
@@ -83,7 +83,7 @@ public class Server {
 					dis.readFully(string);
 					String str = new String(string);
 					//System.out.println(str);
-					Calculator cal = new Calculator(str);
+					Calculator cal = new Calculator(str, server);
 				} catch (IOException e) {
 					connected = false;
 				}
@@ -96,6 +96,8 @@ public class Server {
 		private ObjectInputStream ois;
 		private String value;
 		private Queue queue;
+		private HighScoreList hsl;
+		private Calculator calc;
 		
 
 		/*
@@ -113,7 +115,19 @@ public class Server {
 				e.printStackTrace();
 			}
 		}
+		
 
+		public void sendHighscore() {
+			
+			try {
+				hsl.add(queue.pop(), calc.getScore());
+				oos.writeObject(new Message(hsl, Message.NEW_HIGHSCORELIST));
+				oos.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		/*
 		 * Read UTF from embedded system and prints it, sends value to calculator.
 		 */
@@ -125,9 +139,7 @@ public class Server {
 					if(obj instanceof Message) {
 						Message readMessage = (Message) obj;
 						switch (readMessage.getInstruction()) {
-						case 2:
-							queue.pop();
-							break;
+					
 						case 3:
 							queue.add((String)readMessage.getPayload());
 							oos.writeObject(new Message(queue, Message.NEW_QUEUE));
@@ -150,10 +162,14 @@ public class Server {
 	}
 
 	private class ConnectionIs extends Thread {
+		private Server server;
 		/*
 		 * Waiting for connection, if connection is made new clienthandler is created
 		 * with socket recived as parameter. clienthandler run method is started.
 		 */
+		public ConnectionIs(Server server) {
+			this.server = server;
+		}
 		private Is is = null;
 		public void run() {
 			System.out.println("port embedded system: " + serverSocketIs.getLocalPort() + "\n");
@@ -161,7 +177,7 @@ public class Server {
 				try {
 					Socket socketIs = serverSocketIs.accept();
 					System.out.println("embedded!!!");
-					is = new Is(socketIs);
+					is = new Is(socketIs, server);
 					is.run();
 
 				} catch (IOException e) {
@@ -169,7 +185,6 @@ public class Server {
 				}
 			}
 		}
-
 	}
 
 	private class ConnectionClient extends Thread {
