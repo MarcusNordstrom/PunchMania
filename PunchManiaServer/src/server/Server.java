@@ -96,7 +96,6 @@ public class Server {
 		private ObjectInputStream ois;
 		private String value;
 		private Queue queue;
-		private HighScoreList hsl;
 		private Calculator calc;
 		
 
@@ -120,8 +119,7 @@ public class Server {
 		public void sendHighscore() {
 			
 			try {
-				hsl.add(queue.pop(), calc.getScore());
-				oos.writeObject(new Message(hsl, Message.NEW_HIGHSCORELIST));
+				oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
 				oos.flush();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
