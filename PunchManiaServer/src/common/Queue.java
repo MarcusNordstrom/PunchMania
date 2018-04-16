@@ -33,7 +33,4 @@ public class Queue {
 	private void syso(String string) {
 		System.out.println(string);
 	}
-	
-	
-	
 }

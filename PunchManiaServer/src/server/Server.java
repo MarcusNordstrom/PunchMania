@@ -4,14 +4,15 @@ import java.awt.Dimension;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
-
 import common.HighScoreList;
+import common.Message;
+import common.Queue;
 
 public class Server {
 	private ServerSocket serverSocketIs;
@@ -91,9 +92,11 @@ public class Server {
 	}
 
 	private class Client implements Runnable {
-		private DataOutputStream dos;
-		private DataInputStream dis;
+		private ObjectOutputStream oos;
+		private ObjectInputStream ois;
 		private String value;
+		private Queue queue;
+		
 
 		/*
 		 * Creates the streams for values recived from IS, and stream for sending
@@ -101,9 +104,11 @@ public class Server {
 		 */
 		public Client(Socket socket) {
 			try {
-				dis = new DataInputStream(socket.getInputStream());
-				dos = new DataOutputStream(socket.getOutputStream());
-
+				ois = new ObjectInputStream(socket.getInputStream());
+				oos = new ObjectOutputStream(socket.getOutputStream());
+				oos.writeObject(queue);
+				oos.flush();
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -115,10 +120,28 @@ public class Server {
 		public void run() {
 			try {
 				while (true) {
-					value = dis.readUTF();
-					System.out.println(value);
+					Object obj = ois.readObject();
+					if(obj instanceof Message) {
+						Message readMessage = (Message) obj;
+						switch (readMessage.getInstruction()) {
+						case 2:
+							
+							break;
+						case 3:
+							queue.add((String)readMessage.getPayload());
+							oos.writeObject(new Message(queue, Message.NEW_QUEUE));
+							oos.flush();
+							break;
+							
+						default:
+							break;
+						}
+					}
 				}
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
