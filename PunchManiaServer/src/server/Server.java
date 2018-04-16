@@ -59,7 +59,7 @@ public class Server {
 		public HighScoreList getHSList() {
 			return hsList;
 		}
-		
+
 		public void addToQueue(String name) {
 			queue.add(name);
 		}

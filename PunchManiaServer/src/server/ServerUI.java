@@ -157,6 +157,7 @@ public class ServerUI extends JPanel {
 
 	public void addManager(Server server) {
 		this.server = server;
+		print("Server open", 0);
 	}
 
 	public static void main(String[] args) {
