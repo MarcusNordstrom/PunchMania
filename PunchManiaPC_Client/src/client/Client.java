@@ -19,6 +19,7 @@ public class Client extends Thread {
 	private String name = "";
 	private String list = "";
 
+
 	private UIHighScore uiHS;
 	private UIQueue uiQ;
 
@@ -117,7 +118,7 @@ public class Client extends Thread {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
 			oos.flush();
-			System.out.println(user + " skickad snälla funka");
+			System.out.println(user + " skickad snï¿½lla funka");
 		} catch (IOException e) {
 			System.err.println("Socket interrupted");
 		}
@@ -187,6 +188,7 @@ public class Client extends Thread {
 					switch (readMessage.getInstruction()) {
 					case 1:
 						System.out.println("Queue! yeah");
+						uiQ.updateQueue(readMessage.getPayload());						// NYTT
 						break;
 					case 2:
 						System.out.println("highscorelist! yeah");

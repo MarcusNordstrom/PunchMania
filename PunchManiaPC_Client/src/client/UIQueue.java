@@ -88,6 +88,12 @@ public class UIQueue extends JPanel implements ActionListener {
 
 	}
 	
+	public void updateQueue(Object obj) {
+		String queue = obj.toString(); 		// NYTT
+		System.out.println(queue);			// NYTT
+		taQueue.setText(queue);				// NYTT
+	}
+	
 	
 	
 }
