@@ -102,7 +102,7 @@ public class Server {
 			ch.sendHighscore();
 		}
 
-		public class ClientHandler implements Runnable {
+		public class ClientHandler extends Thread {
 			private Socket socket;
 			private ObjectOutputStream oos;
 			private ObjectInputStream ois;
@@ -115,6 +115,7 @@ public class Server {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				this.start();
 			}
 
 			/*
@@ -137,13 +138,18 @@ public class Server {
 
 
 					} catch (IOException | ClassNotFoundException e) {
-						ois = null;
-						oos = null;
+						try {
+							ois.close();
+							oos.close();
+							socket.close();
+						} catch (IOException e2) {
+							//e2.printStackTrace();
+							System.out.println("Stream close");
+						}
 						connected = false;
-						
-						Thread temp = Thread.currentThread();
-						temp = null;
 						ui.print("Client disconnected", 0);
+						clientList.remove(this);
+						this.interrupt();
 					}
 				}
 			}
@@ -154,8 +160,8 @@ public class Server {
 					oos.writeObject(new Message(queue, Message.NEW_QUEUE));
 					oos.flush();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.out.println("sendQ sucks");
 				}
 			}
 
@@ -184,9 +190,6 @@ public class Server {
 						Socket socketClient = socket.accept();
 						ui.print("Client connected", 0);
 						clientList.add(new ClientHandler(socketClient));
-						for (ClientHandler client : clientList) {
-							pool.execute(client);
-						}
 					} catch (IOException e) {
 						System.err.println(e);
 					}

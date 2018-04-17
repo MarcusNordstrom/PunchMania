@@ -28,6 +28,7 @@ public class ServerUI extends JPanel {
 		taCmdArea.setEditable(false);
 		taCmdArea.setBackground(Color.BLACK);
 		taCmdArea.setForeground(Color.WHITE);
+		taCmdArea.setSelectionColor(Color.GREEN);
 		tfCmdField.setBackground(Color.BLACK);
 		tfCmdField.setForeground(Color.WHITE);
 		
