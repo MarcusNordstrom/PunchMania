@@ -53,6 +53,7 @@ public class Server {
 	}
 
 	public void sendHighscore(int score) {
+		hsList.add(queue.pop(), score);
 		client.sendHS();
 	}
 
@@ -186,9 +187,10 @@ public class Server {
 
 
 			public void sendHighscore() {
+				
 				try {
 					ui.print("Sending Highscore list to client", 0);
-					oos.writeObject(new Message(calc.getScore(), Message.NEW_HIGHSCORELIST));
+					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
 					oos.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
