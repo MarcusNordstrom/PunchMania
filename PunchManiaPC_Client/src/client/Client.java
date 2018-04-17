@@ -61,6 +61,8 @@ public class Client extends Thread {
 		if (connect(ip, port)) {
 			dr = new DataReader();
 			dr.start();
+			uiHS = new UIHighScore();
+			uiQ = new UIQueue(this);
 		} else {
 			try {
 				retry(ip, port);
@@ -68,6 +70,7 @@ public class Client extends Thread {
 				System.err.println("Thread interrupted");
 			}
 		}
+		
 	}
 
 	/**
@@ -209,8 +212,9 @@ public class Client extends Thread {
 	 * @throws IOException
 	 */
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		Client client = null;
 		client = new Client(ip, port);
+		
 	}
 }
