@@ -104,7 +104,6 @@ public class Calculator {
 		System.out.println("Component of x, y and z: " + componentXYZ);
 		score = (int)(componentXYZ * 10000);
 		System.out.println("SCORE: " + score);
-		server.notifyClient();
 	}
 	
 	public int getScore() {
@@ -125,6 +124,7 @@ public class Calculator {
 		clearPrevious();
 		splitter(values);
 		force();
+		server.sendHighscore(getScore());
 		return getScore();
 	}
 }

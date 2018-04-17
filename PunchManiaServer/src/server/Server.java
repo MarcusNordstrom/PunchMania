@@ -51,8 +51,8 @@ public class Server {
 		client.sendQueue();
 	}
 	
-	public void notifyClient() {
-		// client.sendHighscore();
+	public void sendHighscore(int score) {
+		client.sendHS();
 	}
 
 	private HighScoreList newHSList() {
@@ -106,6 +106,7 @@ public class Server {
 			private Socket socket;
 			private ObjectOutputStream oos;
 			private ObjectInputStream ois;
+			private Calculator calc;
 			
 			public ClientHandler(Socket socketClient) {
 				this.socket = socketClient;
@@ -135,14 +136,8 @@ public class Server {
 							break;
 						}
 
+					} catch (IOException |ClassNotFoundException e) {
 
-					} catch (IOException | ClassNotFoundException e) {
-						ois = null;
-						oos = null;
-						connected = false;
-						
-						Thread temp = Thread.currentThread();
-						temp = null;
 						ui.print("Client disconnected", 0);
 					}
 				}
@@ -162,10 +157,9 @@ public class Server {
 			public void sendHighscore() {
 				try {
 					ui.print("Sending Highscore list to client", 0);
-					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
+					oos.writeObject(new Message(calc.getScore(), Message.NEW_HIGHSCORELIST));
 					oos.flush();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -201,6 +195,7 @@ public class Server {
 		private DataOutputStream dos;
 		private DataInputStream dis;
 		private ISHandler ish;
+		private Calculator calc;
 
 		public IS(ServerSocket serverSocketIs) {
 
@@ -236,7 +231,6 @@ public class Server {
 					try {
 						dis.readFully(string);
 						String str = new String(string);
-						// System.out.println(str);
 					} catch (IOException e) {
 						connected = false;
 					}
@@ -285,6 +279,5 @@ public class Server {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Server server = new Server(12345, 12346, serverui, 50);
 	}
-
 
 }
