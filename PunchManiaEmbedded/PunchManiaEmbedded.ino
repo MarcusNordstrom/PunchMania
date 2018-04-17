@@ -29,7 +29,7 @@ int calibrationZStorage[6] = {0,0,0,0,0,0};
 
 
 void setup() {
-  //DEBUG - REMOVE LATER
+  //Serial begin
   Serial.begin(9600);
   Serial.println();
   //ADXL startup
@@ -40,7 +40,7 @@ void setup() {
     Serial.println("Failed to configure Ethernet using DHCP");
     Ethernet.begin(mac, ip);
   }*/
-  Ethernet.begin(mac, ip);  //EXPERIMENTAL REPLACE LINE WITH COMMENT ABOVE
+  Ethernet.begin(mac, ip);  //Config with specific settings, comment line and uncomment chunk above for DHCP
   delay(1000);
   Serial.println(Ethernet.localIP());
   Serial.println("connecting...");
@@ -132,12 +132,6 @@ void loop() {
     } else {
       counter = 0;
       hit_detected = false;
-      //int storageLengthLeft = 1500 - storage.length() - 1;
-      //Serial.println("Storage left:");
-      //Serial.println(storageLengthLeft);
-      /*for(int o = 0; o < storageLengthLeft; o++) {
-        storage += ".";
-      }*/
       Serial.println(client.print(storage));
       client.flush();
       //client.write(buff, 2000);
