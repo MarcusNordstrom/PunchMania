@@ -46,7 +46,11 @@ public class Server {
 		client = new Client(serverSocketClient);
 		is = new IS(serverSocketIs);
 	}
-
+	
+	public void sendQueue() {
+		client.sendQueue();
+	}
+	
 	public void notifyClient() {
 		// client.sendHighscore();
 	}
@@ -76,8 +80,6 @@ public class Server {
 
 
 	public class Client {
-		private ObjectOutputStream oos;
-		private ObjectInputStream ois;
 		private ServerSocket socket;
 		private ClientHandler ch;
 
@@ -89,24 +91,30 @@ public class Server {
 			this.socket = serverSocketClient;
 			new ConnectionClient().start();
 		}
-
-		public void newHandler(Socket socket) {
-			ch = new ClientHandler(socket);
-			ch.run();
-		}
-
+		
 		public void sendQueue() {
-			ch.sendQueue();
+			for(ClientHandler sendq : clientList) {
+				sendq.sendQueue();
+			}		
 		}
+		
 		public void sendHS() {
 			ch.sendHighscore();
 		}
 
 		public class ClientHandler implements Runnable {
 			private Socket socket;
-
+			private ObjectOutputStream oos;
+			private ObjectInputStream ois;
+			
 			public ClientHandler(Socket socketClient) {
 				this.socket = socketClient;
+				try {
+					oos = new ObjectOutputStream(socket.getOutputStream());
+					ois = new ObjectInputStream(socket.getInputStream());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 
 			/*
@@ -114,16 +122,9 @@ public class Server {
 			 */
 			public synchronized void run() {
 				boolean connected = true;
-				try {
-					oos = new ObjectOutputStream(socket.getOutputStream());
-					sendQueue();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				sendQueue();
 				while (connected) {
 					try {
-
-						ois = new ObjectInputStream(socket.getInputStream());
 						Message message = (Message)ois.readObject();
 						switch(message.getInstruction()) {
 						case 3:
@@ -136,7 +137,10 @@ public class Server {
 
 
 					} catch (IOException | ClassNotFoundException e) {
+						ois = null;
+						oos = null;
 						connected = false;
+						
 						Thread temp = Thread.currentThread();
 						temp = null;
 						ui.print("Client disconnected", 0);
