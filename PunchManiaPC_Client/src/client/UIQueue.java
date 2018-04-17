@@ -29,7 +29,7 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.setPreferredSize(new Dimension(500,600));
 		frame.add(this);
 		frame.pack();
-		frame.setLocationRelativeTo(null);
+//		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
