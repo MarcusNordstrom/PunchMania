@@ -71,8 +71,8 @@ public class UIQueue extends JPanel implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSend) {
-			names += tfName.getText();
-			client.sendUser(names); 								// FUNKAR INTE 
+			names = tfName.getText();
+			client.sendUser(names); 							
 			
 			tfName.setText("");
 		}

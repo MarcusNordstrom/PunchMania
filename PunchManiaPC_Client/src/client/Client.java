@@ -25,7 +25,7 @@ public class Client extends Thread {
 	private DataReader dr;
 	private Message message;
 
-	private static String ip = "127.0.0.1";
+	private static String ip = "192.168.1.13";
 	private static int port = 12346;
 
 	private HighScoreList hsl;
@@ -117,6 +117,7 @@ public class Client extends Thread {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
 			oos.flush();
+			System.out.println(user + " skickad snälla funka");
 		} catch (IOException e) {
 			System.err.println("Socket interrupted");
 		}
