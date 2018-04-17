@@ -97,7 +97,7 @@ public class ServerUI extends JPanel {
 				break;
 				
 			case "sendHS":
-				server.notifyClient();
+				server.sendSetHighscore();
 				break;
 				
 			case "exit":

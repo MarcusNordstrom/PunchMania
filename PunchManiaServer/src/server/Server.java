@@ -26,6 +26,7 @@ public class Server {
 	private Queue queue;
 	private IS is;
 	private ServerUI ui;
+	private Calculator cal = new Calculator(this);
 	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
@@ -43,12 +44,16 @@ public class Server {
 		client = new Client(serverSocketClient);
 		is = new IS(serverSocketIs);
 	}
-	
+
 	public void sendQueue() {
 		client.sendQueue();
 	}
-	
+	public void sendSetHighscore() {
+		client.sendSetHS();
+	}
+
 	public void sendHighscore(int score) {
+		hsList.add(queue.pop(), score);
 		client.sendHS();
 	}
 
@@ -88,15 +93,23 @@ public class Server {
 			this.socket = serverSocketClient;
 			new ConnectionClient().start();
 		}
-		
+
 		public void sendQueue() {
 			for(ClientHandler sendq : clientList) {
 				sendq.sendQueue();
 			}		
 		}
 		
+		public void sendSetHS() {
+			for(ClientHandler sendSh : clientList) {
+				sendSh.sendSetHighscore();
+			}
+		}
+
 		public void sendHS() {
-			ch.sendHighscore();
+			for(ClientHandler sendh : clientList) {
+				sendh.sendHighscore();
+			}
 		}
 
 		public class ClientHandler extends Thread {
@@ -104,7 +117,7 @@ public class Server {
 			private ObjectOutputStream oos;
 			private ObjectInputStream ois;
 			private Calculator calc;
-			
+
 			public ClientHandler(Socket socketClient) {
 				this.socket = socketClient;
 				try {
@@ -134,8 +147,6 @@ public class Server {
 							break;
 						}
 
-					} catch (IOException |ClassNotFoundException e) {
-
 					} catch (IOException | ClassNotFoundException e) {
 						try {
 							ois.close();
@@ -164,10 +175,22 @@ public class Server {
 				}
 			}
 
-			public void sendHighscore() {
+			public void sendSetHighscore() {
 				try {
 					ui.print("Sending Highscore list to client", 0);
-					oos.writeObject(new Message(calc.getScore(), Message.NEW_HIGHSCORELIST));
+					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+
+			public void sendHighscore() {
+				
+				try {
+					ui.print("Sending Highscore list to client", 0);
+					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
 					oos.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -202,7 +225,6 @@ public class Server {
 		private DataOutputStream dos;
 		private DataInputStream dis;
 		private ISHandler ish;
-		private Calculator calc;
 
 		public IS(ServerSocket serverSocketIs) {
 
@@ -238,6 +260,7 @@ public class Server {
 					try {
 						dis.readFully(string);
 						String str = new String(string);
+						cal.calculateScore(str);
 					} catch (IOException e) {
 						connected = false;
 					}
