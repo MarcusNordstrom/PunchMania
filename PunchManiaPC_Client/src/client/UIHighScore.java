@@ -1,9 +1,13 @@
 package client;
 
 import java.awt.*;
-
+import java.util.ArrayList;
 
 import javax.swing.*;
+
+import common.HighScoreList;
+import common.Queue;
+import common.UserList;
 
 public class UIHighScore extends JPanel {
 	private JLabel lblHighScore = new JLabel("High Score");
@@ -36,8 +40,17 @@ public class UIHighScore extends JPanel {
 	 * @param info : a string from client adding to high score. 
 	 */
 	public void updateHighScore(String info) {
-		taNames.setText(info);
-
-		
+		taNames.setText(info);	
+	}
+	
+	public void updateHighScore(Object obj) {
+		taNames.setText("");
+		HighScoreList list =(HighScoreList) obj;
+		String output = "";
+		ArrayList<UserList> aList = list.getTopTen();
+		for(UserList u : aList) {
+			output += u.getUser() + "\t" + u.getScore() + "\n";
+		}
+		taNames.setText(output);
 	}
 }

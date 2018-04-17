@@ -16,7 +16,6 @@ import common.Queue;
 
 public class Client extends Thread {
 	private Socket socket;
-	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private String name = "";
 	private String list = "";
@@ -27,28 +26,28 @@ public class Client extends Thread {
 	private DataReader dr;
 	private Message message;
 
-	private static String ip = "192.168.1.13";
+	private static String ip = "192.168.1.42";
 	private static int port = 12346;
 
 	private HighScoreList hsl;
 	private Queue queue;
 
-//	/**
-//	 * Empty constructor
-//	 */
-//	public Client() {
-//	}
-//
-//	/**
-//	 * Constructs using the given UIHighScore and UIQueue
-//	 * 
-//	 * @param uiHS
-//	 * @param uiQ
-//	 */
-//	public Client(UIHighScore uiHS, UIQueue uiQ) {
-//		this.uiHS = uiHS;
-//		this.uiQ = uiQ;
-//	}
+	//	/**
+	//	 * Empty constructor
+	//	 */
+	//	public Client() {
+	//	}
+	//
+	//	/**
+	//	 * Constructs using the given UIHighScore and UIQueue
+	//	 * 
+	//	 * @param uiHS
+	//	 * @param uiQ
+	//	 */
+	//	public Client(UIHighScore uiHS, UIQueue uiQ) {
+	//		this.uiHS = uiHS;
+	//		this.uiQ = uiQ;
+	//	}
 
 	/**
 	 * Constructs using a given IP-address and port the constructor also uses the
@@ -62,6 +61,12 @@ public class Client extends Thread {
 		System.out.println("Connecting to Server");
 		if (connect(ip, port)) {
 			dr = new DataReader();
+			try {
+				oos = new ObjectOutputStream(socket.getOutputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			dr.start();
 			uiHS = new UIHighScore();
 			uiQ = new UIQueue(this);
@@ -114,9 +119,8 @@ public class Client extends Thread {
 	 * 
 	 * @param user
 	 */
-	public void sendUser(String user) {
+	public synchronized void sendUser(String user) {
 		try {
-			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
 			oos.flush();
 			System.out.println(user + " skickad");
@@ -172,6 +176,7 @@ public class Client extends Thread {
 
 	private class DataReader extends Thread {
 		private Client client;
+		private ObjectInputStream ois;
 
 		public DataReader() {
 			//uiHS = new UIHighScore();
@@ -180,34 +185,41 @@ public class Client extends Thread {
 		}
 
 		public void run() {
+			boolean connected = true;
+			Object obj;
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
 			} catch (IOException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-			while (true) {
+			while (connected) {
 				try {
-					
-					Object obj = ois.readObject();
+					obj = ois.readObject();
 
 					if (obj instanceof Message) {
 						Message readMessage = (Message) obj;
 						switch (readMessage.getInstruction()) {
 						case 1:
-							System.out.println("Queue! yeah");
-							uiQ.updateQueue(readMessage.getPayload()); // NYTT
+							System.out.println("Queue!");
+							uiQ.updateQueue(readMessage.getPayload());
 							break;
 						case 2:
-							System.out.println("highscorelist! yeah");
-							uiHS.updateHighScore("");
+							System.out.println("highscorelist!");
+
+							uiHS.updateHighScore(readMessage.getPayload());
 							break;
 						default:
 							break;
 						}
 					}
-					System.out.println("DataReader@Client.java: Reading data...");
 				} catch (IOException e1) {
+					connected = false;
+					try {
+						retry(ip, port);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					e1.printStackTrace();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
