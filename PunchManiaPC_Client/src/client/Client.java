@@ -193,37 +193,38 @@ public class Client extends Thread {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-			try {
-				while (connected) {
+			while (connected) {
+				try {
 					obj = ois.readObject();
 
 					if (obj instanceof Message) {
 						Message readMessage = (Message) obj;
 						switch (readMessage.getInstruction()) {
 						case 1:
-							System.out.println("Queue! yeah");
-							uiQ.updateQueue(readMessage.getPayload()); // NYTT
+							System.out.println("Queue!");
+							uiQ.updateQueue(readMessage.getPayload());
 							break;
 						case 2:
-							System.out.println("highscorelist! yeah");
-							uiHS.updateHighScore("");
+							System.out.println("highscorelist!");
+
+							uiHS.updateHighScore("test");
 							break;
 						default:
 							break;
 						}
 					}
 					System.out.println("DataReader@Client.java: Reading data...");
-				}
-			} catch (IOException e1) {
-				connected = false;
-				try {
-					retry(ip, port);
-				} catch (InterruptedException e) {
+				} catch (IOException e1) {
+					connected = false;
+					try {
+						retry(ip, port);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
-				e1.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			}
 		}
 

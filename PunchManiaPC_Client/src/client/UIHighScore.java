@@ -36,8 +36,7 @@ public class UIHighScore extends JPanel {
 	 * @param info : a string from client adding to high score. 
 	 */
 	public void updateHighScore(String info) {
-		taNames.setText(info);
-
-		
+		taNames.setText(info);	
 	}
+	
 }
