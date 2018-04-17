@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 
 import javax.sound.midi.SysexMessage;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
@@ -76,36 +78,36 @@ public class Client extends Thread {
 	/**
 	 * Sending high score to high score list
 	 */
-	public void updateUIHighScore() {
-		hsl = new HighScoreList();
-		hsl.add("A", 10);
-		hsl.add("B", 10);
-		hsl.add("C", 15);
-		hsl.add("D", 5);
-		hsl.add("E", 15);
-
-		for (int i = 0; i < hsl.getTopTen().size(); i++) {
-			list += hsl.getUser(i).getUser() + ", " + hsl.getUser(i).getScore() + "\n";
-		}
-		uiHS.updateHighScore(list);
-	}
+	//	public void updateUIHighScore() {
+	//		hsl = new HighScoreList();
+	//		hsl.add("A", 10);
+	//		hsl.add("B", 10);
+	//		hsl.add("C", 15);
+	//		hsl.add("D", 5);
+	//		hsl.add("E", 15);
+	//
+	//		for (int i = 0; i < hsl.getTopTen().size(); i++) {
+	//			list += hsl.getUser(i).getUser() + ", " + hsl.getUser(i).getScore() + "\n";
+	//		}
+	//		uiHS.updateHighScore(list);
+	//	}
 
 	/**
 	 * Sending a queue to queue list.
 	 */
-	public void updateUIQueue() {
-		queue = new Queue();
-		queue.add("A");
-		queue.add("B");
-		queue.add("C");
-		queue.add("D");
-
-		for (int i = 0; i < 4; i++) {
-			name += queue.peekAt(i) + "\n";
-		}
-
-		uiQ.updateQueue(name);
-	}
+	//	public void updateUIQueue() {
+	//		queue = new Queue();
+	//		queue.add("A");
+	//		queue.add("B");
+	//		queue.add("C");
+	//		queue.add("D");
+	//
+	//		for (int i = 0; i < 4; i++) {
+	//			name += queue.peekAt(i) + "\n";
+	//		}
+	//
+	//		uiQ.updateQueue(name);
+	//	}
 
 	/**
 	 * Sends a newly created user to the server and sends a message to the queue.
@@ -113,12 +115,11 @@ public class Client extends Thread {
 	 * @param user
 	 */
 	public void sendUser(String user) {
-		System.out.println("tog emot " + user);
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
 			oos.flush();
-			System.out.println(user + " skickad sn�lla funka");
+			System.out.println(user + " skickad");
 		} catch (IOException e) {
 			System.err.println("Socket interrupted");
 		}
@@ -156,7 +157,7 @@ public class Client extends Thread {
 	public void retry(String ip, int port) throws InterruptedException {
 		while (!connect(ip, port)) {
 			System.err.print("Reconnecting in ");
-			for (int i = 10; i >= 0; i--) {
+			for (int i = 5; i >= 0; i--) {
 				System.err.print(i + " ");
 				this.sleep(1000);
 			}
@@ -174,7 +175,7 @@ public class Client extends Thread {
 
 		public DataReader() {
 			uiHS = new UIHighScore();
-			updateUIHighScore();
+			//			updateUIHighScore();
 			uiQ = new UIQueue(client);
 		}
 
@@ -223,6 +224,11 @@ public class Client extends Thread {
 	 */
 
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		Client client = null;
 		client = new Client(ip, port);
 
