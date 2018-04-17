@@ -59,24 +59,7 @@ public class Client extends Thread {
 
 	public Client(String ip, int port) {
 		System.out.println("Connecting to Server");
-		if (connect(ip, port)) {
-			dr = new DataReader();
-			try {
-				oos = new ObjectOutputStream(socket.getOutputStream());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			dr.start();
-			uiHS = new UIHighScore();
-			uiQ = new UIQueue(this);
-		} else {
-			try {
-				retry(ip, port);
-			} catch (InterruptedException e) {
-				System.err.println("Thread interrupted");
-			}
-		}
+		connect(ip, port);
 
 	}
 
@@ -137,18 +120,27 @@ public class Client extends Thread {
 	 * @param port
 	 * @return true or false if connected or not.
 	 */
-	public boolean connect(String ip, int port) {
+	public void connect(String ip, int port) {
 		try {
 			socket = new Socket(ip, port);
 			System.out.println("Successful connection!");
-			return true;
+			connected();
 		} catch (UnknownHostException e) {
 			System.err.println("Host could not be found!");
-			return false;
+			retry(ip, port);
 		} catch (IOException e) {
 			System.err.println("Could not connect to host");
-			return false;
+			retry(ip, port);
 		}
+	}
+	public void connected() {
+		try {
+			oos = new ObjectOutputStream(socket.getOutputStream());
+		} catch (IOException e) {
+			retry(ip, port);
+		}
+		dr = new DataReader(this);
+		dr.start();
 	}
 
 	/**
@@ -158,15 +150,19 @@ public class Client extends Thread {
 	 * @param port
 	 * @throws InterruptedException
 	 */
-	public void retry(String ip, int port) throws InterruptedException {
-		while (!connect(ip, port)) {
+	public void retry(String ip, int port) {
 			System.err.print("Reconnecting in ");
 			for (int i = 5; i >= 0; i--) {
 				System.err.print(i + " ");
-				this.sleep(1000);
+				try {
+					this.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			System.err.println();
-		}
+			connect(ip, port);
 	}
 
 	/**
@@ -178,15 +174,16 @@ public class Client extends Thread {
 		private Client client;
 		private ObjectInputStream ois;
 
-		public DataReader() {
-			//uiHS = new UIHighScore();
-			//			updateUIHighScore();
-			//uiQ = new UIQueue(client);
+		public DataReader(Client client) {
+			this.client = client;
+			uiHS = new UIHighScore();
+			uiQ = new UIQueue(this.client);
 		}
 
 		public void run() {
 			boolean connected = true;
 			Object obj;
+			Queue queue = null;
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
 			} catch (IOException e2) {
@@ -195,18 +192,23 @@ public class Client extends Thread {
 			}
 			while (connected) {
 				try {
+					obj = null;
+					queue = null;
 					obj = ois.readObject();
 
 					if (obj instanceof Message) {
 						Message readMessage = (Message) obj;
 						switch (readMessage.getInstruction()) {
 						case 1:
+							
 							System.out.println("Queue!");
+							queue = (Queue)readMessage.getPayload();
+							System.out.println(queue.toString());
 							uiQ.updateQueue(readMessage.getPayload());
+							
 							break;
 						case 2:
 							System.out.println("highscorelist!");
-
 							uiHS.updateHighScore(readMessage.getPayload());
 							break;
 						default:
@@ -215,11 +217,7 @@ public class Client extends Thread {
 					}
 				} catch (IOException e1) {
 					connected = false;
-					try {
-						retry(ip, port);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					retry(ip, port);
 					e1.printStackTrace();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();

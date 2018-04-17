@@ -55,4 +55,11 @@ public class Queue implements Serializable{
 	private void syso(String string) {
 		System.out.println(string);
 	}
+	public String toString() {
+		String ret = "";
+		for(String names : list) {
+			ret += names + "\n";
+		}
+		return ret;
+	}
 }
