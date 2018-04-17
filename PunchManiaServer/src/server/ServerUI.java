@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -16,8 +17,10 @@ import common.HighScoreList;
 import common.Queue;
 
 public class ServerUI extends JPanel {
-
+	
+	
 	private JTextArea taCmdArea = new JTextArea();
+	private JScrollPane spCmdArea = new JScrollPane(taCmdArea);
 	private JTextField tfCmdField = new JTextField();
 	private Server server;
 
@@ -33,7 +36,7 @@ public class ServerUI extends JPanel {
 		tfCmdField.setForeground(Color.WHITE);
 		
 
-		add(taCmdArea, BorderLayout.CENTER);
+		add(spCmdArea, BorderLayout.CENTER);
 		add(tfCmdField, BorderLayout.SOUTH);
 
 		tfCmdField.addKeyListener(new KeyListener() {
