@@ -1,11 +1,16 @@
 package common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class HighScoreList {
+public class HighScoreList implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5796106356303659629L;
 	private ArrayList<UserList> ul;
 
 	public HighScoreList() {

@@ -260,7 +260,9 @@ public class Server {
 					try {
 						dis.readFully(string);
 						String str = new String(string);
-						cal.calculateScore(str);
+						int score = cal.calculateScore(str);
+						ui.print("New score: " + score, 0);
+						
 					} catch (IOException e) {
 						connected = false;
 					}

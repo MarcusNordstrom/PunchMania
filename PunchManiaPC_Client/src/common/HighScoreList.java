@@ -1,20 +1,22 @@
 package common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class HighScoreList {
+public class HighScoreList implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5796106356303659629L;
 	private ArrayList<UserList> ul;
 
 	public HighScoreList() {
 		ul = new ArrayList<UserList>();
 	}
-	
-	/**
-	 * Sorts the list of users according to their score, highest first
-	 */
+
 	public void sort() {
 		Collections.sort(ul, new Comparator<UserList>() {
 			@Override
@@ -23,30 +25,16 @@ public class HighScoreList {
 			}
 		});
 	}
-	
-	/**
-	 * Adds a single user
-	 * @param user
-	 * @param score
-	 */
+
 	public void add(String user, int score) {
 		ul.add(new UserList(score, user));
 		sort();
 	}
 	
-	/**
-	 * Adds an array of users
-	 * @param arg
-	 */
-	
 	public void add(ArrayList<UserList> arg) {
 		ul.addAll(arg);
 	}
-	
-	/**
-	 * Removes all users whose name matches with the given string
-	 * @param user
-	 */
+
 	public void remove(String user) {
 		ArrayList<UserList> temp = new ArrayList<UserList>();
 		int i = 0;
@@ -60,18 +48,10 @@ public class HighScoreList {
 		}
 	}
 	
-	/**
-	 * Returns the size of the ArrayList
-	 * @return size
-	 */
 	public int size() {
 		return ul.size();
 	}
-	
-	/**
-	 * Prints all the stored users and their score
-	 */
-	
+
 	public void syso() {
 		for (UserList u : ul) {
 			System.out.println(u.getUser() + " " + u.getScore());
@@ -79,15 +59,10 @@ public class HighScoreList {
 		System.out.println();
 	}
 	
-	/**
-	 * Returns a specific user from the list
-	 * @param i : Location in the list
-	 * @return the specific user
-	 */
 	public UserList getUser(int i) {
 		return ul.get(i);
 	}
-	
+
 	public ArrayList<UserList> getTopTen() {
 		ArrayList<UserList> ret = new ArrayList<UserList>();
 		if (ul.size() >= 10) {
@@ -102,10 +77,7 @@ public class HighScoreList {
 		return ret;
 	}
 
-	/**
-	 * Executes the class.
-	 * @param args
-	 */
+
 	public static void main(String[] args) {
 		HighScoreList hl = new HighScoreList();
 		HighScoreList top10 = new HighScoreList();
