@@ -26,18 +26,15 @@ public class Server {
 	private Queue queue;
 	private IS is;
 	private ServerUI ui;
-	private Trådpool pool;
 	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
 
-	public Server(int portIs, int portClient, ServerUI serverui, int Threads) {
-		pool = new Trådpool(Threads);
+	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
 			serverSocketIs = new ServerSocket(portIs);
 			serverSocketClient = new ServerSocket(portClient);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		pool.start();
 		hsList = newHSList();		//temp HS list with users
 
 		this.ui = serverui;
@@ -102,7 +99,7 @@ public class Server {
 			ch.sendHighscore();
 		}
 
-		public class ClientHandler implements Runnable {
+		public class ClientHandler extends Thread {
 			private Socket socket;
 			private ObjectOutputStream oos;
 			private ObjectInputStream ois;
@@ -116,6 +113,7 @@ public class Server {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				this.start();
 			}
 
 			/*
@@ -138,7 +136,19 @@ public class Server {
 
 					} catch (IOException |ClassNotFoundException e) {
 
+					} catch (IOException | ClassNotFoundException e) {
+						try {
+							ois.close();
+							oos.close();
+							socket.close();
+						} catch (IOException e2) {
+							//e2.printStackTrace();
+							System.out.println("Stream close");
+						}
+						connected = false;
 						ui.print("Client disconnected", 0);
+						clientList.remove(this);
+						this.interrupt();
 					}
 				}
 			}
@@ -149,8 +159,8 @@ public class Server {
 					oos.writeObject(new Message(queue, Message.NEW_QUEUE));
 					oos.flush();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.out.println("sendQ sucks");
 				}
 			}
 
@@ -178,9 +188,6 @@ public class Server {
 						Socket socketClient = socket.accept();
 						ui.print("Client connected", 0);
 						clientList.add(new ClientHandler(socketClient));
-						for (ClientHandler client : clientList) {
-							pool.execute(client);
-						}
 					} catch (IOException e) {
 						System.err.println(e);
 					}
@@ -277,7 +284,7 @@ public class Server {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Server server = new Server(12345, 12346, serverui, 50);
+		Server server = new Server(12345, 12346, serverui);
 	}
 
 }
