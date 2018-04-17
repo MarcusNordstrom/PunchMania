@@ -169,6 +169,7 @@ public class Server {
 			public void sendQueue() {
 				try {
 					ui.print("Sending queue to client", 0);
+					System.out.println(queue.size());
 					if(queue.size() > 0) {
 						oos.writeObject(new Message(queue, Message.NEW_QUEUE));
 						oos.flush();

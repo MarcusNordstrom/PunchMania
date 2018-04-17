@@ -124,13 +124,19 @@ public class ServerUI extends JPanel {
 				delayOne();
 				break;
 				
+			case "kek":
+				for(int i = 0; i <100; i++) {
+					print("kek",0);
+				}
+				break;
+				
 			default:
 				print("unknown command: " + fullCmd, 0);
 		}
 
 	}
 
-	private void getQ() {
+	public void getQ() {
 		Queue q = server.getQueue();
 		print("Queue: ",0);
 		String ret = "";
