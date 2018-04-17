@@ -19,7 +19,6 @@ public class Client extends Thread {
 	private String name = "";
 	private String list = "";
 
-
 	private UIHighScore uiHS;
 	private UIQueue uiQ;
 
@@ -32,11 +31,11 @@ public class Client extends Thread {
 	private HighScoreList hsl;
 	private Queue queue;
 
-
 	/**
 	 * Empty constructor
 	 */
-	public Client() {}
+	public Client() {
+	}
 
 	/**
 	 * Constructs using the given UIHighScore and UIQueue
@@ -50,9 +49,9 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * Constructs using a given IP-address and port
-	 * the constructor also uses the start method to execute the thread which calls the 
-	 * run method.
+	 * Constructs using a given IP-address and port the constructor also uses the
+	 * start method to execute the thread which calls the run method.
+	 * 
 	 * @param ip
 	 * @param port
 	 */
@@ -71,7 +70,7 @@ public class Client extends Thread {
 				System.err.println("Thread interrupted");
 			}
 		}
-		
+
 	}
 
 	/**
@@ -110,6 +109,7 @@ public class Client extends Thread {
 
 	/**
 	 * Sends a newly created user to the server and sends a message to the queue.
+	 * 
 	 * @param user
 	 */
 	public void sendUser(String user) {
@@ -125,7 +125,9 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * method that uses the given ip and port to check if the connection is established.
+	 * method that uses the given ip and port to check if the connection is
+	 * established.
+	 * 
 	 * @param ip
 	 * @param port
 	 * @return true or false if connected or not.
@@ -145,7 +147,8 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * method retries to establish a connection 
+	 * method retries to establish a connection
+	 * 
 	 * @param ip
 	 * @param port
 	 * @throws InterruptedException
@@ -161,11 +164,9 @@ public class Client extends Thread {
 		}
 	}
 
-
-
 	/**
-	 * SubClass
-	 * When the run method is executed it creates a new stream and returns an input stream and reads the data.
+	 * SubClass When the run method is executed it creates a new stream and returns
+	 * an input stream and reads the data.
 	 */
 
 	private class DataReader extends Thread {
@@ -177,36 +178,42 @@ public class Client extends Thread {
 			uiQ = new UIQueue(client);
 		}
 
-
 		public void run() {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
-				Object obj = ois.readObject();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			while (true) {
+				try {
+					
+					Object obj = ois.readObject();
 
-				if(obj instanceof Message) {
-					Message readMessage = (Message) obj;
-					switch (readMessage.getInstruction()) {
-					case 1:
-						System.out.println("Queue! yeah");
-						uiQ.updateQueue(readMessage.getPayload());						// NYTT
-						break;
-					case 2:
-						System.out.println("highscorelist! yeah");
-						break;
-					default:
-						break;
+					if (obj instanceof Message) {
+						Message readMessage = (Message) obj;
+						switch (readMessage.getInstruction()) {
+						case 1:
+							System.out.println("Queue! yeah");
+							uiQ.updateQueue(readMessage.getPayload()); // NYTT
+							break;
+						case 2:
+							System.out.println("highscorelist! yeah");
+							break;
+						default:
+							break;
+						}
 					}
+					System.out.println("DataReader@Client.java: Reading data...");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
 				}
-				System.out.println("DataReader@Client.java: Reading data...");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			}
 		}
 
 	}
-
 
 	/**
 	 * Executes the client using a static ip and port
@@ -218,6 +225,6 @@ public class Client extends Thread {
 	public static void main(String[] args) {
 		Client client = null;
 		client = new Client(ip, port);
-		
+
 	}
 }
