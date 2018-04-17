@@ -17,12 +17,9 @@ public class Calculator {
 	private ArrayList<Integer> x = new ArrayList<Integer>();
 	private ArrayList<Integer> y = new ArrayList<Integer>();
 	private ArrayList<Integer> z = new ArrayList<Integer>();
-
-
-	public Calculator (String values, Server server) {
+	
+	public Calculator(Server server) {
 		this.server = server;
-		splitter(values);
-		force();
 	}
 
 	public static boolean isInteger(String s) {
@@ -112,6 +109,23 @@ public class Calculator {
 	
 	public int getScore() {
 		return score;
+	}
+	
+	private void clearPrevious() {
+		newString = "";
+		section = "";
+		splittedString.clear();
+		x.clear();
+		y.clear();
+		z.clear();
+		score = 0;
+	}
+	
+	public int calculateScore(String values) {
+		clearPrevious();
+		splitter(values);
+		force();
+		return getScore();
 	}
 }
 

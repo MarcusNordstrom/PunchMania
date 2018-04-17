@@ -1,8 +1,13 @@
 package common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Queue {
+public class Queue implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6483005274886522243L;
 	private ArrayList<String> list;
 	
 	public Queue() {

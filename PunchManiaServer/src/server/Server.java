@@ -42,7 +42,7 @@ public class Server {
 
 		this.ui = serverui;
 		ui.addManager(this);
-
+		queue = new Queue();
 		client = new Client(serverSocketClient);
 		is = new IS(serverSocketIs);
 	}
@@ -128,7 +128,9 @@ public class Server {
 						switch(message.getInstruction()) {
 						case 3:
 							ui.print("User for queue received from: Client", 0);
-							addToQueue((String)message.getPayload());
+							System.out.println(message.getPayload());
+							String newtoqueue = (String)message.getPayload();
+							addToQueue(newtoqueue);
 							break;
 						}
 
