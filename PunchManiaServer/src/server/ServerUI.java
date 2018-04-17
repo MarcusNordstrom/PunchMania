@@ -104,6 +104,10 @@ public class ServerUI extends JPanel {
 				addQ(cmd);
 				break;
 				
+			case "sendQ":
+				server.sendQueue();
+				break;
+				
 			case "removeQ":
 				removeQ(cmd);
 				break;
