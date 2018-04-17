@@ -8,11 +8,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
+
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
+import server.Server.Client.ClientHandler;
 
 public class Server {
 	private ServerSocket serverSocketIs;
@@ -23,17 +26,20 @@ public class Server {
 	private Queue queue;
 	private IS is;
 	private ServerUI ui;
+	private Trådpool pool;
+	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
 
-	public Server(int portIs, int portClient, ServerUI serverui) {
+	public Server(int portIs, int portClient, ServerUI serverui, int Threads) {
+		pool = new Trådpool(Threads);
 		try {
 			serverSocketIs = new ServerSocket(portIs);
 			serverSocketClient = new ServerSocket(portClient);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		pool.start();
 		hsList = newHSList();		//temp HS list with users
-		
+
 		this.ui = serverui;
 		ui.addManager(this);
 
@@ -41,33 +47,33 @@ public class Server {
 		is = new IS(serverSocketIs);
 	}
 
-		public void notifyClient() {
-			// client.sendHighscore();
-		}
-	
-		private HighScoreList newHSList() {
-			HighScoreList hl = new HighScoreList();
-	
-			hl.add("Sebbe", 10);
-			hl.add("Sebbe", 10);
-			hl.add("Sebbe", 15);
-			hl.add("Benji", 5);
-			hl.add("Stefan", 15);
-			return hl;
-		}
-	
-		public HighScoreList getHSList() {
-			return hsList;
-		}
+	public void notifyClient() {
+		// client.sendHighscore();
+	}
 
-		public void addToQueue(String name) {
-			queue.add(name);
-		}
-		
-		public Queue getQueue() {
-			return queue;
-		}
-	
+	private HighScoreList newHSList() {
+		HighScoreList hl = new HighScoreList();
+
+		hl.add("Sebbe", 10);
+		hl.add("Sebbe", 10);
+		hl.add("Sebbe", 15);
+		hl.add("Benji", 5);
+		hl.add("Stefan", 15);
+		return hl;
+	}
+
+	public HighScoreList getHSList() {
+		return hsList;
+	}
+
+	public void addToQueue(String name) {
+		queue.add(name);
+	}
+
+	public Queue getQueue() {
+		return queue;
+	}
+
 
 	public class Client {
 		private ObjectOutputStream oos;
@@ -106,7 +112,7 @@ public class Server {
 			/*
 			 * Read message from Client and prints it, sends value to calculator.
 			 */
-			public void run() {
+			public synchronized void run() {
 				boolean connected = true;
 				try {
 					oos = new ObjectOutputStream(socket.getOutputStream());
@@ -116,7 +122,7 @@ public class Server {
 				}
 				while (connected) {
 					try {
-						
+
 						ois = new ObjectInputStream(socket.getInputStream());
 						Message message = (Message)ois.readObject();
 						switch(message.getInstruction()) {
@@ -125,15 +131,15 @@ public class Server {
 							addToQueue((String)message.getPayload());
 							break;
 						}
-						
-						
+
+
 					} catch (IOException | ClassNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
-			
+
 			public void sendQueue() {
 				try {
 					ui.print("Sending queue to client", 0);
@@ -163,14 +169,16 @@ public class Server {
 			 * with socket recived as parameter. clienthandler run method is started.
 			 */
 			public void run() {
-				
+
 				while (true) {
 					try {
 						ui.print("Client-port open on: " + socket.getLocalPort(), 0);
 						Socket socketClient = socket.accept();
 						ui.print("Client connected", 0);
-						newHandler(socketClient);
-
+						clientList.add(new ClientHandler(socketClient));
+						for (ClientHandler client : clientList) {
+							pool.execute(client);
+						}
 					} catch (IOException e) {
 						System.err.println(e);
 					}
@@ -267,8 +275,8 @@ public class Server {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Server server = new Server(12345, 12346, serverui);
+		Server server = new Server(12345, 12346, serverui, 50);
 	}
 
-	
+
 }
