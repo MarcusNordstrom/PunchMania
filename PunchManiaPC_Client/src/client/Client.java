@@ -33,22 +33,22 @@ public class Client extends Thread {
 	private HighScoreList hsl;
 	private Queue queue;
 
-	/**
-	 * Empty constructor
-	 */
-	public Client() {
-	}
-
-	/**
-	 * Constructs using the given UIHighScore and UIQueue
-	 * 
-	 * @param uiHS
-	 * @param uiQ
-	 */
-	public Client(UIHighScore uiHS, UIQueue uiQ) {
-		this.uiHS = uiHS;
-		this.uiQ = uiQ;
-	}
+//	/**
+//	 * Empty constructor
+//	 */
+//	public Client() {
+//	}
+//
+//	/**
+//	 * Constructs using the given UIHighScore and UIQueue
+//	 * 
+//	 * @param uiHS
+//	 * @param uiQ
+//	 */
+//	public Client(UIHighScore uiHS, UIQueue uiQ) {
+//		this.uiHS = uiHS;
+//		this.uiQ = uiQ;
+//	}
 
 	/**
 	 * Constructs using a given IP-address and port the constructor also uses the
@@ -174,9 +174,9 @@ public class Client extends Thread {
 		private Client client;
 
 		public DataReader() {
-			uiHS = new UIHighScore();
+			//uiHS = new UIHighScore();
 			//			updateUIHighScore();
-			uiQ = new UIQueue(client);
+			//uiQ = new UIQueue(client);
 		}
 
 		public void run() {
@@ -200,6 +200,7 @@ public class Client extends Thread {
 							break;
 						case 2:
 							System.out.println("highscorelist! yeah");
+							uiHS.updateHighScore("");
 							break;
 						default:
 							break;

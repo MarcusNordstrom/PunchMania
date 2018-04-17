@@ -17,16 +17,7 @@ public class UIHighScore extends JPanel {
 		add(lblHighScore, BorderLayout.NORTH);
 		add(taNames, BorderLayout.CENTER);
 		taNames.setEditable(false);
-	}
-	
-	
-	/**
-	 * Updating the high score with a string sent from the client. 
-	 * @param info : a string from client adding to high score. 
-	 */
-	public void updateHighScore(String info) {
-		taNames.setText(info);
-
+		
 		JFrame frame = new JFrame();
 		frame = new JFrame("PUNCH MANIA - HIGH SCORE");
 		frame.setResizable(false);
@@ -37,5 +28,16 @@ public class UIHighScore extends JPanel {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+	}
+	
+	
+	/**
+	 * Updating the high score with a string sent from the client. 
+	 * @param info : a string from client adding to high score. 
+	 */
+	public void updateHighScore(String info) {
+		taNames.setText(info);
+
+		
 	}
 }
