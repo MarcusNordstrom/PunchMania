@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 
 import javax.sound.midi.SysexMessage;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
@@ -18,7 +20,6 @@ public class Client extends Thread {
 	private ObjectOutputStream oos;
 	private String name = "";
 	private String list = "";
-
 
 	private UIHighScore uiHS;
 	private UIQueue uiQ;
@@ -32,11 +33,11 @@ public class Client extends Thread {
 	private HighScoreList hsl;
 	private Queue queue;
 
-
 	/**
 	 * Empty constructor
 	 */
-	public Client() {}
+	public Client() {
+	}
 
 	/**
 	 * Constructs using the given UIHighScore and UIQueue
@@ -50,9 +51,9 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * Constructs using a given IP-address and port
-	 * the constructor also uses the start method to execute the thread which calls the 
-	 * run method.
+	 * Constructs using a given IP-address and port the constructor also uses the
+	 * start method to execute the thread which calls the run method.
+	 * 
 	 * @param ip
 	 * @param port
 	 */
@@ -71,61 +72,63 @@ public class Client extends Thread {
 				System.err.println("Thread interrupted");
 			}
 		}
-		
+
 	}
 
 	/**
 	 * Sending high score to high score list
 	 */
-	public void updateUIHighScore() {
-		hsl = new HighScoreList();
-		hsl.add("A", 10);
-		hsl.add("B", 10);
-		hsl.add("C", 15);
-		hsl.add("D", 5);
-		hsl.add("E", 15);
-
-		for (int i = 0; i < hsl.getTopTen().size(); i++) {
-			list += hsl.getUser(i).getUser() + ", " + hsl.getUser(i).getScore() + "\n";
-		}
-		uiHS.updateHighScore(list);
-	}
+	//	public void updateUIHighScore() {
+	//		hsl = new HighScoreList();
+	//		hsl.add("A", 10);
+	//		hsl.add("B", 10);
+	//		hsl.add("C", 15);
+	//		hsl.add("D", 5);
+	//		hsl.add("E", 15);
+	//
+	//		for (int i = 0; i < hsl.getTopTen().size(); i++) {
+	//			list += hsl.getUser(i).getUser() + ", " + hsl.getUser(i).getScore() + "\n";
+	//		}
+	//		uiHS.updateHighScore(list);
+	//	}
 
 	/**
 	 * Sending a queue to queue list.
 	 */
-	public void updateUIQueue() {
-		queue = new Queue();
-		queue.add("A");
-		queue.add("B");
-		queue.add("C");
-		queue.add("D");
-
-		for (int i = 0; i < 4; i++) {
-			name += queue.peekAt(i) + "\n";
-		}
-
-		uiQ.updateQueue(name);
-	}
+	//	public void updateUIQueue() {
+	//		queue = new Queue();
+	//		queue.add("A");
+	//		queue.add("B");
+	//		queue.add("C");
+	//		queue.add("D");
+	//
+	//		for (int i = 0; i < 4; i++) {
+	//			name += queue.peekAt(i) + "\n";
+	//		}
+	//
+	//		uiQ.updateQueue(name);
+	//	}
 
 	/**
 	 * Sends a newly created user to the server and sends a message to the queue.
+	 * 
 	 * @param user
 	 */
 	public void sendUser(String user) {
-		System.out.println("tog emot " + user);
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
 			oos.flush();
-			System.out.println(user + " skickad sn�lla funka");
+			System.out.println(user + " skickad");
 		} catch (IOException e) {
 			System.err.println("Socket interrupted");
 		}
 	}
 
 	/**
-	 * method that uses the given ip and port to check if the connection is established.
+	 * method that uses the given ip and port to check if the connection is
+	 * established.
+	 * 
 	 * @param ip
 	 * @param port
 	 * @return true or false if connected or not.
@@ -145,7 +148,8 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * method retries to establish a connection 
+	 * method retries to establish a connection
+	 * 
 	 * @param ip
 	 * @param port
 	 * @throws InterruptedException
@@ -153,7 +157,7 @@ public class Client extends Thread {
 	public void retry(String ip, int port) throws InterruptedException {
 		while (!connect(ip, port)) {
 			System.err.print("Reconnecting in ");
-			for (int i = 10; i >= 0; i--) {
+			for (int i = 5; i >= 0; i--) {
 				System.err.print(i + " ");
 				this.sleep(1000);
 			}
@@ -161,11 +165,9 @@ public class Client extends Thread {
 		}
 	}
 
-
-
 	/**
-	 * SubClass
-	 * When the run method is executed it creates a new stream and returns an input stream and reads the data.
+	 * SubClass When the run method is executed it creates a new stream and returns
+	 * an input stream and reads the data.
 	 */
 
 	private class DataReader extends Thread {
@@ -173,40 +175,46 @@ public class Client extends Thread {
 
 		public DataReader() {
 			uiHS = new UIHighScore();
-			updateUIHighScore();
+			//			updateUIHighScore();
 			uiQ = new UIQueue(client);
 		}
-
 
 		public void run() {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
-				Object obj = ois.readObject();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			while (true) {
+				try {
+					
+					Object obj = ois.readObject();
 
-				if(obj instanceof Message) {
-					Message readMessage = (Message) obj;
-					switch (readMessage.getInstruction()) {
-					case 1:
-						System.out.println("Queue! yeah");
-						uiQ.updateQueue(readMessage.getPayload());						// NYTT
-						break;
-					case 2:
-						System.out.println("highscorelist! yeah");
-						break;
-					default:
-						break;
+					if (obj instanceof Message) {
+						Message readMessage = (Message) obj;
+						switch (readMessage.getInstruction()) {
+						case 1:
+							System.out.println("Queue! yeah");
+							uiQ.updateQueue(readMessage.getPayload()); // NYTT
+							break;
+						case 2:
+							System.out.println("highscorelist! yeah");
+							break;
+						default:
+							break;
+						}
 					}
+					System.out.println("DataReader@Client.java: Reading data...");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
 				}
-				System.out.println("DataReader@Client.java: Reading data...");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			}
 		}
 
 	}
-
 
 	/**
 	 * Executes the client using a static ip and port
@@ -216,8 +224,13 @@ public class Client extends Thread {
 	 */
 
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		Client client = null;
 		client = new Client(ip, port);
-		
+
 	}
 }

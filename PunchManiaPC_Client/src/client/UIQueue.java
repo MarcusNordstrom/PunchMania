@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import common.Queue;
+
 public class UIQueue extends JPanel implements ActionListener {
 	private JTextArea taQueue = new JTextArea();
 	private JTextField tfName = new JTextField();
@@ -20,7 +22,7 @@ public class UIQueue extends JPanel implements ActionListener {
 	 */
 	public UIQueue(Client client) {
 		this.client = client;
-		
+
 		JFrame frame = new JFrame();
 		frame = new JFrame("PUNCH MANIA");
 		frame.setResizable(false);
@@ -33,11 +35,11 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.setLayout(new BorderLayout());
 		frame.add(panelCenter(), BorderLayout.CENTER);
 		frame.add(panelSouth(), BorderLayout.SOUTH);
-		
+
 		btnSend.addActionListener(this);
 	}
-	
-	
+
+
 	/**
 	 * 1 of 2 parts of the panel
 	 * @return panel in center
@@ -73,7 +75,7 @@ public class UIQueue extends JPanel implements ActionListener {
 		if(e.getSource() == btnSend) {
 			names = tfName.getText();
 			client.sendUser(names); 							
-			
+
 			tfName.setText("");
 		}
 	}
@@ -87,13 +89,16 @@ public class UIQueue extends JPanel implements ActionListener {
 		taQueue.setText(name);
 
 	}
-	
+
 	public void updateQueue(Object obj) {
-		String queue = obj.toString(); 		// NYTT
-		System.out.println(queue);			// NYTT
-		taQueue.setText(queue);				// NYTT
+		Queue queue = (Queue) obj;
+		String output = "";
+		for(int i=0; i<queue.size(); i++) {
+			output += queue.peekAt(i) + "\n";
+		}
+		taQueue.setText(output);		
 	}
-	
-	
-	
+
+
+
 }
