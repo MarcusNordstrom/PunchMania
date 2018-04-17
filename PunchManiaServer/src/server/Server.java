@@ -26,18 +26,15 @@ public class Server {
 	private Queue queue;
 	private IS is;
 	private ServerUI ui;
-	private Trådpool pool;
 	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
 
-	public Server(int portIs, int portClient, ServerUI serverui, int Threads) {
-		pool = new Trådpool(Threads);
+	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
 			serverSocketIs = new ServerSocket(portIs);
 			serverSocketClient = new ServerSocket(portClient);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		pool.start();
 		hsList = newHSList();		//temp HS list with users
 
 		this.ui = serverui;
@@ -286,7 +283,7 @@ public class Server {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Server server = new Server(12345, 12346, serverui, 50);
+		Server server = new Server(12345, 12346, serverui);
 	}
 
 
