@@ -136,8 +136,10 @@ public class Server {
 
 
 					} catch (IOException | ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						connected = false;
+						Thread temp = Thread.currentThread();
+						temp = null;
+						ui.print("Client disconnected", 0);
 					}
 				}
 			}
