@@ -134,7 +134,9 @@ public class Server {
 			 */
 			public synchronized void run() {
 				boolean connected = true;
-				sendQueue();
+				if(queue.size() > 0) {
+					sendQueue();
+				}
 				while (connected) {
 					try {
 						Message message = (Message)ois.readObject();
@@ -167,8 +169,10 @@ public class Server {
 			public void sendQueue() {
 				try {
 					ui.print("Sending queue to client", 0);
-					oos.writeObject(new Message(queue, Message.NEW_QUEUE));
-					oos.flush();
+					if(queue.size() > 0) {
+						oos.writeObject(new Message(queue, Message.NEW_QUEUE));
+						oos.flush();
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.out.println("sendQ sucks");

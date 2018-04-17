@@ -23,6 +23,7 @@ public class ServerUI extends JPanel {
 	private JScrollPane spCmdArea = new JScrollPane(taCmdArea);
 	private JTextField tfCmdField = new JTextField();
 	private Server server;
+	private String lastCmd = "";
 
 	public ServerUI() {
 		setLayout(new BorderLayout());
@@ -58,6 +59,8 @@ public class ServerUI extends JPanel {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					readCmd();
 					tfCmdField.setText("");
+				}else if(e.getKeyCode() == KeyEvent.VK_UP){
+					tfCmdField.setText(lastCmd);
 				}
 
 			}
@@ -66,6 +69,7 @@ public class ServerUI extends JPanel {
 	private void readCmd() {
 		String fullCmd = tfCmdField.getText();
 		String[] cmd = fullCmd.split(" ");
+		lastCmd = fullCmd;
 
 		switch (cmd[0]) {
 			case "print":
