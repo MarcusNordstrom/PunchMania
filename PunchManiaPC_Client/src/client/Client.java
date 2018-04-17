@@ -207,13 +207,12 @@ public class Client extends Thread {
 						case 2:
 							System.out.println("highscorelist!");
 
-							uiHS.updateHighScore("test");
+							uiHS.updateHighScore(readMessage.getPayload());
 							break;
 						default:
 							break;
 						}
 					}
-					System.out.println("DataReader@Client.java: Reading data...");
 				} catch (IOException e1) {
 					connected = false;
 					try {
