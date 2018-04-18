@@ -1,5 +1,6 @@
 package client;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -27,7 +28,6 @@ public class Client extends Thread {
 
 	private HighScoreList hsl;
 	private Queue queue;
-
 
 	/**
 	 * Constructs using a given IP-address and port the constructor also uses the
@@ -101,9 +101,12 @@ public class Client extends Thread {
 	 */
 	public void retry(String ip, int port) {
 		System.err.print("Reconnecting in ");
-		uiHS.closeWindow();
-		uiQ.closeWindow();
-		for (int i = 5; i >= 0; i--) {
+		dr = null;
+		if (uiHS != null)
+			uiHS.closeWindow();
+		if (uiQ != null)
+			uiQ.closeWindow();
+		for (int i = 5; i > 0; i--) {
 			System.err.print(i + " ");
 			try {
 				this.sleep(1000);
@@ -160,7 +163,6 @@ public class Client extends Thread {
 				} catch (IOException e1) {
 					connected = false;
 					retry(ip, port);
-					e1.printStackTrace();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
