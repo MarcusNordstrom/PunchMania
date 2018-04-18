@@ -65,12 +65,12 @@ public class Server {
 
 	private HighScoreList newHSList() {
 		HighScoreList hl = new HighScoreList();
-
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 15);
-		hl.add("Benji", 5);
-		hl.add("Stefan", 15);
+//
+//		hl.add("Sebbe", 10);
+//		hl.add("Sebbe", 10);
+//		hl.add("Sebbe", 15);
+//		hl.add("Benji", 5);
+//		hl.add("Stefan", 15);
 		return hl;
 	}
 
