@@ -14,7 +14,6 @@ public class Queue implements Serializable{
 		list = new ArrayList<String>();
 	}
 	
-	
 	public void add(String name) {
 		list.add(name);
 		syso("added user : " + name);
@@ -55,6 +54,7 @@ public class Queue implements Serializable{
 	private void syso(String string) {
 		System.out.println(string);
 	}
+	
 	public String toString() {
 		String ret = "";
 		for(String names : list) {

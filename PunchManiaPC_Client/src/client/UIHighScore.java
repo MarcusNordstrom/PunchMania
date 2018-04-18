@@ -12,6 +12,7 @@ import common.UserList;
 public class UIHighScore extends JPanel {
 	private JLabel lblHighScore = new JLabel("High Score");
 	private JTextArea taNames = new JTextArea();
+	private JFrame frame;
 
 	/**
 	 * Creating panel
@@ -22,7 +23,6 @@ public class UIHighScore extends JPanel {
 		add(taNames, BorderLayout.CENTER);
 		taNames.setEditable(false);
 		
-		JFrame frame = new JFrame();
 		frame = new JFrame("PUNCH MANIA - HIGH SCORE");
 		frame.setResizable(false);
 		frame.setPreferredSize(new Dimension(500,600));
@@ -52,5 +52,8 @@ public class UIHighScore extends JPanel {
 			output += u.getUser() + "\t" + u.getScore() + "\n";
 		}
 		taNames.setText(output);
+	}
+	public void closeWindow() {
+		frame.dispose();
 	}
 }

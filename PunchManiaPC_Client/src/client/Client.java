@@ -5,8 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import javax.sound.midi.SysexMessage;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
@@ -23,11 +26,28 @@ public class Client extends Thread {
 	private DataReader dr;
 	private Message message;
 
-	private static String ip = "192.168.1.42";
-	private static int port = 12346;
+	public String ip = "";
+	public static int port = 12346;
 
 	private HighScoreList hsl;
 	private Queue queue;
+
+	//	/**
+	//	 * Empty constructor
+	//	 */
+	//	public Client() {
+	//	}
+	//
+	//	/**
+	//	 * Constructs using the given UIHighScore and UIQueue
+	//	 * 
+	//	 * @param uiHS
+	//	 * @param uiQ
+	//	 */
+	//	public Client(UIHighScore uiHS, UIQueue uiQ) {
+	//		this.uiHS = uiHS;
+	//		this.uiQ = uiQ;
+	//	}
 
 	/**
 	 * Constructs using a given IP-address and port the constructor also uses the
@@ -38,11 +58,45 @@ public class Client extends Thread {
 	 */
 
 	public Client(String ip, int port) {
-		String input = JOptionPane.showInputDialog("Enter IP", "192.168.1.");
 		System.out.println("Connecting to Server");
-		connect(input, port);
+		this.ip = ip;
+		connect(ip, port);
 
 	}
+
+	/**
+	 * Sending high score to high score list
+	 */
+	//	public void updateUIHighScore() {
+	//		hsl = new HighScoreList();
+	//		hsl.add("A", 10);
+	//		hsl.add("B", 10);
+	//		hsl.add("C", 15);
+	//		hsl.add("D", 5);
+	//		hsl.add("E", 15);
+	//
+	//		for (int i = 0; i < hsl.getTopTen().size(); i++) {
+	//			list += hsl.getUser(i).getUser() + ", " + hsl.getUser(i).getScore() + "\n";
+	//		}
+	//		uiHS.updateHighScore(list);
+	//	}
+
+	/**
+	 * Sending a queue to queue list.
+	 */
+	//	public void updateUIQueue() {
+	//		queue = new Queue();
+	//		queue.add("A");
+	//		queue.add("B");
+	//		queue.add("C");
+	//		queue.add("D");
+	//
+	//		for (int i = 0; i < 4; i++) {
+	//			name += queue.peekAt(i) + "\n";
+	//		}
+	//
+	//		uiQ.updateQueue(name);
+	//	}
 
 	/**
 	 * Sends a newly created user to the server and sends a message to the queue.
@@ -72,7 +126,7 @@ public class Client extends Thread {
 		try {
 			socket = new Socket(ip, port);
 			System.out.println("Successful connection!");
-			connected();
+			connected(ip, port);
 		} catch (UnknownHostException e) {
 			System.err.println("Host could not be found!");
 			retry(ip, port);
@@ -81,7 +135,7 @@ public class Client extends Thread {
 			retry(ip, port);
 		}
 	}
-	public void connected() {
+	public void connected(String ip, int port) {
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
@@ -99,17 +153,20 @@ public class Client extends Thread {
 	 * @throws InterruptedException
 	 */
 	public void retry(String ip, int port) {
-		System.err.print("Reconnecting in ");
-		for (int i = 5; i >= 0; i--) {
-			System.err.print(i + " ");
-			try {
-				this.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			System.err.print("Reconnecting in ");
+			uiHS.closeWindow();
+			uiQ.closeWindow();
+			for (int i = 5; i >= 0; i--) {
+				System.err.print(i + " ");
+				try {
+					this.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		}
-		System.err.println();
-		connect(ip, port);
+			System.err.println();
+			connect(ip, port);
 	}
 
 	/**
@@ -133,6 +190,7 @@ public class Client extends Thread {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
 			} catch (IOException e2) {
+				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
 			while (connected) {
@@ -162,6 +220,10 @@ public class Client extends Thread {
 					e.printStackTrace();
 				}
 				obj = null;
+<<<<<<< Updated upstream
+=======
+				
+>>>>>>> Stashed changes
 			}
 		}
 
@@ -181,7 +243,8 @@ public class Client extends Thread {
 			e.printStackTrace();
 		}
 		Client client = null;
-		client = new Client(ip, port);
+		String input = JOptionPane.showInputDialog("Enter IP", "192.168.1.");
+		client = new Client(input, port);
 
 	}
 }

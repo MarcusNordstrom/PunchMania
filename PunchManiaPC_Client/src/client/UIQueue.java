@@ -12,7 +12,8 @@ public class UIQueue extends JPanel implements ActionListener {
 	private JLabel lblQueue = new JLabel("Current queue");
 	private JLabel lblName = new JLabel("Type name to put you in line");
 	private JButton btnSend = new JButton("Put me in line");
-
+	private JFrame frame;
+	
 	private String names = "";
 	private Client client;
 
@@ -23,7 +24,6 @@ public class UIQueue extends JPanel implements ActionListener {
 	public UIQueue(Client client) {
 		this.client = client;
 
-		JFrame frame = new JFrame();
 		frame = new JFrame("PUNCH MANIA");
 		frame.setResizable(false);
 		frame.setPreferredSize(new Dimension(500,600));
@@ -99,8 +99,6 @@ public class UIQueue extends JPanel implements ActionListener {
 	 * Updates the queue list from the client. 
 	 * @param obj  : names from client adding to queue list. 
 	 */
-
-
 	public void updateQueue(Object obj) {
 		taQueue.setText("");
 		Queue queue = (Queue) obj;
@@ -108,7 +106,10 @@ public class UIQueue extends JPanel implements ActionListener {
 		for(int i=0; i<queue.size(); i++) {
 			output += queue.peekAt(i) + "\n";
 		}
-		taQueue.setText(output);		
+		taQueue.setText(output);	
+	}
+	public void closeWindow() {
+		frame.dispose();
 	}
 	
 	
