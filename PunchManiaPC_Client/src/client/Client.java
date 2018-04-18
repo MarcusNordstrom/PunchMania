@@ -58,8 +58,9 @@ public class Client extends Thread {
 	 */
 
 	public Client(String ip, int port) {
+		String input = JOptionPane.showInputDialog("Enter IP", "192.168.1.");
 		System.out.println("Connecting to Server");
-		connect(ip, port);
+		connect(input, port);
 
 	}
 
@@ -105,6 +106,7 @@ public class Client extends Thread {
 	public synchronized void sendUser(String user) {
 		try {
 			oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
+			oos.reset();
 			oos.flush();
 			System.out.println(user + " skickad");
 		} catch (IOException e) {
@@ -183,7 +185,6 @@ public class Client extends Thread {
 		public void run() {
 			boolean connected = true;
 			Object obj;
-			Queue queue = null;
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
 			} catch (IOException e2) {
@@ -192,20 +193,13 @@ public class Client extends Thread {
 			}
 			while (connected) {
 				try {
-					obj = null;
-					queue = null;
 					obj = ois.readObject();
-
 					if (obj instanceof Message) {
 						Message readMessage = (Message) obj;
 						switch (readMessage.getInstruction()) {
-						case 1:
-							
-							System.out.println("Queue!");
-							queue = (Queue)readMessage.getPayload();
-							System.out.println(queue.toString());
+						case 1:	
+							System.out.println((Queue)readMessage.getPayload());
 							uiQ.updateQueue(readMessage.getPayload());
-							
 							break;
 						case 2:
 							System.out.println("highscorelist!");
@@ -214,6 +208,7 @@ public class Client extends Thread {
 						default:
 							break;
 						}
+						readMessage = null;
 					}
 				} catch (IOException e1) {
 					connected = false;
@@ -222,6 +217,13 @@ public class Client extends Thread {
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
+				obj = null;
+				try {
+					ois.reset();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 			}
 		}
 

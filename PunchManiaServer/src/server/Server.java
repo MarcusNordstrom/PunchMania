@@ -172,6 +172,7 @@ public class Server {
 					System.out.println(queue.size());
 					if(queue.size() > 0) {
 						oos.writeObject(new Message(queue, Message.NEW_QUEUE));
+						oos.reset();
 						oos.flush();
 					}
 				} catch (IOException e) {
@@ -184,6 +185,7 @@ public class Server {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
+					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -196,6 +198,7 @@ public class Server {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
+					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
