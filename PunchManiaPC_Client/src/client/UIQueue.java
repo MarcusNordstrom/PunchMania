@@ -37,6 +37,20 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.add(panelSouth(), BorderLayout.SOUTH);
 
 		btnSend.addActionListener(this);
+		/**
+		 * Making the enter key useful.
+		 */
+		tfName.addKeyListener(new KeyListener(){
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					names = tfName.getText();
+					client.sendUser(names);
+					tfName.setText("");
+				}
+			}
+			public void keyReleased(KeyEvent arg0) {}
+			public void keyTyped(KeyEvent arg0) {}
+		});
 	}
 
 
@@ -96,4 +110,6 @@ public class UIQueue extends JPanel implements ActionListener {
 		}
 		taQueue.setText(output);		
 	}
+	
+	
 }
