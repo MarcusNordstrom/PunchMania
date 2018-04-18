@@ -66,9 +66,16 @@ public class Server {
 		writeData(hsList);
 		client.sendHS();
 	}
+	
+	public void broadcastQueue() {
+		for(ClientHandler sendq : clientList) {
+			sendq.sendQueue();
+		}
+	}
 
 	private HighScoreList newHSList() {
 		HighScoreList hl = new HighScoreList();
+
 		hl.add("Sebbe", 10);
 		hl.add("Sebbe", 10);
 		hl.add("Sebbe", 15);
@@ -134,7 +141,7 @@ public class Server {
 				sendq.sendQueue();
 			}
 		}
-
+		
 		public void sendSetHS() {
 			for (ClientHandler sendSh : clientList) {
 				sendSh.sendSetHighscore();
@@ -144,6 +151,7 @@ public class Server {
 		public void sendHS() {
 			for (ClientHandler sendh : clientList) {
 				sendh.sendHighscore();
+				broadcastQueue();
 			}
 		}
 
@@ -163,6 +171,7 @@ public class Server {
 				}
 				this.start();
 			}
+			
 
 			/*
 			 * Read message from Client and prints it, sends value to calculator.
@@ -181,6 +190,7 @@ public class Server {
 							System.out.println(message.getPayload());
 							String newtoqueue = (String) message.getPayload();
 							addToQueue(newtoqueue);
+							broadcastQueue();
 							break;
 						}
 
@@ -205,7 +215,7 @@ public class Server {
 				try {
 					ui.print("Sending queue to client", 0);
 					System.out.println(queue.size());
-					if (queue != null) {
+					if(queue !=  null) {
 						oos.writeObject(new Message(queue, Message.NEW_QUEUE));
 						oos.reset();
 						oos.flush();

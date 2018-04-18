@@ -118,6 +118,7 @@ public class ServerUI extends JPanel {
 				
 			case "removeQ":
 				removeQ(cmd);
+				server.sendQueue();
 				break;
 				
 			case "delay":
@@ -153,7 +154,7 @@ public class ServerUI extends JPanel {
 			q.remove(cmd[i]);
 			print("removing : " + cmd[i] + " from queue" , 0);
 		}
-		
+		System.out.println("user removed");
 	}
 	private void addQ(String[] cmd) {
 		Queue q = server.getQueue();
