@@ -190,8 +190,8 @@ public class ServerUI extends JPanel {
 	}
 	private void clearHS() {
 		HighScoreList hl = server.getHSList();
+		hl.removeAll();
 		server.writeData(hl);
-		removeAll();
 	}
 	private void clear() {
 		taCmdArea.setText("");

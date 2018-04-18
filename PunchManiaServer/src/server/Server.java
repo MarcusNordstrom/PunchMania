@@ -99,13 +99,10 @@ public class Server {
 	}
 
 	public void writeData(HighScoreList param) {
-		ObjectOutputStream output = null;
-		try {
-			param.syso();
-			output = new ObjectOutputStream(new FileOutputStream(filepath, false));
+		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filepath, false))){
 			output.writeObject(param);
 			output.flush();
-			output.close();
+			output.reset();
 		} catch (IOException e) {
 			System.err.println("This isnt right");
 		}
