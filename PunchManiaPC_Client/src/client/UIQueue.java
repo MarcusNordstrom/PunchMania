@@ -76,7 +76,7 @@ public class UIQueue extends JPanel implements ActionListener {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(lblName, BorderLayout.NORTH);
 		panel.add(tfName, BorderLayout.CENTER);
-		panel.add(btnSend, BorderLayout.SOUTH);
+	//	panel.add(btnSend, BorderLayout.SOUTH);
 		return panel;
 	}
 

@@ -162,12 +162,6 @@ public class Client extends Thread {
 					e.printStackTrace();
 				}
 				obj = null;
-				try {
-					ois.reset();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
 			}
 		}
 
@@ -182,7 +176,7 @@ public class Client extends Thread {
 
 	public static void main(String[] args) {
 		try {
-			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+	//		UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
