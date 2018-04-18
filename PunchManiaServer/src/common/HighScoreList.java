@@ -47,7 +47,12 @@ public class HighScoreList implements Serializable{
 			ul.remove(t);
 		}
 	}
-	
+	public void removeAll() {
+		while(ul.size() != 0) {
+			System.out.println("Removing: " + ul.get(0).getUser());
+			ul.remove(0);
+		}
+	}
 	public int size() {
 		return ul.size();
 	}
@@ -75,37 +80,5 @@ public class HighScoreList implements Serializable{
 			}
 		}
 		return ret;
-	}
-
-
-	public static void main(String[] args) {
-		HighScoreList hl = new HighScoreList();
-		HighScoreList top10 = new HighScoreList();
-
-
-		
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 15);
-		hl.add("Benji", 5);
-		hl.add("Stefan", 15);
-		hl.syso();
-		
-		top10.add(hl.getTopTen());
-		top10.syso();
-		
-		hl.remove("Benji");
-		hl.syso();
-
-		hl.remove("Sebbe");
-		hl.syso();
-		
-		for(int i = 0; i < 20; i++) {
-			hl.add("Cyka", 10);
-		}
-		
-		top10 = new HighScoreList();
-		top10.add(hl.getTopTen());
-		top10.syso();
 	}
 }

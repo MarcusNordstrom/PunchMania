@@ -130,7 +130,9 @@ public class ServerUI extends JPanel {
 					print("kek",0);
 				}
 				break;
-				
+			case "clearHS":
+				clearHS();
+				break;
 			default:
 				print("unknown command: " + fullCmd, 0);
 		}
@@ -147,7 +149,6 @@ public class ServerUI extends JPanel {
 		print(ret , 0);
 		
 	}
-	
 	private void removeQ(String[] cmd) {
 		Queue q = server.getQueue();
 		for(int i = 1; i < cmd.length;i++) {
@@ -176,6 +177,7 @@ public class ServerUI extends JPanel {
 			hl.add(cmd[i], Integer.parseInt(cmd[i+1]));
 			print("Adding : " + cmd[i] + " to Highscore" , 0);
 		}
+		server.writeData(hl);
 	}
 
 	private void remove(String[] cmd) {
@@ -184,8 +186,13 @@ public class ServerUI extends JPanel {
 			hl.remove(cmd[i]);
 			print("Removing : " + cmd[i] , 0);
 		}
+		server.writeData(hl);
 	}
-
+	private void clearHS() {
+		HighScoreList hl = server.getHSList();
+		server.writeData(hl);
+		removeAll();
+	}
 	private void clear() {
 		taCmdArea.setText("");
 		
