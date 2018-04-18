@@ -29,7 +29,7 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.setPreferredSize(new Dimension(500,600));
 		frame.add(this);
 		frame.pack();
-//		frame.setLocationRelativeTo(null);
+		//		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
@@ -83,12 +83,9 @@ public class UIQueue extends JPanel implements ActionListener {
 
 	/**
 	 * Updates the queue list from the client. 
-	 * @param name  : a string from client adding to queue list. 
+	 * @param obj  : names from client adding to queue list. 
 	 */
-	public void updateQueue(String name) {
-		taQueue.setText(name);
 
-	}
 
 	public void updateQueue(Object obj) {
 		taQueue.setText("");
@@ -99,7 +96,4 @@ public class UIQueue extends JPanel implements ActionListener {
 		}
 		taQueue.setText(output);		
 	}
-
-
-
 }

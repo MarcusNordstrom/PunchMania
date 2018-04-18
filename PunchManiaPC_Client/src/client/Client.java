@@ -5,11 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import javax.sound.midi.SysexMessage;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
@@ -32,23 +29,6 @@ public class Client extends Thread {
 	private HighScoreList hsl;
 	private Queue queue;
 
-	//	/**
-	//	 * Empty constructor
-	//	 */
-	//	public Client() {
-	//	}
-	//
-	//	/**
-	//	 * Constructs using the given UIHighScore and UIQueue
-	//	 * 
-	//	 * @param uiHS
-	//	 * @param uiQ
-	//	 */
-	//	public Client(UIHighScore uiHS, UIQueue uiQ) {
-	//		this.uiHS = uiHS;
-	//		this.uiQ = uiQ;
-	//	}
-
 	/**
 	 * Constructs using a given IP-address and port the constructor also uses the
 	 * start method to execute the thread which calls the run method.
@@ -63,40 +43,6 @@ public class Client extends Thread {
 		connect(input, port);
 
 	}
-
-	/**
-	 * Sending high score to high score list
-	 */
-	//	public void updateUIHighScore() {
-	//		hsl = new HighScoreList();
-	//		hsl.add("A", 10);
-	//		hsl.add("B", 10);
-	//		hsl.add("C", 15);
-	//		hsl.add("D", 5);
-	//		hsl.add("E", 15);
-	//
-	//		for (int i = 0; i < hsl.getTopTen().size(); i++) {
-	//			list += hsl.getUser(i).getUser() + ", " + hsl.getUser(i).getScore() + "\n";
-	//		}
-	//		uiHS.updateHighScore(list);
-	//	}
-
-	/**
-	 * Sending a queue to queue list.
-	 */
-	//	public void updateUIQueue() {
-	//		queue = new Queue();
-	//		queue.add("A");
-	//		queue.add("B");
-	//		queue.add("C");
-	//		queue.add("D");
-	//
-	//		for (int i = 0; i < 4; i++) {
-	//			name += queue.peekAt(i) + "\n";
-	//		}
-	//
-	//		uiQ.updateQueue(name);
-	//	}
 
 	/**
 	 * Sends a newly created user to the server and sends a message to the queue.
@@ -153,18 +99,17 @@ public class Client extends Thread {
 	 * @throws InterruptedException
 	 */
 	public void retry(String ip, int port) {
-			System.err.print("Reconnecting in ");
-			for (int i = 5; i >= 0; i--) {
-				System.err.print(i + " ");
-				try {
-					this.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		System.err.print("Reconnecting in ");
+		for (int i = 5; i >= 0; i--) {
+			System.err.print(i + " ");
+			try {
+				this.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			System.err.println();
-			connect(ip, port);
+		}
+		System.err.println();
+		connect(ip, port);
 	}
 
 	/**
@@ -188,7 +133,6 @@ public class Client extends Thread {
 			try {
 				ois = new ObjectInputStream(socket.getInputStream());
 			} catch (IOException e2) {
-				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
 			while (connected) {
@@ -223,7 +167,7 @@ public class Client extends Thread {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		}
 
