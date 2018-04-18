@@ -37,20 +37,6 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.add(panelSouth(), BorderLayout.SOUTH);
 
 		btnSend.addActionListener(this);
-		/**
-		 * Making the enter key useful.
-		 */
-		tfName.addKeyListener(new KeyListener(){
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					names = tfName.getText();
-					client.sendUser(names);
-					tfName.setText("");
-				}
-			}
-			public void keyReleased(KeyEvent arg0) {}
-			public void keyTyped(KeyEvent arg0) {}
-		});
 	}
 
 
@@ -76,7 +62,7 @@ public class UIQueue extends JPanel implements ActionListener {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(lblName, BorderLayout.NORTH);
 		panel.add(tfName, BorderLayout.CENTER);
-	//	panel.add(btnSend, BorderLayout.SOUTH);
+		panel.add(btnSend, BorderLayout.SOUTH);
 		return panel;
 	}
 
@@ -111,6 +97,9 @@ public class UIQueue extends JPanel implements ActionListener {
 	public void closeWindow() {
 		frame.dispose();
 	}
-	
-	
+
+
+	public static void main(String[] args) {
+		JOptionPane.showInputDialog("Enter IP", "192.168.1.");
+	}
 }
