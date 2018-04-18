@@ -94,10 +94,12 @@ public class ServerUI extends JPanel {
 				
 			case "removeHS":
 				remove(cmd);
+				server.sendSetHighscore();
 				break;
 			
 			case "addHS":
 				add(cmd);
+				server.sendSetHighscore();
 				break;
 				
 			case "sendHS":
@@ -110,6 +112,7 @@ public class ServerUI extends JPanel {
 				
 			case "addQ":
 				addQ(cmd);
+				server.sendQueue();
 				break;
 				
 			case "sendQ":
@@ -132,6 +135,7 @@ public class ServerUI extends JPanel {
 				break;
 			case "clearHS":
 				clearHS();
+				server.sendSetHighscore();
 				break;
 			default:
 				print("unknown command: " + fullCmd, 0);
