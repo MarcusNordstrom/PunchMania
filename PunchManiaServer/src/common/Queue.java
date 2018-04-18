@@ -25,7 +25,7 @@ public class Queue implements Serializable{
 	}
 	
 	public String pop() {
-		String unknown = "next time register before punching... dickhead...";
+		String unknown = "NO NAME";
 		if(list.size() == 0) {
 			return unknown;
 		}
