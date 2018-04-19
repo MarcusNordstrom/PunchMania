@@ -171,6 +171,8 @@ public class ServerUI extends JPanel {
 				print("- switches first from queue to second in queue", 0);
 				print("kek", 0);
 				print("- type and find out", 0);
+				print("clearHS", 0);
+				print("- clears all from the Highscore list", 0);
 				break;
 			default:
 				print("unknown command: " + fullCmd, 0);
