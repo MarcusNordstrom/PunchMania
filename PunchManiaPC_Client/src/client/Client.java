@@ -1,6 +1,5 @@
 package client;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -148,11 +147,9 @@ public class Client extends Thread {
 						Message readMessage = (Message) obj;
 						switch (readMessage.getInstruction()) {
 						case 1:
-							System.out.println((Queue) readMessage.getPayload());
 							uiQ.updateQueue(readMessage.getPayload());
 							break;
 						case 2:
-							System.out.println("highscorelist!");
 							uiHS.updateHighScore(readMessage.getPayload());
 							break;
 						default:

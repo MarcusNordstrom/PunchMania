@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,7 +24,8 @@ public class ServerUI extends JPanel {
 	private JScrollPane spCmdArea = new JScrollPane(taCmdArea);
 	private JTextField tfCmdField = new JTextField();
 	private Server server;
-	private String lastCmd = "";
+	private int cmdIndex = 0;
+	private ArrayList<String> lastCmds = new ArrayList<String>();
 
 	public ServerUI() {
 		setLayout(new BorderLayout());
@@ -59,8 +61,10 @@ public class ServerUI extends JPanel {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					readCmd();
 					tfCmdField.setText("");
-				}else if(e.getKeyCode() == KeyEvent.VK_UP){
-					tfCmdField.setText(lastCmd);
+				}else if(e.getKeyCode() == KeyEvent.VK_UP && cmdIndex != lastCmds.size()){
+					tfCmdField.setText(lastCmds.get(cmdIndex++));
+				}else if(e.getKeyCode() == KeyEvent.VK_DOWN && cmdIndex > 0) {
+					tfCmdField.setText(lastCmds.get(--cmdIndex));
 				}
 
 			}
@@ -69,7 +73,8 @@ public class ServerUI extends JPanel {
 	private void readCmd() {
 		String fullCmd = tfCmdField.getText();
 		String[] cmd = fullCmd.split(" ");
-		lastCmd = fullCmd;
+		lastCmds.add(fullCmd);
+		cmdIndex = 0;
 
 		switch (cmd[0]) {
 			case "print":
