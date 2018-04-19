@@ -27,16 +27,27 @@ public class HighScoreList implements Serializable{
 			}
 		});
 	}
-
+	/**
+	 * This method adds an user to the User list with two parameters.
+	 * @param user
+	 * @param score
+	 */
 	public void add(String user, int score) {
 		ul.add(new UserList(score, user));
 		sort();
 	}
-	
+	/**
+	 * This method appends all of the elements in the specified collection to the end of the list.
+	 * @param arg : this is the collection containing all the elements.
+	 */
 	public void add(ArrayList<UserList> arg) {
 		ul.addAll(arg);
 	}
-
+	
+	/**
+	 * This method goes through the User list and removes the specific position in the list.
+	 * @param user : The user who is removed.
+	 */
 	public void remove(String user) {
 		ArrayList<UserList> temp = new ArrayList<UserList>();
 		int i = 0;
@@ -49,12 +60,19 @@ public class HighScoreList implements Serializable{
 			ul.remove(t);
 		}
 	}
+	/**
+	 * This method removes all from the list.
+	 */
 	public void removeAll() {
 		while(ul.size() != 0) {
 			System.out.println("Removing: " + ul.get(0).getUser());
 			ul.remove(0);
 		}
 	}
+	/**
+	 * This method returns the number of elements in the high score list.
+	 * @return
+	 */
 	public int size() {
 		return ul.size();
 	}
@@ -69,7 +87,10 @@ public class HighScoreList implements Serializable{
 	public UserList getUser(int i) {
 		return ul.get(i);
 	}
-
+	/**
+	 * this method returns the top ten elements in the list.
+	 * @return
+	 */
 	public ArrayList<UserList> getTopTen() {
 		ArrayList<UserList> ret = new ArrayList<UserList>();
 		if (ul.size() >= 10) {
