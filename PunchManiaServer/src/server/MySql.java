@@ -9,7 +9,7 @@ public class MySql {
 	private String Password = "root";
 	private String UserName = "root";
 
-	private Connection myConn = null;;
+	private Connection myConn;
 
 	public MySql() {
 		try {
