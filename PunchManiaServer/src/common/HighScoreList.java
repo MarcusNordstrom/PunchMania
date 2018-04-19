@@ -16,7 +16,9 @@ public class HighScoreList implements Serializable{
 	public HighScoreList() {
 		ul = new ArrayList<UserList>();
 	}
-
+	/**
+	 * This method sorts the user depending on the score, highest first.
+	 */
 	public void sort() {
 		Collections.sort(ul, new Comparator<UserList>() {
 			@Override

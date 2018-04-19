@@ -42,7 +42,10 @@ public class UIHighScore extends JPanel {
 	public void updateHighScore(String info) {
 		taNames.setText(info);	
 	}
-	
+	/**
+	 * Updating the high score with a object sent from the client.
+	 * @param obj 
+	 */
 	public void updateHighScore(Object obj) {
 		taNames.setText("");
 		HighScoreList list =(HighScoreList) obj;

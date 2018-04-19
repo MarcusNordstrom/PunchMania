@@ -61,12 +61,12 @@ public class Client extends Thread {
 	}
 
 	/**
+	 * 
 	 * method that uses the given ip and port to check if the connection is
 	 * established.
 	 * 
 	 * @param ip
 	 * @param port
-	 * @return true or false if connected or not.
 	 */
 	public void connect(String ip, int port) {
 		try {
@@ -81,8 +81,13 @@ public class Client extends Thread {
 			retry(ip, port);
 		}
 	}
+<<<<<<< Updated upstream
 
 	public void connected(String ip, int port) {
+=======
+	
+	public void connected() {
+>>>>>>> Stashed changes
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
