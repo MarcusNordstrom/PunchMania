@@ -178,6 +178,7 @@ public class Server {
 				if (queue.size() > 0) {
 					sendQueue();
 				}
+				sendSetHighscore();
 				while (connected) {
 					try {
 						Message message = (Message) ois.readObject();
