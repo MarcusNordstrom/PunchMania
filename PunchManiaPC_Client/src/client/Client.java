@@ -81,13 +81,8 @@ public class Client extends Thread {
 			retry(ip, port);
 		}
 	}
-<<<<<<< Updated upstream
 
 	public void connected(String ip, int port) {
-=======
-	
-	public void connected() {
->>>>>>> Stashed changes
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
