@@ -137,6 +137,36 @@ public class ServerUI extends JPanel {
 				clearHS();
 				server.sendSetHighscore();
 				break;
+			case "help":
+				print("print [string]", 0);
+				print("- prints a string", 0);
+				print("getHSList" , 0);
+				print("- returns the Highscore list", 0);
+				print("getScore [user]", 0);
+				print("- returns the score of a user", 0);
+				print("getQ", 0);
+				print("- returns the current queue", 0);
+				print("clear", 0);
+				print("- clears the window", 0);
+				print("removeHS [user]", 0);
+				print("- removes a user from the Highscore list", 0);
+				print("addHS [user] [score]", 0);
+				print("- adds a user to the Highscore list", 0);
+				print("sendHS", 0);
+				print("- sends the Highscore list to all online", 0);
+				print("exit", 0);
+				print("- closes the server", 0);
+				print("addQ [user]", 0);
+				print("- adds a person to the current queue", 0);
+				print("sendQ", 0);
+				print("- sends the current queue to all online", 0);
+				print("removeQ [user]", 0);
+				print("- removes a person from the current queue", 0);
+				print("delay", 0);
+				print("- switches first from queue to second in queue", 0);
+				print("kek", 0);
+				print("- type and find out", 0);
+				break;
 			default:
 				print("unknown command: " + fullCmd, 0);
 		}
