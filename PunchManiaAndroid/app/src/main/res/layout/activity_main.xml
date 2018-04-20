@@ -38,14 +38,4 @@
         app:rippleColor="@android:color/holo_green_dark"
         app:srcCompat="@android:drawable/ic_input_add" />
 
-    <Switch
-        android:id="@+id/switch1"
-        style="@android:style/Widget.Holo.Light.CompoundButton.Switch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:showText="true"
-        android:switchTextAppearance="@style/TextAppearance.AppCompat"
-        android:textOff="Queue"
-        android:textOn="Highscore" />
-
 </android.support.design.widget.CoordinatorLayout>
