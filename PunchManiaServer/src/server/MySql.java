@@ -14,24 +14,30 @@ public class MySql {
 	public MySql() {
 		try {
 
+			String name = "Jake";
+			int score = 199;
 			myConn = DriverManager.getConnection(URL, UserName, Password);
-			System.out.println("SQL Connected");
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void setMySql(String name, int score) {
-		try {
-			Statement Stmt = myConn.createStatement();
+			System.out.println("1");
 			String update = "INSERT INTO HSList(Name, Score) VALUES ('" + name + "', " + score + ")";
-			Stmt.execute(update);
+			System.out.println("2");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}	
 	}
+
+//	public void setMySql(String name, int score) {
+//		try {
+//			Statement Stmt = myConn.createStatement();
+//			System.out.println("1");
+//			String update = "INSERT INTO HSList(Name, Score) VALUES ('" + name + "', " + score + ")";
+//			System.out.println("2");
+//			Stmt.execute(update);
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	public static void main(String[] args) {
 		new MySql();
