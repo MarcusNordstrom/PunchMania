@@ -26,6 +26,7 @@ public class ServerUI extends JPanel {
 	private Server server;
 	private int cmdIndex = 0;
 	private ArrayList<String> lastCmds = new ArrayList<String>();
+	private MySql ms;
 
 	public ServerUI() {
 		setLayout(new BorderLayout());
@@ -109,6 +110,7 @@ public class ServerUI extends JPanel {
 				
 			case "sendHS":
 				server.sendSetHighscore();
+				
 				break;
 				
 			case "exit":
@@ -258,6 +260,8 @@ public class ServerUI extends JPanel {
 	private void getHSList() {
 		HighScoreList hl = server.getHSList();
 		String ret = "";
+		String name;
+		int score;
 		for(int i = 0; i < hl.size();i++) {
 			ret += hl.getUser(i).getUser() + "  " + hl.getUser(i).getScore() + "\n";
 		}

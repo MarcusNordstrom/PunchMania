@@ -13,28 +13,44 @@ public class MySql {
 
 	public MySql() {
 		try {
-
 			myConn = DriverManager.getConnection(URL, UserName, Password);
-			System.out.println("SQL Connected");
-
+			System.out.println("SQL running");
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}	
 	}
 
 	public void setMySql(String name, int score) {
+		System.out.println("SQL " + name + "  " + score);
 		try {
 			Statement Stmt = myConn.createStatement();
-			String update = "INSERT INTO HSList(Name, Score) VALUES ('" + name + "', " + score + ")";
+			String update = "INSERT INTO HSList(Name, Score) VALUES ('" + name + "',  "+ score +" )";
 			Stmt.execute(update);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
+
+	public void getTop10() {
+		Statement Stmt;
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT * FROM HSList ORDER BY Score DESC LIMIT 10";
+			ResultSet rs = Stmt.executeQuery(sql);
+			while(rs.next()) {
+				System.out.println(rs.getString(2) + " : " + rs.getInt(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
 	
 	public static void main(String[] args) {
-		new MySql();
+		MySql ms = new MySql();
+		ms.getTop10();
 	}
 
 }
