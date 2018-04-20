@@ -37,6 +37,8 @@ public class Server {
 
 	private FileInputStream fis;
 	private FileOutputStream fos;
+	
+	private MySql ms;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
@@ -51,6 +53,7 @@ public class Server {
 		queue = new Queue();
 		client = new Client(serverSocketClient);
 		is = new IS(serverSocketIs);
+		ms = new MySql();
 	}
 
 	public void sendQueue() {
@@ -62,9 +65,12 @@ public class Server {
 	}
 
 	public void sendHighscore(int score) {
-		hsList.add(queue.pop(), score);
+		String name = queue.pop();
+		hsList.add(name, score);
+		ms.setMySql(name, score);
 		writeData(hsList);
 		client.sendHS();
+		
 	}
 	
 	public void broadcastQueue() {
