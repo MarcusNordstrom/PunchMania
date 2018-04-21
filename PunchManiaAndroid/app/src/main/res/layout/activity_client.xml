@@ -41,6 +41,55 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/welcome"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="serif-monospace"
+                        android:text="WELCOME TO"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/holo_orange_dark"
+                        android:textSize="30sp" />
+
+                    <TextView
+                        android:id="@+id/punchMania"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="serif-monospace"
+                        android:text="PUNCH MANIA"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/holo_orange_dark"
+                        android:textSize="36sp" />
+
+                    <TextView
+                        android:id="@+id/currentQ"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="serif-monospace"
+                        android:text="Current queue:"
+                        android:textSize="18sp" />
+
+                    <ScrollView
+                        android:id="@+id/scroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="246dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                    </ScrollView>
+
+                    <EditText
+                        android:id="@+id/editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:fontFamily="serif-monospace"
+                        android:inputType="textPersonName"
+                        android:text="Enter name"
+                        android:textSize="14sp" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -55,3 +104,4 @@
         </LinearLayout>
     </TabHost>
 </android.support.constraint.ConstraintLayout>
+
