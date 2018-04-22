@@ -1,6 +1,7 @@
 package punchmania.punchmania;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-    public String QueueList ="QueueList String";
+    public String QueueList ="1/n2/n3/n4/n5/n6/n7/n8/n9/n10/n11/n12/n13/n14";
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     {
         TextView QueueListView = findViewById(R.id.QueueList);
         QueueListView.setText(arg1);
+        QueueListView.setMovementMethod(new ScrollingMovementMethod());
     }
 
     // Umm, keep the rest of the example code underneath this comment
