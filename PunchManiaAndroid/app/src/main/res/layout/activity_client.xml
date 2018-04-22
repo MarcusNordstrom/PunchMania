@@ -69,16 +69,11 @@
                         android:text="Current queue:"
                         android:textSize="18sp" />
 
-                    <ScrollView
-                        android:id="@+id/scroll"
+                    <TextView
+                        android:id="@+id/QueueList"
                         android:layout_width="match_parent"
-                        android:layout_height="246dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical" />
-                    </ScrollView>
+                        android:layout_height="246dp"
+                        android:text="this should be invisible" />
 
                     <EditText
                         android:id="@+id/editText"

@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
+    public String QueueList ="QueueList String";
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -20,22 +21,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Add to queue", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        // Test
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        setContentView(R.layout.activity_client);
+        setQueueListView(QueueList);
     }
+
+    public void setQueueListView(String arg1)
+    {
+        TextView QueueListView = findViewById(R.id.QueueList);
+        QueueListView.setText(arg1);
+    }
+
+    // Umm, keep the rest of the example code underneath this comment
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
