@@ -18,15 +18,15 @@ import common.HighScoreList;
 import common.Queue;
 
 public class ServerUI extends JPanel {
-	
-	
+
+
 	private JTextArea taCmdArea = new JTextArea();
 	private JScrollPane spCmdArea = new JScrollPane(taCmdArea);
 	private JTextField tfCmdField = new JTextField();
 	private Server server;
 	private int cmdIndex = 0;
 	private ArrayList<String> lastCmds = new ArrayList<String>();
-	private MySql ms;
+
 
 	public ServerUI() {
 		setLayout(new BorderLayout());
@@ -38,7 +38,7 @@ public class ServerUI extends JPanel {
 		taCmdArea.setSelectionColor(Color.GREEN);
 		tfCmdField.setBackground(Color.BLACK);
 		tfCmdField.setForeground(Color.WHITE);
-		
+
 
 		add(spCmdArea, BorderLayout.CENTER);
 		add(tfCmdField, BorderLayout.SOUTH);
@@ -78,106 +78,106 @@ public class ServerUI extends JPanel {
 		cmdIndex = 0;
 
 		switch (cmd[0]) {
-			case "print":
-				print(fullCmd, 5);
-				break;
-				
-			case "getHSList":
-				getHSList();
-				break;
-				
-			case "getScore":
-				getScore(cmd[1]);
-				break;
-				
-			case "getQ":
-				getQ();
-				break;
-				
-			case "clear":
-				clear();
-				break;
-				
-			case "removeHS":
-				remove(cmd);
-				server.sendSetHighscore();
-				break;
-			
-			case "addHS":
-				add(cmd);
-				server.sendSetHighscore();
-				break;
-				
-			case "sendHS":
-				server.sendSetHighscore();
-				
-				break;
-				
-			case "exit":
-				System.exit(0);
-				break;
-				
-			case "addQ":
-				addQ(cmd);
-				server.sendQueue();
-				break;
-				
-			case "sendQ":
-				server.sendQueue();
-				break;
-				
-			case "removeQ":
-				removeQ(cmd);
-				server.sendQueue();
-				break;
-				
-			case "delay":
-				delayOne();
-				break;
-				
-			case "kek":
-				for(int i = 0; i <100; i++) {
-					print("kek",0);
-				}
-				break;
-			case "clearHS":
-				clearHS();
-				server.sendSetHighscore();
-				break;
-			case "help":
-				print("print [string]", 0);
-				print("- prints a string", 0);
-				print("getHSList" , 0);
-				print("- returns the Highscore list", 0);
-				print("getScore [user]", 0);
-				print("- returns the score of a user", 0);
-				print("getQ", 0);
-				print("- returns the current queue", 0);
-				print("clear", 0);
-				print("- clears the window", 0);
-				print("removeHS [user]", 0);
-				print("- removes a user from the Highscore list", 0);
-				print("addHS [user] [score]", 0);
-				print("- adds a user to the Highscore list", 0);
-				print("sendHS", 0);
-				print("- sends the Highscore list to all online", 0);
-				print("exit", 0);
-				print("- closes the server", 0);
-				print("addQ [user]", 0);
-				print("- adds a person to the current queue", 0);
-				print("sendQ", 0);
-				print("- sends the current queue to all online", 0);
-				print("removeQ [user]", 0);
-				print("- removes a person from the current queue", 0);
-				print("delay", 0);
-				print("- switches first from queue to second in queue", 0);
-				print("kek", 0);
-				print("- type and find out", 0);
-				print("clearHS", 0);
-				print("- clears all from the Highscore list", 0);
-				break;
-			default:
-				print("unknown command: " + fullCmd, 0);
+		case "print":
+			print(fullCmd, 5);
+			break;
+
+		case "getHSList":
+			getHSList();
+			break;
+
+		case "getScore":
+			getScore(cmd[1]);
+			break;
+
+		case "getQ":
+			getQ();
+			break;
+
+		case "clear":
+			clear();
+			break;
+
+		case "removeHS":
+			remove(cmd);
+			//				server.sendSetHighscore();
+			break;
+
+		case "addHS":
+			add(cmd);
+			//				server.sendSetHighscore();
+			break;
+
+		case "sendHS":
+			//				server.sendSetHighscore();
+
+			break;
+
+		case "exit":
+			System.exit(0);
+			break;
+
+		case "addQ":
+			addQ(cmd);
+			server.sendQueue();
+			break;
+
+		case "sendQ":
+			server.sendQueue();
+			break;
+
+		case "removeQ":
+			removeQ(cmd);
+			server.sendQueue();
+			break;
+
+		case "delay":
+			delayOne();
+			break;
+
+		case "kek":
+			for(int i = 0; i <100; i++) {
+				print("kek",0);
+			}
+			break;
+		case "clearHS":
+			clearHS();
+			//				server.sendSetHighscore();
+			break;
+		case "help":
+			print("print [string]", 0);
+			print("- prints a string", 0);
+			print("getHSList" , 0);
+			print("- returns the Highscore list", 0);
+			print("getScore [user]", 0);
+			print("- returns the score of a user", 0);
+			print("getQ", 0);
+			print("- returns the current queue", 0);
+			print("clear", 0);
+			print("- clears the window", 0);
+			print("removeHS [user]", 0);
+			print("- removes a user from the Highscore list", 0);
+			print("addHS [user] [score]", 0);
+			print("- adds a user to the Highscore list", 0);
+			print("sendHS", 0);
+			print("- sends the Highscore list to all online", 0);
+			print("exit", 0);
+			print("- closes the server", 0);
+			print("addQ [user]", 0);
+			print("- adds a person to the current queue", 0);
+			print("sendQ", 0);
+			print("- sends the current queue to all online", 0);
+			print("removeQ [user]", 0);
+			print("- removes a person from the current queue", 0);
+			print("delay", 0);
+			print("- switches first from queue to second in queue", 0);
+			print("kek", 0);
+			print("- type and find out", 0);
+			print("clearHS", 0);
+			print("- clears all from the Highscore list", 0);
+			break;
+		default:
+			print("unknown command: " + fullCmd, 0);
 		}
 
 	}
@@ -190,7 +190,7 @@ public class ServerUI extends JPanel {
 			ret += q.peekAt(i) + "\n";
 		}
 		print(ret , 0);
-		
+
 	}
 	private void removeQ(String[] cmd) {
 		Queue q = server.getQueue();
@@ -207,17 +207,20 @@ public class ServerUI extends JPanel {
 			print("Adding : " + cmd[i] + " to queue" , 0);
 		}
 	}
-	
+
 	private void delayOne() {
 		Queue q = server.getQueue();
 		q.dropOne();
 	}
-	
+
 	private void add(String[] cmd) {
-		
+
 		HighScoreList hl = server.getHSList();
 		for(int i = 1; i < cmd.length;i+=2) {
-			hl.add(cmd[i], Integer.parseInt(cmd[i+1]));
+			String name = cmd[i];
+			int score = Integer.parseInt(cmd[i+1]);
+//			hl.add(name, score);
+			server.ms.setMySql(name, score);
 			print("Adding : " + cmd[i] + " to Highscore" , 0);
 		}
 		server.writeData(hl);
@@ -226,47 +229,53 @@ public class ServerUI extends JPanel {
 	private void remove(String[] cmd) {
 		HighScoreList hl = server.getHSList();
 		for(int i = 1; i < cmd.length;i++) {
-			hl.remove(cmd[i]);
+//			hl.remove(cmd[i]);
+			String name = cmd[i];
+			server.ms.Delete(name);
 			print("Removing : " + cmd[i] , 0);
 		}
 		server.writeData(hl);
 	}
 	private void clearHS() {
-		HighScoreList hl = server.getHSList();
-		hl.removeAll();
-		server.writeData(hl);
+		//		HighScoreList hl = server.getHSList();
+		//		hl.removeAll();
+		//		server.writeData(hl);
+		server.ms.DeleteHSList();
 	}
 	private void clear() {
 		taCmdArea.setText("");
-		
+
 	}
 
 	private void getScore(String string) {
-		
+
 		HighScoreList hl = server.getHSList();
 		print(string,0);
-		int j = 0;
-		for(int i = 0; i < hl.size();i++) {
-			if(string.equals(hl.getUser(i).getUser())) {
-				print(""+hl.getUser(i).getScore(),0);
-				j++;
-			}
-		}
-		if(j==0) {
-			print("No score logged for this user",0);
-		}
+		server.ms.getUserScore(string);
+		print("" + server.ms.getUserScore(string), 0);
+		//		int j = 0;
+		//		for(int i = 0; i < hl.size();i++) {
+		//			if(string.equals(hl.getUser(i).getUser())) {
+		//				print(""+hl.getUser(i).getScore(),0);
+		//				j++;
+		//			}
+		//		}
+//		if(j==0) {
+//			print("No score logged for this user",0);
+//		}
 	}
 
 	private void getHSList() {
-		HighScoreList hl = server.getHSList();
-		String ret = "";
-		String name;
-		int score;
-		for(int i = 0; i < hl.size();i++) {
-			ret += hl.getUser(i).getUser() + "  " + hl.getUser(i).getScore() + "\n";
-		}
-		print(ret , 0);
-		
+		//		HighScoreList hl = server.getHSList();
+		//		String ret = "";
+		//		String name;
+		//		int score;
+		//		for(int i = 0; i < hl.size();i++) {
+		//			ret += hl.getUser(i).getUser() + "  " + hl.getUser(i).getScore() + "\n";
+		//		}
+		//		print(ret , 0);
+		server.ms.getAllScore();
+		print(server.ms.getAllScore(),0);
 	}
 
 	public void print(String text, int i) {

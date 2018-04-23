@@ -38,7 +38,7 @@ public class Server {
 	private FileInputStream fis;
 	private FileOutputStream fos;
 	
-	private MySql ms;
+	public MySql ms;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
@@ -61,7 +61,8 @@ public class Server {
 	}
 
 	public void sendSetHighscore() {
-		client.sendSetHS();
+//		client.sendSetHS();
+		ms.getAllScore();
 	}
 
 	public void sendHighscore(int score) {
@@ -238,7 +239,7 @@ public class Server {
 						String name = hsList.getUser(i).getUser();
 						int score = hsList.getUser(i).getScore();
 						System.out.println(name+ "  " + score);
-						ms.setMySql(name,score);
+//						ms.setMySql(name,score);
 					}
 					oos.reset();
 					oos.flush();
@@ -248,7 +249,6 @@ public class Server {
 			}
 
 			public void sendHighscore() {
-
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
