@@ -2,6 +2,8 @@ package punchmania.punchmania;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,8 +13,13 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+
+
 public class MainActivity extends AppCompatActivity {
-    public String QueueList ="1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14";
+     EditText enterNameEditText;
+     TextView QueueList;
+     Button addBtn;
+
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -23,8 +30,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
-        setQueueListView(QueueList);
+
+        addBtn = (Button) findViewById(R.id.addBtn);
+        QueueList = (TextView) findViewById(R.id.QueueList);
+        enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = enterNameEditText.getText().toString();
+                if (enterNameEditText.length() != 0){
+                    QueueList.setText(name);
+                    enterNameEditText.setText("");
+                } else {
+                    enterNameEditText.setText("Enter a name");
+                }
+            }
+        });
     }
+
 
     public void setQueueListView(String arg1)
     {
