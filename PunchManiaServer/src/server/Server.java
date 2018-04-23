@@ -67,8 +67,8 @@ public class Server {
 	public void sendHighscore(int score) {
 		String name = queue.pop();
 		hsList.add(name, score);
-		ms.setMySql(name, score);
 		writeData(hsList);
+		ms.setMySql(name, score);
 		client.sendHS();
 		
 	}
@@ -234,6 +234,12 @@ public class Server {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
+					for(int i=0; i < hsList.size(); i++) {
+						String name = hsList.getUser(i).getUser();
+						int score = hsList.getUser(i).getScore();
+						System.out.println(name+ "  " + score);
+						ms.setMySql(name,score);
+					}
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
