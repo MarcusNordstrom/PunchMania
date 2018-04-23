@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-    public String QueueList ="1/n2/n3/n4/n5/n6/n7/n8/n9/n10/n11/n12/n13/n14";
+    public String QueueList ="1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14";
 
     // Used to load the 'native-lib' library on application startup.
     static {
