@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
      EditText enterNameEditText;
      Button btnAdd, btnViewQueue, btnViewHighScore;
-     DatabaseHelper mDatabaseHelper;
-     public static ArrayList<String> QueueArrayList;
+     public static ArrayList<String> QueueArrayList = new ArrayList<>();
+
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
-        mDatabaseHelper = new DatabaseHelper(this);
 
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -90,10 +89,4 @@ public class MainActivity extends AppCompatActivity {
     {
         return QueueArrayList;
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
 }

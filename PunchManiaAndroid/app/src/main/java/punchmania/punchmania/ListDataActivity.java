@@ -10,13 +10,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 public class ListDataActivity extends AppCompatActivity {
 
     private static final String TAG = "ListDataActivity";
-
-    DatabaseHelper mDatabaseHelper;
 
     private ListView mListView;
 
@@ -24,16 +20,14 @@ public class ListDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.queuelist_layout);
         mListView = (ListView) findViewById(R.id.listView);
-        mDatabaseHelper = new DatabaseHelper(this);
 
         populateListView();
     }
 
     private void populateListView(){
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
-        ArrayList<String> QueueArrayList = MainActivity.getQueue();
         //create the list adapter and set the adapter to the Queue ArrayList
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,QueueArrayList);
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,MainActivity.getQueue());
         mListView.setAdapter(adapter);
     }
 
