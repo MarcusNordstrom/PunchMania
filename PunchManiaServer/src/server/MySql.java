@@ -5,7 +5,7 @@ import java.sql.*;
 import common.UserList;
 
 public class MySql {
-	private String URL = "jdbc:mysql://localhost:3306/hslist";
+	private String URL = "jdbc:mysql://localhost:8889/hslist";
 	private String Password = "root";
 	private String UserName = "root";
 
@@ -22,14 +22,15 @@ public class MySql {
 
 	public synchronized void setMySql(String name, int score) {
 		try {
-			Statement Stmt = myConn.createStatement();
-			String update = "INSERT INTO hslist(Name, Score) VALUES ('" + name + "',  "+ score +" )";
-			Stmt.execute(update);
+			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score) VALUES (?,?)");
+			stmt.setString(1, name);
+			stmt.setInt(2, score);
+			stmt.execute();
 			System.out.println("---------------ADDED TO HSLIST-------------- \n" + name + "		" + score);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("-------------------------------------------");
 	}
 
@@ -53,17 +54,19 @@ public class MySql {
 		Statement Stmt;
 		String score = "";
 		try {
-			Stmt = myConn.createStatement();
-			String sql = "SELECT * FROM HSList WHERE Name='" + name + "'";
-			ResultSet rs = Stmt.executeQuery(sql);
+			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=?");
+			stmt.setString(1, name);
+			ResultSet rs = stmt.executeQuery();
 			System.out.println("Getting score for user: " + name);
-			score = rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4);
+			while(rs.next()) {
+				score += rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4) + "\n";
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return score;
 	}
-	
+
 	public synchronized String getAllScore() {
 		Statement Stmt;
 		String score = "";
@@ -86,9 +89,8 @@ public class MySql {
 	public synchronized void Delete(String name) {
 		Statement stmt;
 		try {
-			stmt = myConn.createStatement();
-			String sql = "DELETE FROM `hslist` WHERE Name='" + name +"'";
-			PreparedStatement pstmt = myConn.prepareStatement(sql);
+			PreparedStatement pstmt = myConn.prepareStatement("DELETE FROM `hslist` WHERE Name=?");
+			pstmt.setString(1, name);
 			System.out.println("-----------DELETING USER--------- \n" + name);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -105,7 +107,6 @@ public class MySql {
 			String sql = "SELECT * FROM hslist";
 			ResultSet rs = Stmt.executeQuery(sql);
 			while(rs.next()) {
-				Stmt1 = myConn.createStatement();
 				String sql1 = "DELETE FROM hslist";
 				PreparedStatement pstmt = myConn.prepareStatement(sql1);
 				pstmt.executeUpdate();

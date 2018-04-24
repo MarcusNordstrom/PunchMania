@@ -146,6 +146,7 @@ public class ServerUI extends JPanel {
 			break;
 		case "sendByte5":
 			server.isSendByte((byte) 5);
+			break;
 		case "help":
 			print("print [string]", 0);
 			print("- prints a string", 0);
