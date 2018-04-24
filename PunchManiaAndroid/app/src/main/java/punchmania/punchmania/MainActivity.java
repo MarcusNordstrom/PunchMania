@@ -1,27 +1,20 @@
 package punchmania.punchmania;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.text.method.ScrollingMovementMethod;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
      EditText enterNameEditText;
-     TextView QueueList;
-     Button addBtn;
-     ViewPager mainViewPager;
-
+     Button btnAdd, btnViewQueue, btnViewHighScore;
+     DatabaseHelper mDatabaseHelper;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -33,39 +26,47 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
-        addBtn = (Button) findViewById(R.id.addBtn);
-        QueueList = (TextView) findViewById(R.id.QueueList);
+        btnAdd = (Button) findViewById(R.id.btnAdd);
+        btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
+        btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
-        mainViewPager = (ViewPager) findViewById(R.id.pager);
+        mDatabaseHelper = new DatabaseHelper(this);
 
-        mainViewPager.setOnPageChangeListener(
-                new ViewPager.SimpleOnPageChangeListener(){
-                    @Override
-                    public void onPageSelected(int position) {
-                        getActionBar().setSelectedNavigationItem(position);
-                    }}
-        );
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
+        btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                String name = enterNameEditText.getText().toString();
-                if (enterNameEditText.length() != 0){
-                    QueueList.setText(name);
+            public void onClick(View v) {
+                String newEntry = enterNameEditText.getText().toString();
+                if (enterNameEditText.length() != 0) {
+                    AddData(newEntry);
                     enterNameEditText.setText("");
                 } else {
-                    enterNameEditText.setText("Enter a name");
+                    toastMessage("You must put something in the text field");
                 }
+            }
+        });
+
+        btnViewQueue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ListDataActivity.class);
+                startActivity(intent);
             }
         });
     }
 
+    public void toastMessage(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 
-    public void setQueueListView(String arg1)
-    {
-        TextView QueueListView = findViewById(R.id.QueueList);
-        QueueListView.setText(arg1);
-        QueueListView.setMovementMethod(new ScrollingMovementMethod());
+    public void AddData(String newEntry){
+        boolean insertData = mDatabaseHelper.addData(newEntry);
+
+        if(insertData){
+            toastMessage("Data Successfuly Inserted!");
+        } else {
+            toastMessage("Something went wrong");
+        }
     }
 
     // Umm, keep the rest of the example code underneath this comment
