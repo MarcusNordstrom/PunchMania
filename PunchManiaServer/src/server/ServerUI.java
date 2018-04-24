@@ -134,7 +134,12 @@ public class ServerUI extends JPanel {
 		case "delay":
 			delayOne();
 			break;
-
+			
+		case "clearQ":
+			clearQ();
+			server.sendQueue();
+			break;
+			
 		case "kek":
 			for(int i = 0; i <100; i++) {
 				print("kek",0);
@@ -149,6 +154,8 @@ public class ServerUI extends JPanel {
 			break;
 		case "help":
 			print("print [string]", 0);
+			print("clearQ", 0);
+			print("- clears Q, deletes all users in Q", 0);
 			print("- prints a string", 0);
 			print("getHSList" , 0);
 			print("- returns the Highscore list", 0);
@@ -184,30 +191,30 @@ public class ServerUI extends JPanel {
 		}
 
 	}
+	
+	public void clearQ() {
+		server.ms.DeleteQueueList();
+	}
 
 	public void getQ() {
-		Queue q = server.getQueue();
-		print("Queue: ",0);
-		String ret = "";
-		for(int i = 0; i < q.size();i++) {
-			ret += q.peekAt(i) + "\n";
-		}
-		print(ret , 0);
+		server.ms.getQueue();
 
 	}
 	private void removeQ(String[] cmd) {
 		Queue q = server.getQueue();
 		for(int i = 1; i < cmd.length;i++) {
-			q.remove(cmd[i]);
+			String name = cmd[i];
+			server.ms.deleteQueue(name);
 			print("removing : " + cmd[i] + " from queue" , 0);
 		}
 		System.out.println("user removed");
 	}
 	private void addQ(String[] cmd) {
-		Queue q = server.getQueue();
 		for(int i = 1; i < cmd.length;i++) {
-			q.add(cmd[i]);
+			String name = cmd[i];
+			server.ms.toQueue(name);
 			print("Adding : " + cmd[i] + " to queue" , 0);
+
 		}
 	}
 
@@ -217,32 +224,22 @@ public class ServerUI extends JPanel {
 	}
 
 	private void add(String[] cmd) {
-
-		//		HighScoreList hl = server.getHSList();
 		for(int i = 1; i < cmd.length;i+=2) {
 			String name = cmd[i];
 			int score = Integer.parseInt(cmd[i+1]);
-			//			hl.add(name, score);
 			server.ms.setMySql(name, score);
 			print("Adding : " + cmd[i] + " to Highscore" , 0);
 		}
-		//		server.writeData(hl);
 	}
 
 	private void remove(String[] cmd) {
-		//		HighScoreList hl = server.getHSList();
 		for(int i = 1; i < cmd.length;i++) {
-			//			hl.remove(cmd[i]);
 			String name = cmd[i];
 			server.ms.Delete(name);
 			print("Removing : " + cmd[i] , 0);
 		}
-		//		server.writeData(hl);
 	}
 	private void clearHS() {
-		//		HighScoreList hl = server.getHSList();
-		//		hl.removeAll();
-		//		server.writeData(hl);
 		server.ms.DeleteHSList();
 	}
 	private void clear() {
@@ -251,32 +248,12 @@ public class ServerUI extends JPanel {
 	}
 
 	private void getScore(String string) {
-
-		//		HighScoreList hl = server.getHSList();
 		print(string,0);
 		server.ms.getUserScore(string);
 		print("" + server.ms.getUserScore(string), 0);
-		//		int j = 0;
-		//		for(int i = 0; i < hl.size();i++) {
-		//			if(string.equals(hl.getUser(i).getUser())) {
-		//				print(""+hl.getUser(i).getScore(),0);
-		//				j++;
-		//			}
-		//		}
-		//		if(j==0) {
-		//			print("No score logged for this user",0);
-		//		}
 	}
 
 	private void getHSList() {
-		//		HighScoreList hl = server.getHSList();
-		//		String ret = "";
-		//		String name;
-		//		int score;
-		//		for(int i = 0; i < hl.size();i++) {
-		//			ret += hl.getUser(i).getUser() + "  " + hl.getUser(i).getScore() + "\n";
-		//		}
-		//		print(ret , 0);
 		server.ms.getAllScore();
 		print("" + server.ms.getAllScore(),0);
 	}
