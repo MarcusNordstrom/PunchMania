@@ -18,8 +18,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import common.Message;
-
 
 public class MainActivity extends AppCompatActivity {
      EditText enterNameEditText;
