@@ -1,10 +1,11 @@
 package punchmania.punchmania;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,8 +15,8 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 
@@ -23,6 +24,13 @@ public class MainActivity extends AppCompatActivity {
      EditText enterNameEditText;
      Button btnAdd, btnViewQueue, btnViewHighScore;
      public static ArrayList<String> QueueArrayList = new ArrayList<>();
+     private String message = "";
+     private static PrintWriter printWriter;
+     private static Socket socket;
+     private ObjectOutputStream oos;
+     private String ip = "192.168.1.20";
+     private int port = 12346;
+
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -131,4 +139,33 @@ public class MainActivity extends AppCompatActivity {
     {
         return QueueArrayList;
     }
+
+    public void sent_text(View view){
+        message = enterNameEditText.getText().toString();
+
+        NetworkTask nt = new NetworkTask();
+        nt.execute();
+
+        Toast.makeText(getApplicationContext(), "Data sent", Toast.LENGTH_LONG).show();
+    }
+
+    public class NetworkTask extends AsyncTask<Void, Void, Void> {
+
+        protected Void doInBackground(Void... params){
+
+            try{
+                socket = new Socket(ip,port);       // connect to the socket at the given port
+                printWriter = new PrintWriter(socket.getOutputStream());    //set the output stream
+                printWriter.write(message);                         //send the message through the socket.
+                printWriter.flush();
+                printWriter.close();
+                socket.close();
+
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 }
