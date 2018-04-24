@@ -47,7 +47,7 @@ public class Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		hsList = readData();
+//		hsList = readData();
 		this.ui = serverui;
 		ui.addManager(this);
 		queue = new Queue();
@@ -65,14 +65,13 @@ public class Server {
 	}
 
 	public void sendSetHighscore() {
-//		client.sendSetHS();
-		ms.getAllScore();
-	}
+		client.sendSetHS();
+		}
 
 	public void sendHighscore(int score) {
 		String name = queue.pop();
 		hsList.add(name, score);
-		writeData(hsList);
+//		writeData(hsList);
 		ms.setMySql(name, score);
 		client.sendHS();
 		
@@ -95,33 +94,33 @@ public class Server {
 		return hl;
 	}
 
-	public HighScoreList readData() {
-		try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(filepath))) {
-			try {
-				hsList = (HighScoreList) input.readObject();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		hsList.syso();
-		return hsList;
-	}
+//	public HighScoreList readData() {
+//		try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(filepath))) {
+//			try {
+//				hsList = (HighScoreList) input.readObject();
+//			} catch (ClassNotFoundException e) {
+//				e.printStackTrace();
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		hsList.syso();
+//		return hsList;
+//	}
 
-	public void writeData(HighScoreList param) {
-		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filepath, false))){
-			output.writeObject(param);
-			output.flush();
-			output.reset();
-		} catch (IOException e) {
-			System.err.println("This isnt right");
-		}
-	}
+//	public void writeData(HighScoreList param) {
+//		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filepath, false))){
+//			output.writeObject(param);
+//			output.flush();
+//			output.reset();
+//		} catch (IOException e) {
+//			System.err.println("This isnt right");
+//		}
+//	}
 
-	public HighScoreList getHSList() {
-		return hsList;
-	}
+//	public HighScoreList getHSList() {
+//		return hsList;
+//	}
 
 	public void addToQueue(String name) {
 		queue.add(name);
@@ -238,13 +237,14 @@ public class Server {
 			public void sendSetHighscore() {
 				try {
 					ui.print("Sending Highscore list to client", 0);
+					hsList = ms.getAllScore();
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
-					for(int i=0; i < hsList.size(); i++) {
-						String name = hsList.getUser(i).getUser();
-						int score = hsList.getUser(i).getScore();
-						System.out.println(name+ "  " + score);
-//						ms.setMySql(name,score);
-					}
+//					for(int i=0; i < hsList.size(); i++) {
+//						String name = hsList.getUser(i).getUser();
+//						int score = hsList.getUser(i).getScore();
+//						System.out.println(name+ "  " + score);
+////						ms.setMySql(name,score);
+//					}
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {

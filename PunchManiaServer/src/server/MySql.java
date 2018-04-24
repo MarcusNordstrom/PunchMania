@@ -2,6 +2,7 @@ package server;
 
 import java.sql.*;
 
+import common.HighScoreList;
 import common.UserList;
 
 public class MySql {
@@ -67,9 +68,9 @@ public class MySql {
 		return score;
 	}
 
-	public synchronized String getAllScore() {
+	public synchronized HighScoreList getAllScore() {
 		Statement Stmt;
-		String score = "";
+		HighScoreList hsl = new HighScoreList();
 		try {
 			Stmt = myConn.createStatement();
 			String sql = "SELECT * FROM HSList";
@@ -77,13 +78,13 @@ public class MySql {
 			System.out.println("------------------ALL SOCORE-----------------");
 			while(rs.next()) {
 				System.out.println(rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4));
-				score += rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4);
+				hsl.add(rs.getString(2), rs.getInt(3));
 			}
 			System.out.println("--------------------------------------------------");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return score;
+		return hsl;
 	}
 
 	public synchronized void Delete(String name) {
