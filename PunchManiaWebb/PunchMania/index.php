@@ -13,13 +13,43 @@ function countQ() {
 	$conn = null;
 	return $query["num"];
 }
+function getHSList($name) {
+	$servername = "ddwap.mah.se:3306/ah7115";
+	$username = "ah7115";
+	$password = "Grupp1";
+	$dbname = "ah7115";
+	$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	if ($name == null) {
+		$query = $conn->prepare("SELECT * FROM hslist ORDER BY Score DESC LIMIT 10");
+		$query->execute();
+		$query = $query->fetchAll();
+		$place = 1;
+		echo "<br>";
+		foreach ($query as $row) {
+			echo "<p>" . $place . ". " . $row['Name'] . " - " . $row['Score']. "</p>";
+			$place++;
+		}
+	} else {
+		$query = $conn->prepare("SELECT * FROM hslist WHERE Name=:name ORDER BY Score DESC LIMIT 100");
+		$query->bindParam(':name', $_GET["hsUser"]);
+		$query->execute();
+		$query = $query->fetchAll();
+		$place = 1;
+		echo "<br>";
+		foreach ($query as $row) {
+			echo "<p>" . $place . ". " . $row['Name'] . " - " . $row['Score']. "</p>";
+			$place++;
+		}
+	}
+}
  ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<title>PunchMania</title>
 	<meta charset="utf-8">
-	<style type="text/css"></style>
+	<!-- <meta http-equiv="refresh" content="5"> -->
 </head>
 <body>
 <?php  
@@ -45,6 +75,16 @@ function countQ() {
 		header("Location: https://$host$uri/$extra");
 		die();
 	}
+	if(!isset($_GET["hsUser"])) {
+		getHSList(null);
+	} else {
+		getHSList($_GET["hsUser"]);
+	}
+	
 ?>
 </body>
+<p>Sök Highscore:</p>
+<form action="index.php" method="GET">
+	<input type="text" name="hsUser">
+</form>
 </html>
