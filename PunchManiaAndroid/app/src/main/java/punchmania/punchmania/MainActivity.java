@@ -150,39 +150,35 @@ public class MainActivity extends AppCompatActivity {
     private class DataReader extends Thread {
         private ObjectInputStream ois;
 
-        public void retry() {
-            System.err.print("Reconnecting in ");
-            for (int i = 5; i > 0; i--) {
-                System.err.print(i + " ");
-                try {
-                    this.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        public boolean retry() {
+            boolean connected = false;
+            while(!connected) {
+                System.err.print("Reconnecting in ");
+                for (int i = 5; i > 0; i--) {
+                    System.err.print(i + " ");
+                    try {
+                        this.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                System.err.println();
+                connected = connect();
             }
-            System.err.println();
-            connect();
+            return true;
         }
 
-        public void connect() {
+        public boolean connect() {
             try {
                 socket = new Socket(ip, port);
                 System.out.println("Successful connection!");
-                connected();
+                return true;
             } catch (UnknownHostException e) {
                 System.err.println("Host could not be found!");
-                retry();
+                return false;
             } catch (IOException e) {
                 System.err.println("Could not connect to host");
-                retry();
-            }
-        }
-
-        public void connected() {
-            try {
-                oos = new ObjectOutputStream(socket.getOutputStream());
-            } catch (IOException e) {
-                retry();
+                return false;
             }
         }
 
@@ -192,8 +188,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             Object obj;
             while (true) {
-                retry();
-                boolean connected = true;
+                boolean connected = retry();
                 try {
                     ois = new ObjectInputStream(socket.getInputStream());
                 } catch (IOException e2) {
