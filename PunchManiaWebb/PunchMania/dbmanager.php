@@ -33,7 +33,7 @@ switch ($_GET["type"]) {
     	$query->bindParam(':uname', $_POST["uname"]);
     	$query->execute();
     	$checkuname = $query->fetch();
-    	if (!empty($checkuname["uname"])) {
+    	if (!empty($checkuname["Uname"])) {
     		$conn = null;
   			$extra = 'login.php?reg=true&error=1';
   			header("Location: https://$host$uri/$extra");
