@@ -14,23 +14,31 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import common.Message;
+import common.HighScoreList;
+import common.Queue;
 
 
 public class MainActivity extends AppCompatActivity {
-     EditText enterNameEditText;
-     Button btnAdd, btnViewQueue, btnViewHighScore;
-     public static ArrayList<String> QueueArrayList = new ArrayList<>();
-     private String message = "";
-     private static PrintWriter printWriter;
-     private static Socket socket;
-     private ObjectOutputStream oos;
-     private String ip = "192.168.1.20";
-     private int port = 12346;
+    EditText enterNameEditText;
+    Button btnAdd, btnViewQueue, btnViewHighScore;
+    public static ArrayList<String> QueueArrayList = new ArrayList<>();
 
+    private Queue queue;
+    private HighScoreList list;
+    private String message = "";
+    private static PrintWriter printWriter;
+    private static Socket socket;
+    private ObjectOutputStream oos;
+    private String ip = "192.168.1.20";
+    private int port = 12346;
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -68,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         enterNameEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN){
-                    switch (keyCode){
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
@@ -101,13 +109,13 @@ public class MainActivity extends AppCompatActivity {
         btnViewHighScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent( MainActivity.this, HighScoreListActivity.class);
+                Intent intent = new Intent(MainActivity.this, HighScoreListActivity.class);
                 startActivity(intent);
             }
         });
     }
 
-    public void toastMessage(String message){
+    public void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -135,37 +143,81 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static ArrayList<String> getQueue()
-    {
+    public static ArrayList<String> getQueue() {
         return QueueArrayList;
     }
 
-    public void sent_text(View view){
-        message = enterNameEditText.getText().toString();
+    private class DataReader extends Thread {
+        private ObjectInputStream ois;
 
-        NetworkTask nt = new NetworkTask();
-        nt.execute();
-
-        Toast.makeText(getApplicationContext(), "Data sent", Toast.LENGTH_LONG).show();
-    }
-
-    public class NetworkTask extends AsyncTask<Void, Void, Void> {
-
-        protected Void doInBackground(Void... params){
-
-            try{
-                socket = new Socket(ip,port);       // connect to the socket at the given port
-                printWriter = new PrintWriter(socket.getOutputStream());    //set the output stream
-                printWriter.write(message);                         //send the message through the socket.
-                printWriter.flush();
-                printWriter.close();
-                socket.close();
-
-            }catch (IOException e){
-                e.printStackTrace();
+        public boolean retry() {
+            boolean connected = false;
+            while(!connected) {
+                System.err.print("Reconnecting in ");
+                for (int i = 5; i > 0; i--) {
+                    System.err.print(i + " ");
+                    try {
+                        this.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.err.println();
+                connected = connect();
             }
-            return null;
+            return true;
+        }
+
+        public boolean connect() {
+            try {
+                socket = new Socket(ip, port);
+                System.out.println("Successful connection!");
+                return true;
+            } catch (UnknownHostException e) {
+                System.err.println("Host could not be found!");
+                return false;
+            } catch (IOException e) {
+                System.err.println("Could not connect to host");
+                return false;
+            }
+        }
+
+        public DataReader() {
+        }
+
+        public void run() {
+            Object obj;
+            while (true) {
+                boolean connected = retry();
+                try {
+                    ois = new ObjectInputStream(socket.getInputStream());
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+                while (connected) {
+                    try {
+                        obj = ois.readObject();
+                        if (obj instanceof Message) {
+                            Message readMessage = (Message) obj;
+                            switch (readMessage.getInstruction()) {
+                                case 1:
+                                    queue = (Queue) readMessage.getPayload();
+                                    break;
+                                case 2:
+                                    list = (HighScoreList) readMessage.getPayload();
+                                    break;
+                                default:
+                                    break;
+                            }
+                            readMessage = null;
+                        }
+                    } catch (IOException e1) {
+                        connected = false;
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
-
 }
