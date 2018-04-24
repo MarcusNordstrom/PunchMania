@@ -18,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import common.Message;
@@ -149,39 +150,77 @@ public class MainActivity extends AppCompatActivity {
     private class DataReader extends Thread {
         private ObjectInputStream ois;
 
+        public void retry() {
+            System.err.print("Reconnecting in ");
+            for (int i = 5; i > 0; i--) {
+                System.err.print(i + " ");
+                try {
+                    this.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.err.println();
+            connect();
+        }
+
+        public void connect() {
+            try {
+                socket = new Socket(ip, port);
+                System.out.println("Successful connection!");
+                connected();
+            } catch (UnknownHostException e) {
+                System.err.println("Host could not be found!");
+                retry();
+            } catch (IOException e) {
+                System.err.println("Could not connect to host");
+                retry();
+            }
+        }
+
+        public void connected() {
+            try {
+                oos = new ObjectOutputStream(socket.getOutputStream());
+            } catch (IOException e) {
+                retry();
+            }
+        }
+
         public DataReader() {
         }
 
         public void run() {
-            boolean connected = true;
             Object obj;
-            try {
-                ois = new ObjectInputStream(socket.getInputStream());
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            while (connected) {
+            while (true) {
+                retry();
+                boolean connected = true;
                 try {
-                    obj = ois.readObject();
-                    if (obj instanceof Message) {
-                        Message readMessage = (Message) obj;
-                        switch (readMessage.getInstruction()) {
-                            case 1:
-                                queue = (Queue) readMessage.getPayload();
-                                break;
-                            case 2:
-                                list = (HighScoreList) readMessage.getPayload();
-                                break;
-                            default:
-                                break;
+                    ois = new ObjectInputStream(socket.getInputStream());
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+                while (connected) {
+                    try {
+                        obj = ois.readObject();
+                        if (obj instanceof Message) {
+                            Message readMessage = (Message) obj;
+                            switch (readMessage.getInstruction()) {
+                                case 1:
+                                    queue = (Queue) readMessage.getPayload();
+                                    break;
+                                case 2:
+                                    list = (HighScoreList) readMessage.getPayload();
+                                    break;
+                                default:
+                                    break;
+                            }
+                            readMessage = null;
                         }
-                        readMessage = null;
+                    } catch (IOException e1) {
+                        connected = false;
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e1) {
-                    connected = false;
-                    retry(ip, port);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
             }
         }
