@@ -145,13 +145,16 @@ public class ServerUI extends JPanel {
 				print("kek",0);
 			}
 			break;
+			
 		case "clearHS":
 			clearHS();
 			server.sendSetHighscore();
 			break;
+			
 		case "sendByte5":
 			server.isSendByte((byte) 5);
 			break;
+			
 		case "help":
 			print("print [string]", 0);
 			print("clearQ", 0);
