@@ -66,11 +66,8 @@ public class Server {
 		}
 
 	public void sendHighscore(int score, String x, String y, String z) {
-		String name = ms.popQueue();
-		hsList.add(name, score);
-		ms.setMySql(name, score, x, y, z);
+		ms.setMySql(ms.popQueue(), score, x, y, z);
 		client.sendHS();
-		
 	}
 	
 	public void broadcastQueue() {
@@ -216,6 +213,7 @@ public class Server {
 			public void sendHighscore() {
 				try {
 					ui.print("Sending Highscore list to client", 0);
+					hsList = ms.getAllScore();
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
 					oos.reset();
 					oos.flush();

@@ -32,7 +32,7 @@ public class MySql {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public synchronized void setMySql(String name, int score, String x, String y, String z) {
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score, X, Y, Z) VALUES (?,?,?,?,?)");
@@ -174,23 +174,25 @@ public class MySql {
 		}
 		System.out.println("-------------------------------- ");
 	}
-	
+
 	public synchronized String popQueue() {
 		Statement Stmt;
-		String queue = "";
+		String name = "";
 		try {
 			Stmt = myConn.createStatement();
-			String sql = "SELECT TOP 1 * FROM queue";
+			String sql = "SELECT * FROM queue";
 			ResultSet rs = Stmt.executeQuery(sql);
+			rs.next();
 			System.out.println("------------------QUEUE-----------------");
-			queue = rs.getString(2);
-			deleteQueue(queue);
+			System.out.println(rs.getString(2));
+			name = rs.getString(2);
+			deleteQueue(name);
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return queue;
+		return name;
 	}
-	
+
 	public synchronized void DeleteQueueList() {
 		Statement Stmt;
 		try {
@@ -215,5 +217,3 @@ public class MySql {
 	}
 
 }
-
-
