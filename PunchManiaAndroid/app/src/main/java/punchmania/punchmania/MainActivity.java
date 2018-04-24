@@ -3,6 +3,7 @@ package punchmania.punchmania;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,8 +44,10 @@ public class MainActivity extends AppCompatActivity {
                     QueueArrayList.add(newEntry);
                     toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
+                    Log.i(newEntry, "is added ");
                 } else {
                     toastMessage("You must put something in the text field");
+
                 }
             }
         });
