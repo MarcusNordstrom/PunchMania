@@ -2,12 +2,13 @@ package server;
 
 import java.sql.*;
 
+import common.HighScoreList;
 import common.UserList;
 
 public class MySql {
-	private String URL = "jdbc:mysql://localhost:8889/hslist";
-	private String Password = "root";
-	private String UserName = "root";
+	private String URL = "jdbc:mysql://ddwap.mah.se:3306/ah7115";
+	private String Password = "Grupp1";
+	private String UserName = "ah7115";
 
 	private Connection myConn;
 
@@ -19,12 +20,25 @@ public class MySql {
 			e.printStackTrace();
 		}	
 	}
-
 	public synchronized void setMySql(String name, int score) {
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score) VALUES (?,?)");
 			stmt.setString(1, name);
 			stmt.setInt(2, score);
+			stmt.execute();
+			System.out.println("---------------ADDED TO HSLIST-------------- \n" + name + "		" + score);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public synchronized void setMySql(String name, int score, String x, String y, String z) {
+		try {
+			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score, X, Y, Z) VALUES (?,?,?,?,?)");
+			stmt.setString(1, name);
+			stmt.setInt(2, score);
+			stmt.setString(3, x);
+			stmt.setString(4, y);
+			stmt.setString(5, z);
 			stmt.execute();
 			System.out.println("---------------ADDED TO HSLIST-------------- \n" + name + "		" + score);
 		} catch (SQLException e) {
@@ -67,9 +81,9 @@ public class MySql {
 		return score;
 	}
 
-	public synchronized String getAllScore() {
+	public synchronized HighScoreList getAllScore() {
 		Statement Stmt;
-		String score = "";
+		HighScoreList hsl = new HighScoreList();
 		try {
 			Stmt = myConn.createStatement();
 			String sql = "SELECT * FROM HSList";
@@ -77,13 +91,13 @@ public class MySql {
 			System.out.println("------------------ALL SOCORE-----------------");
 			while(rs.next()) {
 				System.out.println(rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4));
-				score += rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4);
+				hsl.add(rs.getString(2), rs.getInt(3));
 			}
 			System.out.println("--------------------------------------------------");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return score;
+		return hsl;
 	}
 
 	public synchronized void Delete(String name) {

@@ -100,16 +100,16 @@ public class ServerUI extends JPanel {
 
 		case "removeHS":
 			remove(cmd);
-			//				server.sendSetHighscore();
+			server.sendSetHighscore();
 			break;
 
 		case "addHS":
 			add(cmd);
-			//				server.sendSetHighscore();
+			server.sendSetHighscore();
 			break;
 
 		case "sendHS":
-			//				server.sendSetHighscore();
+			server.sendSetHighscore();
 
 			break;
 
@@ -142,7 +142,7 @@ public class ServerUI extends JPanel {
 			break;
 		case "clearHS":
 			clearHS();
-			//				server.sendSetHighscore();
+			server.sendSetHighscore();
 			break;
 		case "sendByte5":
 			server.isSendByte((byte) 5);
@@ -218,26 +218,26 @@ public class ServerUI extends JPanel {
 
 	private void add(String[] cmd) {
 
-		HighScoreList hl = server.getHSList();
+		//		HighScoreList hl = server.getHSList();
 		for(int i = 1; i < cmd.length;i+=2) {
 			String name = cmd[i];
 			int score = Integer.parseInt(cmd[i+1]);
-//			hl.add(name, score);
+			//			hl.add(name, score);
 			server.ms.setMySql(name, score);
 			print("Adding : " + cmd[i] + " to Highscore" , 0);
 		}
-		server.writeData(hl);
+		//		server.writeData(hl);
 	}
 
 	private void remove(String[] cmd) {
-		HighScoreList hl = server.getHSList();
+		//		HighScoreList hl = server.getHSList();
 		for(int i = 1; i < cmd.length;i++) {
-//			hl.remove(cmd[i]);
+			//			hl.remove(cmd[i]);
 			String name = cmd[i];
 			server.ms.Delete(name);
 			print("Removing : " + cmd[i] , 0);
 		}
-		server.writeData(hl);
+		//		server.writeData(hl);
 	}
 	private void clearHS() {
 		//		HighScoreList hl = server.getHSList();
@@ -252,7 +252,7 @@ public class ServerUI extends JPanel {
 
 	private void getScore(String string) {
 
-		HighScoreList hl = server.getHSList();
+		//		HighScoreList hl = server.getHSList();
 		print(string,0);
 		server.ms.getUserScore(string);
 		print("" + server.ms.getUserScore(string), 0);
@@ -263,9 +263,9 @@ public class ServerUI extends JPanel {
 		//				j++;
 		//			}
 		//		}
-//		if(j==0) {
-//			print("No score logged for this user",0);
-//		}
+		//		if(j==0) {
+		//			print("No score logged for this user",0);
+		//		}
 	}
 
 	private void getHSList() {
@@ -278,7 +278,7 @@ public class ServerUI extends JPanel {
 		//		}
 		//		print(ret , 0);
 		server.ms.getAllScore();
-		print(server.ms.getAllScore(),0);
+		print("" + server.ms.getAllScore(),0);
 	}
 
 	public void print(String text, int i) {
