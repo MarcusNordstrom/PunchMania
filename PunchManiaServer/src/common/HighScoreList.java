@@ -109,4 +109,9 @@ public class HighScoreList implements Serializable{
 		}
 		return ret;
 	}
+
+	public ArrayList<UserList> getList() {
+		sort();
+		return ul;
+	}
 }

@@ -1,7 +1,6 @@
 package punchmania.punchmania;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,7 +18,6 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 import common.Message;
 import common.HighScoreList;
@@ -29,10 +27,9 @@ import common.Queue;
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
     Button btnAdd, btnViewQueue, btnViewHighScore;
-    public static ArrayList<String> QueueArrayList = new ArrayList<>();
 
-    private Queue queue;
-    private HighScoreList list;
+    private static Queue queue = new Queue();
+    private static HighScoreList list;
     private String message = "";
     private static PrintWriter printWriter;
     private static Socket socket;
@@ -62,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
-                    QueueArrayList.add(newEntry);
+                    queue.add(newEntry);
                     toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
                     Log.i(newEntry, "is added ");
@@ -82,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                QueueArrayList.add(newEntry);
+                                queue.add(newEntry);
                                 toastMessage("Successfully added to queue");
                                 enterNameEditText.setText("");
                                 return true;
@@ -143,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static ArrayList<String> getQueue() {
-        return QueueArrayList;
+    public static Queue getQueue() {
+        return queue;
     }
 
     private class DataReader extends Thread {
@@ -171,18 +168,19 @@ public class MainActivity extends AppCompatActivity {
         public boolean connect() {
             try {
                 socket = new Socket(ip, port);
-                System.out.println("Successful connection!");
+                Log.i(this.getName(),"Successful connection!");
                 return true;
             } catch (UnknownHostException e) {
-                System.err.println("Host could not be found!");
+                Log.i(this.getName(),"Host could not be found!");
                 return false;
             } catch (IOException e) {
-                System.err.println("Could not connect to host");
+                Log.i(this.getName(),"Could not connect to host");
                 return false;
             }
         }
 
         public DataReader() {
+            Log.i(this.getName(), "DataReader initiated");
         }
 
         public void run() {
@@ -201,9 +199,11 @@ public class MainActivity extends AppCompatActivity {
                             Message readMessage = (Message) obj;
                             switch (readMessage.getInstruction()) {
                                 case 1:
+                                    Log.i(this.getName(), "Queue received!");
                                     queue = (Queue) readMessage.getPayload();
                                     break;
                                 case 2:
+                                    Log.i(this.getName(), "HighScoreList received!");
                                     list = (HighScoreList) readMessage.getPayload();
                                     break;
                                 default:
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e1) {
                         connected = false;
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Log.i(this.getName(), "Class not found!");
                     }
                 }
             }

@@ -25,9 +25,4 @@ public class Message implements Serializable{
 		return this.instruction;
 	}
 	
-	public String toString() {
-		return "Instruction: " + this.instruction + "\n"
-				+ "Contains: " + this.payload.toString();
-	}
-	
 }
