@@ -12,6 +12,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class QueueListActivity extends AppCompatActivity {
 
     private static final String TAG = "QueueListActivity";
@@ -40,7 +42,12 @@ public class QueueListActivity extends AppCompatActivity {
     private void populateListView(){
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the Queue ArrayList
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,MainActivity.getQueue().getList());
+        ArrayList<String> copiedQueueList = new ArrayList<>();
+        for(int i = MainActivity.getQueue().size(); i > 0; i--)
+        {
+            copiedQueueList.add(MainActivity.getQueue().peekAt(i));
+        }
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,copiedQueueList);
         mListView.setAdapter(adapter);
     }
 

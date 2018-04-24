@@ -18,10 +18,12 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import common.Message;
 import common.HighScoreList;
 import common.Queue;
+import common.UserList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -143,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
     public static Queue getQueue() {
         return queue;
     }
+
+    public static HighScoreList getHighScores() {return list;}
 
     private class DataReader extends Thread {
         private ObjectInputStream ois;
