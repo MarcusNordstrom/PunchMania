@@ -10,11 +10,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
      EditText enterNameEditText;
      Button btnAdd, btnViewQueue, btnViewHighScore;
      DatabaseHelper mDatabaseHelper;
+     public static ArrayList<String> QueueArrayList;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
-                    AddData(newEntry);
+                    QueueArrayList.add(newEntry);
                     enterNameEditText.setText("");
                 } else {
                     toastMessage("You must put something in the text field");
@@ -57,16 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void toastMessage(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    public void AddData(String newEntry){
-        boolean insertData = mDatabaseHelper.addData(newEntry);
-
-        if(insertData){
-            toastMessage("Data Successfuly Inserted!");
-        } else {
-            toastMessage("Something went wrong");
-        }
     }
 
     // Umm, keep the rest of the example code underneath this comment
@@ -91,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static ArrayList<String> getQueue()
+    {
+        return QueueArrayList;
     }
 
     /**
