@@ -17,7 +17,7 @@ public class QueueListActivity extends AppCompatActivity {
     private static final String TAG = "QueueListActivity";
 
     private ListView mListView;
-    private Button btnQ;
+    private Button btnHomeQ;
 
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -26,9 +26,9 @@ public class QueueListActivity extends AppCompatActivity {
 
         populateListView();
 
-        btnQ = (Button) findViewById(R.id.homeQ);
+        btnHomeQ = (Button) findViewById(R.id.btnHomeQ);
 
-        btnQ.setOnClickListener(new View.OnClickListener() {
+        btnHomeQ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(QueueListActivity.this, MainActivity.class);
