@@ -3,6 +3,8 @@ package punchmania.punchmania;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,14 +12,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
      EditText enterNameEditText;
      Button btnAdd, btnViewQueue, btnViewHighScore;
-     DatabaseHelper mDatabaseHelper;
-     public static ArrayList<String> QueueArrayList;
+     public static ArrayList<String> QueueArrayList = new ArrayList<>();
+
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -33,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
-        mDatabaseHelper = new DatabaseHelper(this);
 
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -42,17 +47,53 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
                     QueueArrayList.add(newEntry);
+                    toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
+                    Log.i(newEntry, "is added ");
                 } else {
                     toastMessage("You must put something in the text field");
+
                 }
+            }
+        });
+
+        enterNameEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN){
+                    switch (keyCode){
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            String newEntry = enterNameEditText.getText().toString();
+                            if (enterNameEditText.length() != 0) {
+                                QueueArrayList.add(newEntry);
+                                toastMessage("Successfully added to queue");
+                                enterNameEditText.setText("");
+                                return true;
+                            } else {
+                                toastMessage("You must put something in the text field");
+                                return true;
+                            }
+                        default:
+                            break;
+                    }
+                }
+                return false;
             }
         });
 
         btnViewQueue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ListDataActivity.class);
+                Intent intent = new Intent(MainActivity.this, QueueListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnViewHighScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent( MainActivity.this, HighScoreListActivity.class);
                 startActivity(intent);
             }
         });
@@ -90,10 +131,4 @@ public class MainActivity extends AppCompatActivity {
     {
         return QueueArrayList;
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
 }
