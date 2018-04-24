@@ -14,13 +14,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="serif-monospace"
         android:text="WELCOME TO"
         android:textAlignment="center"
         android:textColor="@android:color/holo_orange_dark"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,6 +29,7 @@
         android:id="@+id/punchMania"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -36,6 +38,7 @@
         android:textAlignment="center"
         android:textColor="@android:color/holo_orange_dark"
         android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcome" />
@@ -45,8 +48,9 @@
         android:id="@+id/relativeLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="124dp">
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/punchMania"
+        tools:layout_editor_absoluteX="0dp">
 
         <EditText
             android:id="@+id/enterNameEditText"
