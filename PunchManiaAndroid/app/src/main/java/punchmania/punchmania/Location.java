@@ -48,5 +48,5 @@ public class Location extends Activity {
         public void onProviderDisabled(String provider) {
 
         }
-    }
+    };
 }
