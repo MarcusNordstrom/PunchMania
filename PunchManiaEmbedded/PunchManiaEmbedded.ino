@@ -7,19 +7,25 @@
 
 //USERCONFIG
 //Ethernet
-IPAddress server(192, 168, 1, 20);    //Ip address for server
+IPAddress server(192, 168, 1, 13);    //Ip address for server
 int port = 12345;                     //Port for server
 IPAddress ip(192, 168, 1, 101);       //This device
 //Sensitivity
 int hitValue = 150;
 
 //CONFIG
+//LEDS
+int red = 5;
+int yellow = 4;
+int green = 3;
 //Ethernet
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Mac address
 EthernetClient client;
 //ADXL I2C
 ADXL345 adxl = ADXL345();
+//Boolean for hit detect and enable
 boolean hit_detected = false;
+boolean enable = true;
 //Counter for the cycles
 int counter = 0;
 //String for storage of all values
@@ -33,21 +39,82 @@ int calibrationZStorage[6] = {0, 0, 0, 0, 0, 0};
 
 //Method for connecting to server
 void connect() {
+  setLed(2);
   Serial.println("connecting...");
   int status = 100;
   if (status = client.connect(server, port)) {
     Serial.println("connected");
+    if (enable) {
+      setLed(1);
+    } else {
+      setLed(2);
+    }
   } else {
     Serial.println("connection failed");
+    setLed(3);
+    delay(2000);
+    connect();
   }
   Serial.println("Status: ");
   Serial.println(status);
+}
+
+void setLed(int led) {
+  switch (led) {
+    case 1:
+      Serial.println("LED Green");
+      digitalWrite(green, HIGH);
+      digitalWrite(yellow, LOW);
+      digitalWrite(red, LOW);
+      break;
+    case 2:
+      Serial.println("LED Yellow");
+      digitalWrite(green, LOW);
+      digitalWrite(yellow, HIGH);
+      digitalWrite(red, LOW);
+      break;
+    case 3:
+      Serial.println("LED Red");
+      digitalWrite(green, LOW);
+      digitalWrite(yellow, LOW);
+      digitalWrite(red, HIGH);
+      break;
+    case 4:
+      Serial.println("LED All");
+      digitalWrite(green, HIGH);
+      digitalWrite(yellow, HIGH);
+      digitalWrite(red, HIGH);
+      break;
+  }
+}
+
+void highScoreBlink() {
+  for(int i = 0; i < 10; i++) {
+    digitalWrite(green, HIGH);
+    digitalWrite(yellow, HIGH);
+    digitalWrite(red, HIGH);
+    delay(250);
+    digitalWrite(green, LOW);
+    digitalWrite(yellow, LOW);
+    digitalWrite(red, LOW);
+    delay(250);
+  }
+  if(enable) {
+    setLed(1);
+  } else {
+    setLed(2);
+  }
 }
 
 void setup() {
   //Serial begin
   Serial.begin(9600);
   Serial.println();
+  //LED setup
+  pinMode(green, OUTPUT);
+  pinMode(yellow, OUTPUT);
+  pinMode(red, OUTPUT);
+  setLed(4);
   //ADXL startup
   adxl.powerOn(); //Power on accelerometer
   adxl.setRangeSetting(16); //Sets sensitivty to 16G
@@ -119,13 +186,15 @@ void loop() {
     Serial.print(y);
     Serial.print(", ");
     Serial.println(z);*/
-
-  if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {
-    hit_detected = true;
-    Serial.println("h:");
-    Serial.println(x);
-    Serial.println(y);
-    Serial.println(z);
+  if (enable) {
+    if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {
+      setLed(2);
+      hit_detected = true;
+      Serial.println("h:");
+      Serial.println(x);
+      Serial.println(y);
+      Serial.println(z);
+    }
   }
   //if an hit has been detected save values for 1000 cycles then set the boolean and counter to false resp. 0
   if (hit_detected) {
@@ -140,27 +209,36 @@ void loop() {
     } else {
       counter = 0;
       hit_detected = false;
-      if (client.connected()) {
-        Serial.println(client.print(storage));
-        client.flush();
-        //client.write(buff, 2000);
-        Serial.println(storage);
-        storage = "";
-      } else {
-        connect();
-        Serial.println(client.print(storage));
-        client.flush();
-        //client.write(buff, 2000);
-        Serial.println(storage);
-        storage = "";
-      }
+      Serial.println(client.print(storage));
+      client.flush();
+      //client.write(buff, 2000);
+      Serial.println(storage);
+      storage = "";
 
     }
-  }       //EXPERIMENTAL UNTESTED UNIT FOR DUPLEX COMUNICATION
+  }
+  //Commands from server
   if (client.available()) {
-    char c = client.read();
+    byte recived = client.read();
     Serial.print("RECIVED: ");
-    Serial.println(c);
+    Serial.println(recived);
+    switch (recived) {
+      //1 is enable
+      case 1:
+        enable = true;
+        setLed(1);
+        break;
+      //2 is disable
+      case 2:
+        enable = false;
+        setLed(2);
+        break;
+      case 3:
+        highScoreBlink();
+        break;
+    }
   }
 }
+
+
 
