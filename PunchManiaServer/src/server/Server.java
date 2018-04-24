@@ -55,7 +55,11 @@ public class Server {
 		is = new IS(serverSocketIs);
 		ms = new MySql();
 	}
-
+	
+	public boolean isSendByte(byte send) {
+		return is.sendByte(send);
+	}
+	
 	public void sendQueue() {
 		client.sendQueue();
 	}
@@ -289,14 +293,25 @@ public class Server {
 		private ISHandler ish;
 
 		public IS(ServerSocket serverSocketIs) {
-
 			new ConnectionIs().start();
-
 		}
 
 		public void newHandler(Socket socket) {
 			ish = new ISHandler(socket);
 			ish.run();
+		}
+		
+		public boolean sendByte(byte send) {
+			if (dos != null) {
+				try {
+					dos.writeByte(send);
+					return true;
+				} catch (IOException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			return false;
 		}
 
 		public class ISHandler implements Runnable {
@@ -307,7 +322,6 @@ public class Server {
 				try {
 					dis = new DataInputStream(socket.getInputStream());
 					dos = new DataOutputStream(socket.getOutputStream());
-
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

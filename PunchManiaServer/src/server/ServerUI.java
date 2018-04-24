@@ -144,6 +144,8 @@ public class ServerUI extends JPanel {
 			clearHS();
 			//				server.sendSetHighscore();
 			break;
+		case "sendByte5":
+			server.isSendByte((byte) 5);
 		case "help":
 			print("print [string]", 0);
 			print("- prints a string", 0);
