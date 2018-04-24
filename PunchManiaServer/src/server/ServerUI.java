@@ -119,6 +119,7 @@ public class ServerUI extends JPanel {
 
 		case "addQ":
 			addQ(cmd);
+			server.isSendByte((byte) 1);
 			server.sendQueue();
 			break;
 
@@ -128,33 +129,43 @@ public class ServerUI extends JPanel {
 
 		case "removeQ":
 			removeQ(cmd);
+			if(server.ms.isEmpty() == 0) {
+				server.isSendByte((byte) 2);
+			}
 			server.sendQueue();
 			break;
 
 		case "delay":
 			delayOne();
 			break;
-			
+
 		case "clearQ":
 			clearQ();
+			if(server.ms.isEmpty() == 0) {
+				server.isSendByte((byte) 2);
+			}
 			server.sendQueue();
 			break;
-			
+
 		case "kek":
 			for(int i = 0; i <100; i++) {
 				print("kek",0);
 			}
 			break;
-			
+
 		case "clearHS":
 			clearHS();
 			server.sendSetHighscore();
 			break;
-			
-		case "sendByte5":
-			server.isSendByte((byte) 5);
+
+		case "isEnable":
+			server.isSendByte((byte) 1);
 			break;
-			
+
+		case "isDisable":
+			server.isSendByte((byte) 2);
+			break;
+
 		case "help":
 			print("print [string]", 0);
 			print("clearQ", 0);
@@ -194,7 +205,7 @@ public class ServerUI extends JPanel {
 		}
 
 	}
-	
+
 	public void clearQ() {
 		server.ms.DeleteQueueList();
 	}

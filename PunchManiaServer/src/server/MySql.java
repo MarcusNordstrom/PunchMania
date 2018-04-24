@@ -66,6 +66,24 @@ public class MySql {
 		}
 	}
 
+	public synchronized int getTop1() {
+		Statement Stmt;
+		int hs = 0;
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT * FROM hslist ORDER BY Score DESC LIMIT 1";
+			ResultSet rs = Stmt.executeQuery(sql);
+			System.out.println("------------TOP1-------------");
+			rs.next() ;
+			hs = rs.getInt(3);
+			System.out.println(hs);
+			System.out.println("------------------------------");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return hs;
+	}
+
 	public synchronized String getUserScore(String name) {
 		Statement Stmt;
 		String score = "";
@@ -210,10 +228,21 @@ public class MySql {
 		}
 	}
 
+	public synchronized int isEmpty() {
+		Statement Stmt;
+		int size = 0;
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT * FROM queue";
+			ResultSet rs = Stmt.executeQuery(sql);
+			while(rs.next()){
+				size++;
+			}
+			System.out.println(size);
 
-	public static void main(String[] args) {
-		MySql ms = new MySql();
-		ms.getTop10();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return size;
 	}
-
 }
