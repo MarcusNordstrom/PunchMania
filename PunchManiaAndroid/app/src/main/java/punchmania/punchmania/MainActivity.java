@@ -1,6 +1,7 @@
 package punchmania.punchmania;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -171,18 +172,19 @@ public class MainActivity extends AppCompatActivity {
         public boolean connect() {
             try {
                 socket = new Socket(ip, port);
-                System.out.println("Successful connection!");
+                Log.i(this.getName(),"Successful connection!");
                 return true;
             } catch (UnknownHostException e) {
-                System.err.println("Host could not be found!");
+                Log.i(this.getName(),"Host could not be found!");
                 return false;
             } catch (IOException e) {
-                System.err.println("Could not connect to host");
+                Log.i(this.getName(),"Could not connect to host");
                 return false;
             }
         }
 
         public DataReader() {
+            Log.i(this.getName(), "DataReader initiated");
         }
 
         public void run() {
@@ -201,9 +203,11 @@ public class MainActivity extends AppCompatActivity {
                             Message readMessage = (Message) obj;
                             switch (readMessage.getInstruction()) {
                                 case 1:
+                                    Log.i(this.getName(), "Queue received!");
                                     queue = (Queue) readMessage.getPayload();
                                     break;
                                 case 2:
+                                    Log.i(this.getName(), "HighScoreList received!");
                                     list = (HighScoreList) readMessage.getPayload();
                                     break;
                                 default:
@@ -214,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e1) {
                         connected = false;
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Log.i(this.getName(), "Class not found!");
                     }
                 }
             }

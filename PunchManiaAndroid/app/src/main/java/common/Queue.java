@@ -1,5 +1,7 @@
 package common;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -78,6 +80,6 @@ public class Queue implements Serializable{
 	}
 
 	private void syso(String string) {
-		System.out.println(string);
+		Log.i(string, "");
 	}
 }
