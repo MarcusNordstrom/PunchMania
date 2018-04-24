@@ -79,7 +79,7 @@ public class Queue implements Serializable{
 		list.set(1, temp);
 	}
 
-	private ArrayList<String> getList(){
+	public ArrayList<String> getList(){
 	    return list;
     }
 
