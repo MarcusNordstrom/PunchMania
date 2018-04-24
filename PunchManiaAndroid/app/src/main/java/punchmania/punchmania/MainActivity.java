@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
      EditText enterNameEditText;
      Button btnAdd, btnViewQueue, btnViewHighScore;
      public static ArrayList<String> QueueArrayList = new ArrayList<>();
+     private String ip = "192.168.1.20";
+     private int port = 12346;
 
 
     // Used to load the 'native-lib' library on application startup.
