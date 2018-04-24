@@ -1,6 +1,7 @@
 package punchmania.punchmania;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
      EditText enterNameEditText;
      TextView QueueList;
      Button addBtn;
+     ViewPager mainViewPager;
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -34,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
         addBtn = (Button) findViewById(R.id.addBtn);
         QueueList = (TextView) findViewById(R.id.QueueList);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
+        mainViewPager = (ViewPager) findViewById(R.id.pager);
+
+        mainViewPager.setOnPageChangeListener(
+                new ViewPager.SimpleOnPageChangeListener(){
+                    @Override
+                    public void onPageSelected(int position) {
+                        getActionBar().setSelectedNavigationItem(position);
+                    }}
+        );
 
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
