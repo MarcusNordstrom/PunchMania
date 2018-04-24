@@ -68,11 +68,11 @@ public class Server {
 		client.sendSetHS();
 		}
 
-	public void sendHighscore(int score) {
+	public void sendHighscore(int score, String x, String y, String z) {
 		String name = queue.pop();
 		hsList.add(name, score);
 //		writeData(hsList);
-		ms.setMySql(name, score);
+		ms.setMySql(name, score, x, y, z);
 		client.sendHS();
 		
 	}
@@ -338,7 +338,6 @@ public class Server {
 						String str = new String(string);
 						int score = cal.calculateScore(str);
 						ui.print("New score: " + score, 0);
-
 					} catch (IOException e) {
 						connected = false;
 					}

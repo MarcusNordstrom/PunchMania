@@ -278,7 +278,7 @@ public class ServerUI extends JPanel {
 		//		}
 		//		print(ret , 0);
 		server.ms.getAllScore();
-		//		print(server.ms.getAllScore(),0);
+		print("" + server.ms.getAllScore(),0);
 	}
 
 	public void print(String text, int i) {

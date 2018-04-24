@@ -6,9 +6,9 @@ import common.HighScoreList;
 import common.UserList;
 
 public class MySql {
-	private String URL = "jdbc:mysql://localhost:8889/hslist";
-	private String Password = "root";
-	private String UserName = "root";
+	private String URL = "jdbc:mysql://ddwap.mah.se:3306/ah7115";
+	private String Password = "Grupp1";
+	private String UserName = "ah7115";
 
 	private Connection myConn;
 
@@ -20,12 +20,25 @@ public class MySql {
 			e.printStackTrace();
 		}	
 	}
-
 	public synchronized void setMySql(String name, int score) {
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score) VALUES (?,?)");
 			stmt.setString(1, name);
 			stmt.setInt(2, score);
+			stmt.execute();
+			System.out.println("---------------ADDED TO HSLIST-------------- \n" + name + "		" + score);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public synchronized void setMySql(String name, int score, String x, String y, String z) {
+		try {
+			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score, X, Y, Z) VALUES (?,?,?,?,?)");
+			stmt.setString(1, name);
+			stmt.setInt(2, score);
+			stmt.setString(3, x);
+			stmt.setString(4, y);
+			stmt.setString(5, z);
 			stmt.execute();
 			System.out.println("---------------ADDED TO HSLIST-------------- \n" + name + "		" + score);
 		} catch (SQLException e) {
