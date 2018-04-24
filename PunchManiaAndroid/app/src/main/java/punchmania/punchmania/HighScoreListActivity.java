@@ -10,7 +10,11 @@ import android.content.Intent;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class HighScoreListActivity extends AppCompatActivity {
+
+    private static final String TAG = "HighScoreListActivity";
 
     private ListView mListView;
     private Button btnHomeHS;
@@ -34,7 +38,12 @@ public class HighScoreListActivity extends AppCompatActivity {
     private void populateListView(){
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,MainActivity.getQueue().getList());
+        ArrayList<String> convertedHighScoreList = new ArrayList<>();
+        for(int i = MainActivity.getHighScores().size(); i > 0; i--)
+        {
+            convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "%n" +MainActivity.getHighScores().getUser(i).getScore());
+        }
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,convertedHighScoreList);
         mListView.setAdapter(adapter);
     }
 
