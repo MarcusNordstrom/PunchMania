@@ -36,6 +36,11 @@ public class HighScoreList implements Serializable{
 		ul.add(new UserList(score, user));
 		sort();
 	}
+//	
+//	public void add(String user, int score, String time) {
+//		ul.add(new UserList(score, user));
+//		sort();
+//	}
 	/**
 	 * This method appends all of the elements in the specified collection to the end of the list.
 	 * @param arg : this is the collection containing all the elements.
@@ -43,6 +48,7 @@ public class HighScoreList implements Serializable{
 	public void add(ArrayList<UserList> arg) {
 		ul.addAll(arg);
 	}
+	
 	/**
 	 * This method goes through the User list and removes the specific position in the list.
 	 * @param user : The user who is removed.
@@ -60,6 +66,15 @@ public class HighScoreList implements Serializable{
 		}
 	}
 	/**
+	 * This method removes all from the list.
+	 */
+	public void removeAll() {
+		while(ul.size() != 0) {
+			System.out.println("Removing: " + ul.get(0).getUser());
+			ul.remove(0);
+		}
+	}
+	/**
 	 * This method returns the number of elements in the high score list.
 	 * @return
 	 */
@@ -73,11 +88,7 @@ public class HighScoreList implements Serializable{
 		}
 		System.out.println();
 	}
-	/**
-	 * this method returns the specific element in the list.
-	 * @param i
-	 * @return
-	 */
+	
 	public UserList getUser(int i) {
 		return ul.get(i);
 	}
@@ -99,35 +110,8 @@ public class HighScoreList implements Serializable{
 		return ret;
 	}
 
-
-	public static void main(String[] args) {
-		HighScoreList hl = new HighScoreList();
-		HighScoreList top10 = new HighScoreList();
-
-
-		
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 15);
-		hl.add("Benji", 5);
-		hl.add("Stefan", 15);
-		hl.syso();
-		
-		top10.add(hl.getTopTen());
-		top10.syso();
-		
-		hl.remove("Benji");
-		hl.syso();
-
-		hl.remove("Sebbe");
-		hl.syso();
-		
-		for(int i = 0; i < 20; i++) {
-			hl.add("Cyka", 10);
-		}
-		
-		top10 = new HighScoreList();
-		top10.add(hl.getTopTen());
-		top10.syso();
+	public ArrayList<UserList> getList() {
+		sort();
+		return ul;
 	}
 }
