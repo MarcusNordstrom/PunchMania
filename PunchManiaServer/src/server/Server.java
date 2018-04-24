@@ -3,9 +3,7 @@ package server;
 import java.awt.Dimension;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -47,7 +45,6 @@ public class Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		hsList = readData();
 		this.ui = serverui;
 		ui.addManager(this);
 		queue = new Queue();
@@ -69,9 +66,8 @@ public class Server {
 		}
 
 	public void sendHighscore(int score, String x, String y, String z) {
-		String name = queue.pop();
+		String name = ms.popQueue();
 		hsList.add(name, score);
-//		writeData(hsList);
 		ms.setMySql(name, score, x, y, z);
 		client.sendHS();
 		
@@ -94,36 +90,9 @@ public class Server {
 		return hl;
 	}
 
-//	public HighScoreList readData() {
-//		try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(filepath))) {
-//			try {
-//				hsList = (HighScoreList) input.readObject();
-//			} catch (ClassNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		hsList.syso();
-//		return hsList;
-//	}
-
-//	public void writeData(HighScoreList param) {
-//		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filepath, false))){
-//			output.writeObject(param);
-//			output.flush();
-//			output.reset();
-//		} catch (IOException e) {
-//			System.err.println("This isnt right");
-//		}
-//	}
-
-//	public HighScoreList getHSList() {
-//		return hsList;
-//	}
-
 	public void addToQueue(String name) {
 		queue.add(name);
+		ms.toQueue(name);
 	}
 
 	public Queue getQueue() {
@@ -173,6 +142,7 @@ public class Server {
 				try {
 					oos = new ObjectOutputStream(socket.getOutputStream());
 					ois = new ObjectInputStream(socket.getInputStream());
+					sendQueue();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -208,7 +178,6 @@ public class Server {
 							oos.close();
 							socket.close();
 						} catch (IOException e2) {
-							// e2.printStackTrace();
 							System.out.println("Stream close");
 						}
 						connected = false;
@@ -222,12 +191,10 @@ public class Server {
 			public void sendQueue() {
 				try {
 					ui.print("Sending queue to client", 0);
-					System.out.println(queue.size());
-					if(queue !=  null) {
+						queue = ms.getQueue();
 						oos.writeObject(new Message(queue, Message.NEW_QUEUE));
 						oos.reset();
 						oos.flush();
-					}
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.out.println("sendQ sucks");
@@ -239,12 +206,6 @@ public class Server {
 					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getAllScore();
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
-//					for(int i=0; i < hsList.size(); i++) {
-//						String name = hsList.getUser(i).getUser();
-//						int score = hsList.getUser(i).getScore();
-//						System.out.println(name+ "  " + score);
-////						ms.setMySql(name,score);
-//					}
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {

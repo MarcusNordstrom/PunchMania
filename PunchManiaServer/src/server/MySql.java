@@ -3,6 +3,7 @@ package server;
 import java.sql.*;
 
 import common.HighScoreList;
+import common.Queue;
 import common.UserList;
 
 public class MySql {
@@ -31,6 +32,7 @@ public class MySql {
 			e.printStackTrace();
 		}
 	}
+	
 	public synchronized void setMySql(String name, int score, String x, String y, String z) {
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score, X, Y, Z) VALUES (?,?,?,?,?)");
@@ -113,9 +115,9 @@ public class MySql {
 		System.out.println("-------------------------------- ");
 	}
 
+
 	public synchronized void DeleteHSList() {
 		Statement Stmt;
-		Statement Stmt1;
 		try {
 			Stmt = myConn.createStatement();
 			String sql = "SELECT * FROM hslist";
@@ -130,6 +132,82 @@ public class MySql {
 			e.printStackTrace();
 		}
 	}
+
+	public synchronized void toQueue(String name) {
+		try {
+			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO queue(Name) VALUES (?)");
+			stmt.setString(1, name);
+			stmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public synchronized Queue getQueue() {
+		Statement Stmt;
+		Queue queue = new Queue();
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT * FROM queue";
+			ResultSet rs = Stmt.executeQuery(sql);
+			System.out.println("------------------QUEUE-----------------");
+			while(rs.next()) {
+				System.out.println(rs.getString(2));
+				queue.add(rs.getString(2));
+			}
+			System.out.println("--------------------------------------------------");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return queue;
+	}
+
+	public synchronized void deleteQueue(String name) {
+		Statement stmt;
+		try {
+			PreparedStatement pstmt = myConn.prepareStatement("DELETE FROM queue WHERE Name=?");
+			pstmt.setString(1, name);
+			System.out.println("-----------DELETING USER FROM QUEUE--------- \n" + name);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("-------------------------------- ");
+	}
+	
+	public synchronized String popQueue() {
+		Statement Stmt;
+		String queue = "";
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT TOP 1 * FROM queue";
+			ResultSet rs = Stmt.executeQuery(sql);
+			System.out.println("------------------QUEUE-----------------");
+			queue = rs.getString(2);
+			deleteQueue(queue);
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return queue;
+	}
+	
+	public synchronized void DeleteQueueList() {
+		Statement Stmt;
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT * FROM queue";
+			ResultSet rs = Stmt.executeQuery(sql);
+			while(rs.next()) {
+				String sql1 = "DELETE FROM queue";
+				PreparedStatement pstmt = myConn.prepareStatement(sql1);
+				pstmt.executeUpdate();
+			}
+			System.out.println("QUEUE CLEARED");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	public static void main(String[] args) {
 		MySql ms = new MySql();
