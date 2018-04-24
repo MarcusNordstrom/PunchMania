@@ -40,7 +40,7 @@ public class QueueListActivity extends AppCompatActivity {
     private void populateListView(){
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the Queue ArrayList
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,MainActivity.getQueue());
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,MainActivity.getQueue().getList());
         mListView.setAdapter(adapter);
     }
 

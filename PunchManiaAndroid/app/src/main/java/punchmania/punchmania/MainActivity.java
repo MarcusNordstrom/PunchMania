@@ -1,8 +1,6 @@
 package punchmania.punchmania;
 
 import android.content.Intent;
-import android.nfc.Tag;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,7 +18,6 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 import common.Message;
 import common.HighScoreList;
@@ -30,10 +27,9 @@ import common.Queue;
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
     Button btnAdd, btnViewQueue, btnViewHighScore;
-    public static ArrayList<String> QueueArrayList = new ArrayList<>();
 
-    private Queue queue;
-    private HighScoreList list;
+    private static Queue queue = new Queue();
+    private static HighScoreList list;
     private String message = "";
     private static PrintWriter printWriter;
     private static Socket socket;
@@ -63,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
-                    QueueArrayList.add(newEntry);
+                    queue.add(newEntry);
                     toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
                     Log.i(newEntry, "is added ");
@@ -83,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                QueueArrayList.add(newEntry);
+                                queue.add(newEntry);
                                 toastMessage("Successfully added to queue");
                                 enterNameEditText.setText("");
                                 return true;
@@ -144,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static ArrayList<String> getQueue() {
-        return QueueArrayList;
+    public static Queue getQueue() {
+        return queue;
     }
 
     private class DataReader extends Thread {
