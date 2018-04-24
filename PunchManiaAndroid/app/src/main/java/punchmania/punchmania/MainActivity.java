@@ -3,6 +3,7 @@ package punchmania.punchmania;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,7 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import common.Message;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -49,6 +56,31 @@ public class MainActivity extends AppCompatActivity {
                     toastMessage("You must put something in the text field");
 
                 }
+            }
+        });
+
+        enterNameEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN){
+                    switch (keyCode){
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            String newEntry = enterNameEditText.getText().toString();
+                            if (enterNameEditText.length() != 0) {
+                                QueueArrayList.add(newEntry);
+                                toastMessage("Successfully added to queue");
+                                enterNameEditText.setText("");
+                                return true;
+                            } else {
+                                toastMessage("You must put something in the text field");
+                                return true;
+                            }
+                        default:
+                            break;
+                    }
+                }
+                return false;
             }
         });
 
@@ -100,6 +132,54 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> getQueue()
     {
         return QueueArrayList;
+    }
+
+    /**
+     * Sends a newly created user to the server and sends a message to the queue.
+     *
+     * @param user
+     */
+    public synchronized void sendUser(String user) {
+        try {
+            oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
+            oos.reset();
+            oos.flush();
+            System.out.println(user + " skickad");
+        } catch (IOException e) {
+            System.err.println("Socket interrupted");
+        }
+    }
+
+    /**
+     *
+     * method that uses the given ip and port to check if the connection is
+     * established.
+     *
+     * @param ip
+     * @param port
+     */
+    public void connect(String ip, int port) {
+        try {
+            socket = new Socket(ip, port);
+            System.out.println("Successful connection!");
+            connected(ip, port);
+        } catch (UnknownHostException e) {
+            System.err.println("Host could not be found!");
+            retry(ip, port);
+        } catch (IOException e) {
+            System.err.println("Could not connect to host");
+            retry(ip, port);
+        }
+    }
+
+    public void connected(String ip, int port) {
+        try {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            retry(ip, port);
+        }
+        dr = new Client.DataReader(this);
+        dr.start();
     }
 
 
