@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
                     QueueArrayList.add(newEntry);
+                    toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
                 } else {
                     toastMessage("You must put something in the text field");
@@ -51,7 +52,15 @@ public class MainActivity extends AppCompatActivity {
         btnViewQueue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ListDataActivity.class);
+                Intent intent = new Intent(MainActivity.this, QueueListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnViewHighScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent( MainActivity.this, HighScoreListActivity.class);
                 startActivity(intent);
             }
         });

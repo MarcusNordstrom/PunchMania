@@ -1,6 +1,5 @@
 package punchmania.punchmania;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +9,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class ListDataActivity extends AppCompatActivity {
+public class QueueListActivity extends AppCompatActivity {
 
-    private static final String TAG = "ListDataActivity";
+    private static final String TAG = "QueueListActivity";
 
     private ListView mListView;
 

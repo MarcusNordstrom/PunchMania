@@ -19,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ListDataActivity"></activity>
+        <activity android:name=".QueueListActivity"></activity>
+        <activity android:name=".HighScoreListActivity"></activity>
     </application>
 
 </manifest>
