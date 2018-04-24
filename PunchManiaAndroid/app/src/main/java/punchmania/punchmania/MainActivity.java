@@ -11,7 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import common.Message;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -123,6 +129,54 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> getQueue()
     {
         return QueueArrayList;
+    }
+
+    /**
+     * Sends a newly created user to the server and sends a message to the queue.
+     *
+     * @param user
+     */
+    public synchronized void sendUser(String user) {
+        try {
+            oos.writeObject(new Message(user, message.NEW_USER_TO_QUEUE));
+            oos.reset();
+            oos.flush();
+            System.out.println(user + " skickad");
+        } catch (IOException e) {
+            System.err.println("Socket interrupted");
+        }
+    }
+
+    /**
+     *
+     * method that uses the given ip and port to check if the connection is
+     * established.
+     *
+     * @param ip
+     * @param port
+     */
+    public void connect(String ip, int port) {
+        try {
+            socket = new Socket(ip, port);
+            System.out.println("Successful connection!");
+            connected(ip, port);
+        } catch (UnknownHostException e) {
+            System.err.println("Host could not be found!");
+            retry(ip, port);
+        } catch (IOException e) {
+            System.err.println("Could not connect to host");
+            retry(ip, port);
+        }
+    }
+
+    public void connected(String ip, int port) {
+        try {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            retry(ip, port);
+        }
+        dr = new Client.DataReader(this);
+        dr.start();
     }
 
 
