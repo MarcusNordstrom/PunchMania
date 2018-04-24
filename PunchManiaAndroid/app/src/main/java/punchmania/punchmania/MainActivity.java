@@ -3,6 +3,7 @@ package punchmania.punchmania;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +47,31 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     toastMessage("You must put something in the text field");
                 }
+            }
+        });
+
+        enterNameEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN){
+                    switch (keyCode){
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            String newEntry = enterNameEditText.getText().toString();
+                            if (enterNameEditText.length() != 0) {
+                                QueueArrayList.add(newEntry);
+                                toastMessage("Successfully added to queue");
+                                enterNameEditText.setText("");
+                                return true;
+                            } else {
+                                toastMessage("You must put something in the text field");
+                                return true;
+                            }
+                        default:
+                            break;
+                    }
+                }
+                return false;
             }
         });
 
