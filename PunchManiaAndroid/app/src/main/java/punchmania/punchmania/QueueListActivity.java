@@ -43,7 +43,7 @@ public class QueueListActivity extends AppCompatActivity {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the Queue ArrayList
         ArrayList<String> copiedQueueList = new ArrayList<>();
-        for(int i = MainActivity.getQueue().size(); i > 0; i--)
+        for(int i = 0; i < MainActivity.getQueue().size(); i++)
         {
             copiedQueueList.add(MainActivity.getQueue().peekAt(i));
         }

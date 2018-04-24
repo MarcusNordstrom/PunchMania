@@ -39,7 +39,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
-        for(int i = MainActivity.getHighScores().size(); i > 0; i--)
+        for(int i = 0; i < MainActivity.getHighScores().size(); i++)
         {
             convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "%n" +MainActivity.getHighScores().getUser(i).getScore());
         }
