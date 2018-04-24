@@ -24,7 +24,7 @@ $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     	$host  = $_SERVER['HTTP_HOST'];
   		$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
   		$extra = 'login.php?reg=true';
-  		header("Location: http://$host$uri/$extra");
+  		header("Location: https://$host$uri/$extra");
   		die();
     }
     $ins = $conn->prepare("INSERT INTO user (Uname, PW) VALUES (:uname, :hash)");
@@ -36,6 +36,6 @@ $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 	$host  = $_SERVER['HTTP_HOST'];
 	$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 	$extra = 'index.php';
-	header("Location: http://$host$uri/$extra");
+	header("Location: https://$host$uri/$extra");
 	die();
 ?>

@@ -25,11 +25,11 @@ $pwtest = password_verify($pw, $hash);
 if($pwtest == true ) {
     $_SESSION["uname"] = $uname;
     $extra = 'index.php';
-    header("Location: http://$host$uri/$extra");
+    header("Location: https://$host$uri/$extra");
     die();
 }else {
   $extra = 'login.php';
-  header("Location: http://$host$uri/$extra");
+  header("Location: https://$host$uri/$extra");
   die();
 }
  ?>
