@@ -25,6 +25,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         setContentView(R.layout.highscorelist_layout);
         mListView = (ListView) findViewById(R.id.highScoreListView);
 
+        updater.start();
 
         btnHomeHS = (Button) findViewById(R.id.btnHomeHS);
 
