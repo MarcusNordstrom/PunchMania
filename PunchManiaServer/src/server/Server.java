@@ -129,6 +129,7 @@ public class Server {
 		public void sendQueue() {
 			for (ClientHandler sendq : clientList) {
 				sendq.sendQueue();
+				System.out.println("Queue sent");
 			}
 		}
 

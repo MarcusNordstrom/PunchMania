@@ -125,6 +125,7 @@ public class ServerUI extends JPanel {
 
 		case "sendQ":
 			server.sendQueue();
+			print("Sending queue", 0);
 			break;
 
 		case "removeQ":

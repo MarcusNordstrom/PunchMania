@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,14 +14,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Random;
 
 import common.Message;
 import common.HighScoreList;
 import common.Queue;
-import common.UserList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -31,12 +29,12 @@ public class MainActivity extends AppCompatActivity {
     Button btnAdd, btnViewQueue, btnViewHighScore;
 
     private static Queue queue = new Queue();
-    private static HighScoreList list;
+    private static HighScoreList list = new HighScoreList();
     private String message = "";
-    private static PrintWriter printWriter;
-    private static Socket socket;
+    private PrintWriter printWriter;
+    private Socket socket;
     private ObjectOutputStream oos;
-    private String ip = "192.168.1.20";
+    private String ip = "192.168.0.148";
     private int port = 12346;
 
 
@@ -49,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
+        DataReader dataReader = new DataReader();
+        dataReader.start();
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
                     queue.add(newEntry);
+                    list.add(newEntry, new Random().nextInt(500000));
                     toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
                     Log.i(newEntry, "is added ");
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
                                 queue.add(newEntry);
+                                list.add(newEntry, new Random().nextInt(500000));
                                 toastMessage("Successfully added to queue");
                                 enterNameEditText.setText("");
                                 return true;
@@ -119,28 +121,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Umm, keep the rest of the example code underneath this comment
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+    // 404: Example code not found :)
 
     public static Queue getQueue() {
         return queue;
@@ -170,8 +151,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public boolean connect() {
+            Log.i(this.getName(),"Trying to connect");
             try {
-                socket = new Socket(ip, port);
+                InetAddress addr = InetAddress.getByName(ip);
+                socket = new Socket(addr, port);
                 Log.i(this.getName(),"Successful connection!");
                 return true;
             } catch (UnknownHostException e) {
@@ -197,17 +180,19 @@ public class MainActivity extends AppCompatActivity {
                     e2.printStackTrace();
                 }
                 while (connected) {
+                    Log.i(this.getName(), "Waiting for object");
                     try {
                         obj = ois.readObject();
                         if (obj instanceof Message) {
                             Message readMessage = (Message) obj;
+                            Log.i(this.getName(), "Object has arrived!");
                             switch (readMessage.getInstruction()) {
                                 case 1:
-                                    Log.i(this.getName(), "Queue received!");
+                                    Log.i(this.getName(), "It's a Queue!");
                                     queue = (Queue) readMessage.getPayload();
                                     break;
                                 case 2:
-                                    Log.i(this.getName(), "HighScoreList received!");
+                                    Log.i(this.getName(), "It's a HighScoreList!");
                                     list = (HighScoreList) readMessage.getPayload();
                                     break;
                                 default:
@@ -216,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                             readMessage = null;
                         }
                     } catch (IOException e1) {
+                        Log.i(this.getName(),"Connection lost!");
                         connected = false;
                     } catch (ClassNotFoundException e) {
                         Log.i(this.getName(), "Class not found!");

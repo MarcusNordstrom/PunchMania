@@ -24,6 +24,8 @@ public class HighScoreListActivity extends AppCompatActivity {
         setContentView(R.layout.highscorelist_layout);
         mListView = (ListView) findViewById(R.id.highScoreListView);
 
+        populateListView();
+
         btnHomeHS = (Button) findViewById(R.id.btnHomeHS);
 
         btnHomeHS.setOnClickListener(new View.OnClickListener() {
@@ -41,7 +43,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
         for(int i = 0; i < MainActivity.getHighScores().size(); i++)
         {
-            convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "%n" +MainActivity.getHighScores().getUser(i).getScore());
+            convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "\n" +MainActivity.getHighScores().getUser(i).getScore());
         }
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,convertedHighScoreList);
         mListView.setAdapter(adapter);

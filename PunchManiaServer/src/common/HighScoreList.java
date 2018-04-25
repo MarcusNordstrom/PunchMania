@@ -55,7 +55,6 @@ public class HighScoreList implements Serializable{
 	 */
 	public void remove(String user) {
 		ArrayList<UserList> temp = new ArrayList<UserList>();
-		int i = 0;
 		for (UserList ul : ul) {
 			if (ul.getUser().equals(user)) {
 				temp.add(ul);
