@@ -83,6 +83,24 @@ public class MySql {
 		}
 		return hs;
 	}
+	
+	public synchronized String getTop1Name() {
+		Statement Stmt;
+		String name = "";
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT * FROM hslist ORDER BY Score DESC LIMIT 1";
+			ResultSet rs = Stmt.executeQuery(sql);
+			System.out.println("------------TOP1-------------");
+			rs.next() ;
+			name = rs.getString(2);
+			System.out.println(name);
+			System.out.println("------------------------------");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return name;
+	}
 
 	public synchronized String getUserScore(String name) {
 		Statement Stmt;

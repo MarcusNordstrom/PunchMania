@@ -21,12 +21,12 @@ public class QueueListActivity extends AppCompatActivity {
     private ListView mListView;
     private Button btnHomeQ;
 
-    protected void onCreate(@Nullable Bundle savedInstanceState){
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.queuelist_layout);
         mListView = (ListView) findViewById(R.id.queueListView);
 
-        populateQueueListView();
+        populateListView();
 
         btnHomeQ = (Button) findViewById(R.id.btnHomeQ);
 
@@ -39,25 +39,11 @@ public class QueueListActivity extends AppCompatActivity {
         });
     }
 
-    private void populateQueueListView(){
-        mListView = (ListView) findViewById(R.id.queueListView);
+    private void populateListView(){
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the Queue ArrayList
         ArrayList<String> copiedQueueList = new ArrayList<>();
-        for(int i = 0; i < MainActivity.getQueue().size(); i++)
-        {
-            copiedQueueList.add(MainActivity.getQueue().peekAt(i));
+        for (int i = 0; i < MainActivity.getQueue().size(); i++) {
         }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,copiedQueueList);
-        mListView.setAdapter(adapter);
     }
-
-    private void toastMessage(String message){
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-
-
-
-
 }
