@@ -68,13 +68,12 @@ public class Server {
 	public void newHs(int score) {
 		if(score > ms.getTop1()) {
 			isSendByte((byte) 3);
-			System.out.println("NEW HS!!!!!!!!!!!!!!!");
+			client.broadcastNewHS();
 		}
 		System.out.println(score);
 	}
 
 	public void sendHighscore(int score, String x, String y, String z) {
-		String name = "";
 		if(ms.isEmpty() == 0) {
 			isSendByte((byte) 2);
 		}
@@ -120,6 +119,12 @@ public class Server {
 				sendq.sendQueue();
 				System.out.println("Queue sent");
 			}
+		}
+
+		public void broadcastNewHS() {
+			for (ClientHandler sendhs : clientList) {
+				sendhs.newHSSet();
+			}	
 		}
 
 		public void sendSetHS() {
@@ -220,6 +225,18 @@ public class Server {
 				}
 			}
 
+			public void newHSSet() {
+				try {
+					ui.print("NEW HIGHSCORE!", 0);
+					oos.writeObject(new Message(ms.getTop1Name(), Message.NEW_HIGHSCORELIST));
+					System.out.println("TOP USER SENT");
+					oos.reset();
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
 			public void sendHighscore() {
 				try {
 					ui.print("Sending Highscore list to client", 0);
@@ -297,7 +314,7 @@ public class Server {
 					if(ms.isEmpty() == 0) {
 						isSendByte((byte) 2);
 					}
-				
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

@@ -16,11 +16,13 @@ public class HighScoreListActivity extends AppCompatActivity {
 
     private static final String TAG = "HighScoreListActivity";
 
+    private ListView mListView;
     private Button btnHomeHS;
 
-    protected void onCreate(Bundle savedInstaceState){
+    protected void onCreate(Bundle savedInstaceState) {
         super.onCreate(savedInstaceState);
         setContentView(R.layout.highscorelist_layout);
+        mListView = (ListView) findViewById(R.id.highScoreListView);
 
         populateListView();
 
@@ -35,18 +37,14 @@ public class HighScoreListActivity extends AppCompatActivity {
         });
     }
 
-    private void populateListView(){
-        ListView mListView = (ListView) findViewById(R.id.highScoreListView);
+    public void populateListView() {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
-        for(int i = 0; i < MainActivity.getHighScores().size(); i++)
-        {
-            convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "\n" +MainActivity.getHighScores().getUser(i).getScore());
+        for (int i = 0; i < MainActivity.getHighScores().size(); i++) {
+            convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "\n" + MainActivity.getHighScores().getUser(i).getScore());
         }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,convertedHighScoreList);
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
         mListView.setAdapter(adapter);
     }
-
-
 }

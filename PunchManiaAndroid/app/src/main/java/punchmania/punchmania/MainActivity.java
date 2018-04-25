@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private String ip = "192.168.1.11";
     private int port = 12346;
     public static boolean connected= false;
+    private HighScoreListActivity hsa;
+    private QueueListActivity qla;
 
 
 
@@ -193,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 while (connected) {
-
                     try {
                         Log.i(this.getName(), "Waiting for object");
                         obj = ois.readObject();
@@ -205,12 +206,13 @@ public class MainActivity extends AppCompatActivity {
                                 case 1:
                                     Log.i(this.getName(), "It's a Queue!");
                                     queue = (Queue) readMessage.getPayload();
-                                    populateQueueListView();
+
                                     break;
                                 case 2:
                                     Log.i(this.getName(), "It's a HighScoreList!");
                                     list = (HighScoreList) readMessage.getPayload();
-                                    populateHighScoreListView();
+
+
                                     break;
                                 default:
                                     Log.i(this.getName(), "unknown object");
@@ -229,31 +231,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void populateHighScoreListView(){
-        ListView HighScoreListView = (ListView) findViewById(R.id.highScoreListView);
-        Log.d(TAG, "populateListView: Displaying data in the ListView.");
-        //create the list adapter and set the adapter to the HighScore ArrayList
-        ArrayList<String> convertedHighScoreList = new ArrayList<>();
-        for(int i = 0; i < MainActivity.getHighScores().size(); i++)
-        {
-            convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "\n" +MainActivity.getHighScores().getUser(i).getScore());
-        }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,convertedHighScoreList);
-        HighScoreListView.setAdapter(adapter);
-    }
 
-    private void populateQueueListView(){
-        ListView queueListView = (ListView) findViewById(R.id.queueListView);
-        Log.d(TAG, "populateListView: Displaying data in the ListView.");
-        //create the list adapter and set the adapter to the Queue ArrayList
-        ArrayList<String> copiedQueueList = new ArrayList<>();
-        for(int i = 0; i < MainActivity.getQueue().size(); i++)
-        {
-            copiedQueueList.add(MainActivity.getQueue().peekAt(i));
-        }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,copiedQueueList);
-        queueListView.setAdapter(adapter);
-    }
+
+
 
 //    // Geofencing stuff
 //    private PendingIntent getGeofencePendingIntent() {
