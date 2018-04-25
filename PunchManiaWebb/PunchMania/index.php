@@ -31,8 +31,9 @@ function getHSList($name) {
 			$place++;
 		}
 	} else {
-		$query = $conn->prepare("SELECT * FROM hslist WHERE Name=:name ORDER BY Score DESC LIMIT 100");
-		$query->bindParam(':name', $_GET["hsUser"]);
+		$query = $conn->prepare("SELECT * FROM hslist WHERE Name LIKE :name ORDER BY Score DESC LIMIT 100");
+		$name = $_GET["hsUser"] . "%";
+		$query->bindParam(':name',  $name);
 		$query->execute();
 		$query = $query->fetchAll();
 		$place = 1;

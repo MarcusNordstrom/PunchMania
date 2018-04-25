@@ -1,10 +1,16 @@
 body {
 	font-family: 'Press Start 2P', cursive !important;
 }
-.header h1{
+.header {
+	height: 10vh;
+}
+.header h2{
 	color: red;
 	text-align: center;
-	line-height: 20vh;
+	line-height: 10vh;
+}
+.list .col-lg{
+	height: 90vh;
 }
 .list h2 {
 	text-align: center;
@@ -24,4 +30,13 @@ body {
 .list td {
 	padding-left: 1vw;
 	padding-right: 1vw;
+}
+
+@media screen and (max-width: 425px) {
+  .header {
+  	height: 100vh;
+  }
+  .list .col-lg {
+  	height: 100vh;
+  }
 }
