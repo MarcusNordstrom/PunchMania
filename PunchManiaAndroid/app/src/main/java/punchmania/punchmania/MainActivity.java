@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 connected = retry();
                 try {
                     ois = new ObjectInputStream(socket.getInputStream());
+                    oos = new ObjectOutputStream(socket.getOutputStream());
                 } catch (IOException e2) {
                     e2.printStackTrace();
                 }
