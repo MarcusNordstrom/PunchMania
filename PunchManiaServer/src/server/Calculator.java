@@ -21,6 +21,33 @@ public class Calculator {
 	public Calculator(Server server) {
 		this.server = server;
 	}
+	
+	public int popX() {
+		if(x.size() == 0) {
+			return 0;
+		}
+		int xint = x.get(0);
+		x.remove(0);
+		return xint;
+	}
+	
+	public int popY() {
+		if(y.size() == 0) {
+			return 0;
+		}
+		int yint = y.get(0);
+		y.remove(0);
+		return yint;
+	}
+	
+	public int popZ() {
+		if(z.size() == 0) {
+			return 0;
+		}
+		int zint = z.get(0);
+		z.remove(0);
+		return zint;
+	}
 
 	public static boolean isInteger(String s) {
 		try { 
@@ -124,7 +151,19 @@ public class Calculator {
 		clearPrevious();
 		splitter(values);
 		force();
-		server.sendHighscore(getScore());
+		String xx = "";
+		for(int i=0; i < x.size(); i++) {
+			xx += popX()  + ",";
+		}
+		String yy = "";
+		for(int i=0; i < y.size(); i++) {
+			yy += popY()  + ",";
+		}
+		String zz = "";
+		for(int i=0; i < z.size(); i++) {
+			zz += popZ() + ",";
+		}
+		server.sendHighscore(getScore(), xx, yy, zz);
 		return getScore();
 	}
 }

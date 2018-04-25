@@ -77,6 +77,10 @@ public class Queue implements Serializable{
 		list.set(1, temp);
 	}
 
+	public ArrayList<String> getList(){
+	    return list;
+    }
+
 	private void syso(String string) {
 		System.out.println(string);
 	}

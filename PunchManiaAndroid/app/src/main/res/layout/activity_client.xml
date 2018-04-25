@@ -4,110 +4,108 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="10dp"
-    android:layout_marginEnd="10dp"
+
+    android:background="#505050"
     tools:context=".client">
 
-    <TabHost
-        android:layout_width="337dp"
-        android:layout_height="460dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="23dp"
-        android:layout_marginStart="23dp"
-        android:layout_marginTop="16dp"
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#676767"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enterNameEditText"
+        app:layout_constraintVertical_bias="0.163" />
+
+    <Button
+        android:id="@+id/btnViewHighScore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#676767"
+        android:text="View Highscore"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/btnAdd"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <Button
+        android:id="@+id/btnViewQueue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="8dp"
+        android:background="#676767"
+        android:text="View Queue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/btnAdd"
+        app:layout_constraintVertical_bias="0.25" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <EditText
+        android:id="@+id/enterNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="200dp"
+        android:hint="Enter your name!"
+        android:textAlignment="center"
+        android:textColorLink="#505050"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:visibility="visible" />
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="serif-monospace"
+        android:text="WELCOME TO"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/punchMania"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="serif-monospace"
+        android:text="PUNCH MANIA"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome" />
 
-                <LinearLayout
-                    android:id="@+id/queue"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="192dp" />
 
-                    <TextView
-                        android:id="@+id/welcome"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="serif-monospace"
-                        android:text="WELCOME TO"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/holo_orange_dark"
-                        android:textSize="30sp" />
-
-                    <TextView
-                        android:id="@+id/punchMania"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="serif-monospace"
-                        android:text="PUNCH MANIA"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/holo_orange_dark"
-                        android:textSize="36sp" />
-
-                    <TextView
-                        android:id="@+id/currentQ"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="serif-monospace"
-                        android:text="Current queue:"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/QueueList"
-                        android:layout_width="match_parent"
-                        android:layout_height="199dp"
-                        android:text="this should be invisible" />
-
-                    <EditText
-                        android:id="@+id/enterNameEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:fontFamily="serif-monospace"
-                        android:hint="Enter name"
-                        android:inputType="textPersonName"
-                        android:textSize="14sp" />
-
-                    <Button
-                        android:id="@+id/addBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Add"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        tools:layout_editor_absoluteX="143dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/highscore"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-            </FrameLayout>
-        </LinearLayout>
-    </TabHost>
 
 </android.support.constraint.ConstraintLayout>
 

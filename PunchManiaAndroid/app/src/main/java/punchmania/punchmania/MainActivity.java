@@ -1,24 +1,46 @@
 package punchmania.punchmania;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Random;
+
+import common.Message;
+import common.HighScoreList;
+import common.Queue;
 
 
 public class MainActivity extends AppCompatActivity {
-     EditText enterNameEditText;
-     TextView QueueList;
-     Button addBtn;
+    EditText enterNameEditText;
+    Button btnAdd, btnViewQueue, btnViewHighScore;
+
+    private static Queue queue = new Queue();
+    private static HighScoreList list = new HighScoreList();
+    private String message = "";
+    private PrintWriter printWriter;
+    private Socket socket = new Socket();
+    private ObjectOutputStream oos;
+    private String ip = "192.168.1.11";
+    private int port = 12346;
+    public static boolean connected= false;
+    private HighScoreListActivity hsa;
+    private QueueListActivity qla;
+
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -30,60 +52,188 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
+        DataReader dataReader = new DataReader();
+        dataReader.start();
 
-        addBtn = (Button) findViewById(R.id.addBtn);
-        QueueList = (TextView) findViewById(R.id.QueueList);
+        btnAdd = (Button) findViewById(R.id.btnAdd);
+        btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
+        btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                String name = enterNameEditText.getText().toString();
-                if (enterNameEditText.length() != 0){
-                    QueueList.setText(name);
+            public void onClick(View v) {
+                String newEntry = enterNameEditText.getText().toString();
+                if (enterNameEditText.length() != 0) {
+                    queue.add(newEntry);
+                    list.add(newEntry, new Random().nextInt(500000));
+                    toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
+                    Log.i(newEntry, "is added ");
                 } else {
-                    enterNameEditText.setText("Enter a name");
+                    toastMessage("You must put something in the text field");
+
                 }
+            }
+        });
+
+        enterNameEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            String newEntry = enterNameEditText.getText().toString();
+                            if (enterNameEditText.length() != 0) {
+                                queue.add(newEntry);
+                                list.add(newEntry, new Random().nextInt(500000));
+                                toastMessage("Successfully added to queue");
+                                enterNameEditText.setText("");
+                                return true;
+                            } else {
+                                toastMessage("That's a short name you've got there");
+                                return true;
+                            }
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
+        btnViewQueue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, QueueListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnViewHighScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HighScoreListActivity.class);
+                startActivity(intent);
             }
         });
     }
 
-
-    public void setQueueListView(String arg1)
-    {
-        TextView QueueListView = findViewById(R.id.QueueList);
-        QueueListView.setText(arg1);
-        QueueListView.setMovementMethod(new ScrollingMovementMethod());
+    public void toastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     // Umm, keep the rest of the example code underneath this comment
+    // 404: Example code not found :)
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public static Queue getQueue() {
+        return queue;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public static HighScoreList getHighScores() {
+        return list;
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+    private class DataReader extends Thread {
+        private ObjectInputStream ois;
+
+        public boolean retry() {
+            connected = false;
+            while (!connected) {
+                System.err.print("Reconnecting in ");
+                for (int i = 5; i > 0; i--) {
+                    System.err.print(i + " ");
+                    try {
+                        this.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.err.println();
+                connected = connect();
+            }
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        public boolean connect() {
+            Log.i(this.getName(), "Searching for host");
+            try {
+                InetAddress addr = InetAddress.getByName(ip);
+                socket = new Socket(addr, port);
+                Log.i(this.getName(), "Gad em!");
+                return true;
+            } catch (UnknownHostException e) {
+                Log.i(this.getName(), "Stranger danger!");
+                return false;
+            } catch (IOException e) {
+                Log.i(this.getName(), "404: Server not found :(");
+                return false;
+            }
+        }
+
+        public DataReader() {
+            Log.i(this.getName(), "DataReader initiated");
+        }
+
+        public void run() {
+            Object obj;
+            while (true) {
+                connected = retry();
+                try {
+                    ois = new ObjectInputStream(socket.getInputStream());
+                    oos = new ObjectOutputStream(socket.getOutputStream());
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+
+                while (connected) {
+                    try {
+                        Log.i(this.getName(), "Waiting for object");
+                        obj = ois.readObject();
+                        Log.i(this.getName(), obj.toString());
+                        if (obj instanceof Message) {
+                            Message readMessage = (Message) obj;
+                            Log.i(this.getName(), "Object has arrived!");
+                            switch (readMessage.getInstruction()) {
+                                case 1:
+                                    Log.i(this.getName(), "It's a Queue!");
+                                    queue = (Queue) readMessage.getPayload();
+                                    break;
+                                case 2:
+                                    Log.i(this.getName(), "It's a HighScoreList!");
+                                    list = (HighScoreList) readMessage.getPayload();
+                                    break;
+                                default:
+                                    Log.i(this.getName(), "unknown object");
+                                    break;
+                            }
+                            readMessage = null;
+                        }
+                    } catch (IOException e1) {
+                        Log.i(this.getName(), "Connection lost!");
+                        connected = false;
+                    } catch (ClassNotFoundException e) {
+                        Log.i(this.getName(), "Class not found!");
+                    }
+                }
+            }
+        }
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
+//    // Geofencing stuff
+//    private PendingIntent getGeofencePendingIntent() {
+//        // Reuse the PendingIntent if we already have it.
+//        if (mGeofencePendingIntent != null) {
+//            return mGeofencePendingIntent;
+//        }
+//        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+//        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+//        // calling addGeofences() and removeGeofences().
+//        mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.
+//                FLAG_UPDATE_CURRENT);
+//        return mGeofencePendingIntent;
+//
+//    }
 }

@@ -3,9 +3,7 @@ package server;
 import java.awt.Dimension;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -37,7 +35,7 @@ public class Server {
 
 	private FileInputStream fis;
 	private FileOutputStream fos;
-	
+
 	public MySql ms;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
@@ -47,7 +45,6 @@ public class Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		hsList = readData();
 		this.ui = serverui;
 		ui.addManager(this);
 		queue = new Queue();
@@ -56,71 +53,48 @@ public class Server {
 		ms = new MySql();
 	}
 
+	public boolean isSendByte(byte send) {
+		return is.sendByte(send);
+	}
+
 	public void sendQueue() {
 		client.sendQueue();
 	}
 
 	public void sendSetHighscore() {
-//		client.sendSetHS();
-		ms.getAllScore();
+		client.sendSetHS();
 	}
 
-	public void sendHighscore(int score) {
-		String name = queue.pop();
-		hsList.add(name, score);
-		writeData(hsList);
-		ms.setMySql(name, score);
-		client.sendHS();
-		
+	public void newHs(int score) {
+		if(score > ms.getTop1()) {
+			isSendByte((byte) 3);
+			client.broadcastNewHS();
+		}
+		System.out.println(score);
 	}
-	
+
+	public void sendHighscore(int score, String x, String y, String z) {
+		if(ms.isEmpty() == 0) {
+			isSendByte((byte) 2);
+		}
+		else {
+			isSendByte((byte) 1);
+			newHs(score);
+			ms.setMySql(ms.popQueue(), score, x, y, z);
+		}
+		client.sendHS();
+	}
+
 	public void broadcastQueue() {
 		for(ClientHandler sendq : clientList) {
 			sendq.sendQueue();
 		}
 	}
 
-	private HighScoreList newHSList() {
-		HighScoreList hl = new HighScoreList();
-
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 10);
-		hl.add("Sebbe", 15);
-		hl.add("Benji", 5);
-		hl.add("Stefan", 15);
-		return hl;
-	}
-
-	public HighScoreList readData() {
-		try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(filepath))) {
-			try {
-				hsList = (HighScoreList) input.readObject();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		hsList.syso();
-		return hsList;
-	}
-
-	public void writeData(HighScoreList param) {
-		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filepath, false))){
-			output.writeObject(param);
-			output.flush();
-			output.reset();
-		} catch (IOException e) {
-			System.err.println("This isnt right");
-		}
-	}
-
-	public HighScoreList getHSList() {
-		return hsList;
-	}
-
 	public void addToQueue(String name) {
+		isSendByte((byte) 1);
 		queue.add(name);
+		ms.toQueue(name);
 	}
 
 	public Queue getQueue() {
@@ -143,9 +117,16 @@ public class Server {
 		public void sendQueue() {
 			for (ClientHandler sendq : clientList) {
 				sendq.sendQueue();
+				System.out.println("Queue sent");
 			}
 		}
-		
+
+		public void broadcastNewHS() {
+			for (ClientHandler sendhs : clientList) {
+				sendhs.newHSSet();
+			}	
+		}
+
 		public void sendSetHS() {
 			for (ClientHandler sendSh : clientList) {
 				sendSh.sendSetHighscore();
@@ -170,12 +151,13 @@ public class Server {
 				try {
 					oos = new ObjectOutputStream(socket.getOutputStream());
 					ois = new ObjectInputStream(socket.getInputStream());
+					sendQueue();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				this.start();
 			}
-			
+
 
 			/*
 			 * Read message from Client and prints it, sends value to calculator.
@@ -195,6 +177,9 @@ public class Server {
 							System.out.println(message.getPayload());
 							String newtoqueue = (String) message.getPayload();
 							addToQueue(newtoqueue);
+							if(ms.isEmpty() == 0) {
+								isSendByte((byte) 2);
+							}
 							broadcastQueue();
 							break;
 						}
@@ -205,7 +190,6 @@ public class Server {
 							oos.close();
 							socket.close();
 						} catch (IOException e2) {
-							// e2.printStackTrace();
 							System.out.println("Stream close");
 						}
 						connected = false;
@@ -219,12 +203,10 @@ public class Server {
 			public void sendQueue() {
 				try {
 					ui.print("Sending queue to client", 0);
-					System.out.println(queue.size());
-					if(queue !=  null) {
-						oos.writeObject(new Message(queue, Message.NEW_QUEUE));
-						oos.reset();
-						oos.flush();
-					}
+					queue = ms.getQueue();
+					oos.writeObject(new Message(queue, Message.NEW_QUEUE));
+					oos.reset();
+					oos.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.out.println("sendQ sucks");
@@ -234,13 +216,20 @@ public class Server {
 			public void sendSetHighscore() {
 				try {
 					ui.print("Sending Highscore list to client", 0);
+					hsList = ms.getAllScore();
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
-					for(int i=0; i < hsList.size(); i++) {
-						String name = hsList.getUser(i).getUser();
-						int score = hsList.getUser(i).getScore();
-						System.out.println(name+ "  " + score);
-//						ms.setMySql(name,score);
-					}
+					oos.reset();
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			public void newHSSet() {
+				try {
+					ui.print("NEW HIGHSCORE!", 0);
+					oos.writeObject(new Message(ms.getTop1Name(), Message.NEW_HIGHSCORELIST));
+					System.out.println("TOP USER SENT");
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
@@ -251,6 +240,10 @@ public class Server {
 			public void sendHighscore() {
 				try {
 					ui.print("Sending Highscore list to client", 0);
+					hsList = ms.getAllScore();
+					if(ms.isEmpty() == 0) {
+						isSendByte((byte) 2);
+					}
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
 					oos.reset();
 					oos.flush();
@@ -289,14 +282,25 @@ public class Server {
 		private ISHandler ish;
 
 		public IS(ServerSocket serverSocketIs) {
-
 			new ConnectionIs().start();
-
 		}
 
 		public void newHandler(Socket socket) {
 			ish = new ISHandler(socket);
 			ish.run();
+		}
+
+		public boolean sendByte(byte send) {
+			if (dos != null) {
+				try {
+					dos.writeByte(send);
+					return true;
+				} catch (IOException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			return false;
 		}
 
 		public class ISHandler implements Runnable {
@@ -307,6 +311,9 @@ public class Server {
 				try {
 					dis = new DataInputStream(socket.getInputStream());
 					dos = new DataOutputStream(socket.getOutputStream());
+					if(ms.isEmpty() == 0) {
+						isSendByte((byte) 2);
+					}
 
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -324,7 +331,6 @@ public class Server {
 						String str = new String(string);
 						int score = cal.calculateScore(str);
 						ui.print("New score: " + score, 0);
-
 					} catch (IOException e) {
 						connected = false;
 					}

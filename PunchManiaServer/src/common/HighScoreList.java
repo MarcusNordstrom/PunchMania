@@ -36,6 +36,11 @@ public class HighScoreList implements Serializable{
 		ul.add(new UserList(score, user));
 		sort();
 	}
+//	
+//	public void add(String user, int score, String time) {
+//		ul.add(new UserList(score, user));
+//		sort();
+//	}
 	/**
 	 * This method appends all of the elements in the specified collection to the end of the list.
 	 * @param arg : this is the collection containing all the elements.
@@ -50,7 +55,6 @@ public class HighScoreList implements Serializable{
 	 */
 	public void remove(String user) {
 		ArrayList<UserList> temp = new ArrayList<UserList>();
-		int i = 0;
 		for (UserList ul : ul) {
 			if (ul.getUser().equals(user)) {
 				temp.add(ul);

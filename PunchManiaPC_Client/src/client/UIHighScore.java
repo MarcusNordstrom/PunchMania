@@ -12,6 +12,7 @@ import common.UserList;
 public class UIHighScore extends JPanel {
 	private JLabel lblHighScore = new JLabel("High Score");
 	private JTextArea taNames = new JTextArea();
+	private JScrollPane jScroll = new JScrollPane(taNames);
 	private JFrame frame;
 
 	/**
@@ -20,8 +21,9 @@ public class UIHighScore extends JPanel {
 	public UIHighScore() {
 		setLayout(new BorderLayout());
 		add(lblHighScore, BorderLayout.NORTH);
-		add(taNames, BorderLayout.CENTER);
+		add(jScroll, BorderLayout.CENTER);
 		taNames.setEditable(false);
+		jScroll.setAutoscrolls(true);
 		
 		frame = new JFrame("PUNCH MANIA - HIGH SCORE");
 		frame.setResizable(false);
@@ -50,7 +52,10 @@ public class UIHighScore extends JPanel {
 		taNames.setText("");
 		HighScoreList list =(HighScoreList) obj;
 		String output = "";
-		ArrayList<UserList> aList = list.getTopTen();
+		ArrayList<UserList> aList = new ArrayList<UserList>();
+		for(int i = 0; i < list.size(); i++) {
+			aList.add(list.getUser(i));
+		}
 		for(UserList u : aList) {
 			output += u.getUser() + "\t" + u.getScore() + "\n";
 		}
