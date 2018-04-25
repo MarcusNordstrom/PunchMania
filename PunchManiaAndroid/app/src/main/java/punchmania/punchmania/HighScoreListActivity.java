@@ -12,8 +12,6 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import static java.lang.Thread.sleep;
-
 public class HighScoreListActivity extends AppCompatActivity {
 
     private static final String TAG = "HighScoreListActivity";
@@ -37,15 +35,9 @@ public class HighScoreListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        while(true){
-            try {
-                sleep(5000);
-            } catch (InterruptedException e) {}
-            populateListView();
-        }
     }
 
-    public void populateListView(){
+    private void populateListView(){
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();

@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import static java.lang.Thread.sleep;
-
 public class QueueListActivity extends AppCompatActivity {
 
     private static final String TAG = "QueueListActivity";
@@ -39,15 +37,9 @@ public class QueueListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        while(true){
-            try {
-                sleep(5000);
-            } catch (InterruptedException e) {}
-            populateListView();
-        }
     }
 
-    public void populateListView(){
+    private void populateListView(){
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the Queue ArrayList
         ArrayList<String> copiedQueueList = new ArrayList<>();
