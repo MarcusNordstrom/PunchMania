@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".QueueListActivity"></activity>
         <activity android:name=".HighScoreListActivity"></activity>
+        <service android:name=".GeofenceTransitionsIntentService"/>
     </application>
 
 </manifest>

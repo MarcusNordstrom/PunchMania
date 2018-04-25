@@ -1,5 +1,6 @@
 package punchmania.punchmania;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                                 enterNameEditText.setText("");
                                 return true;
                             } else {
-                                toastMessage("You must put something in the text field");
+                                toastMessage("That's a short name you've got there");
                                 return true;
                             }
                         default:
@@ -127,14 +128,16 @@ public class MainActivity extends AppCompatActivity {
         return queue;
     }
 
-    public static HighScoreList getHighScores() {return list;}
+    public static HighScoreList getHighScores() {
+        return list;
+    }
 
     private class DataReader extends Thread {
         private ObjectInputStream ois;
 
         public boolean retry() {
             boolean connected = false;
-            while(!connected) {
+            while (!connected) {
                 System.err.print("Reconnecting in ");
                 for (int i = 5; i > 0; i--) {
                     System.err.print(i + " ");
@@ -151,17 +154,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public boolean connect() {
-            Log.i(this.getName(),"Trying to connect");
+            Log.i(this.getName(), "Searching for host");
             try {
                 InetAddress addr = InetAddress.getByName(ip);
                 socket = new Socket(addr, port);
-                Log.i(this.getName(),"Successful connection!");
+                Log.i(this.getName(), "Gad em!");
                 return true;
             } catch (UnknownHostException e) {
-                Log.i(this.getName(),"Host could not be found!");
+                Log.i(this.getName(), "Stranger danger!");
                 return false;
             } catch (IOException e) {
-                Log.i(this.getName(),"Could not connect to host");
+                Log.i(this.getName(), "404: Server not found :(");
                 return false;
             }
         }
@@ -201,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                             readMessage = null;
                         }
                     } catch (IOException e1) {
-                        Log.i(this.getName(),"Connection lost!");
+                        Log.i(this.getName(), "Connection lost!");
                         connected = false;
                     } catch (ClassNotFoundException e) {
                         Log.i(this.getName(), "Class not found!");
@@ -210,4 +213,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+//    // Geofencing stuff
+//    private PendingIntent getGeofencePendingIntent() {
+//        // Reuse the PendingIntent if we already have it.
+//        if (mGeofencePendingIntent != null) {
+//            return mGeofencePendingIntent;
+//        }
+//        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+//        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+//        // calling addGeofences() and removeGeofences().
+//        mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.
+//                FLAG_UPDATE_CURRENT);
+//        return mGeofencePendingIntent;
+//
+//    }
 }
