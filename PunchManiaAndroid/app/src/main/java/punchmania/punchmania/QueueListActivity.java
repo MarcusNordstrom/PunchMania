@@ -26,7 +26,7 @@ public class QueueListActivity extends AppCompatActivity {
         setContentView(R.layout.queuelist_layout);
         mListView = (ListView) findViewById(R.id.queueListView);
 
-        populateListView();
+        populateQueueListView();
 
         btnHomeQ = (Button) findViewById(R.id.btnHomeQ);
 
@@ -39,7 +39,8 @@ public class QueueListActivity extends AppCompatActivity {
         });
     }
 
-    private void populateListView(){
+    private void populateQueueListView(){
+        mListView = (ListView) findViewById(R.id.queueListView);
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the Queue ArrayList
         ArrayList<String> copiedQueueList = new ArrayList<>();

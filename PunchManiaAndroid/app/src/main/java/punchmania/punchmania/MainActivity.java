@@ -7,8 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -18,6 +21,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import common.Message;
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
+
+    private String TAG = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,10 +205,12 @@ public class MainActivity extends AppCompatActivity {
                                 case 1:
                                     Log.i(this.getName(), "It's a Queue!");
                                     queue = (Queue) readMessage.getPayload();
+                                    populateQueueListView();
                                     break;
                                 case 2:
                                     Log.i(this.getName(), "It's a HighScoreList!");
                                     list = (HighScoreList) readMessage.getPayload();
+                                    populateHighScoreListView();
                                     break;
                                 default:
                                     Log.i(this.getName(), "unknown object");
@@ -219,6 +227,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void populateHighScoreListView(){
+        ListView HighScoreListView = (ListView) findViewById(R.id.highScoreListView);
+        Log.d(TAG, "populateListView: Displaying data in the ListView.");
+        //create the list adapter and set the adapter to the HighScore ArrayList
+        ArrayList<String> convertedHighScoreList = new ArrayList<>();
+        for(int i = 0; i < MainActivity.getHighScores().size(); i++)
+        {
+            convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "\n" +MainActivity.getHighScores().getUser(i).getScore());
+        }
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,convertedHighScoreList);
+        HighScoreListView.setAdapter(adapter);
+    }
+
+    private void populateQueueListView(){
+        ListView queueListView = (ListView) findViewById(R.id.queueListView);
+        Log.d(TAG, "populateListView: Displaying data in the ListView.");
+        //create the list adapter and set the adapter to the Queue ArrayList
+        ArrayList<String> copiedQueueList = new ArrayList<>();
+        for(int i = 0; i < MainActivity.getQueue().size(); i++)
+        {
+            copiedQueueList.add(MainActivity.getQueue().peekAt(i));
+        }
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,copiedQueueList);
+        queueListView.setAdapter(adapter);
     }
 
 //    // Geofencing stuff
