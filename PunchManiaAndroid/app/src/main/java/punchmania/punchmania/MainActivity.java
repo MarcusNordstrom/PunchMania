@@ -7,11 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -21,7 +18,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Random;
 
 import common.Message;
@@ -51,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
-
-    private String TAG = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,13 +200,10 @@ public class MainActivity extends AppCompatActivity {
                                 case 1:
                                     Log.i(this.getName(), "It's a Queue!");
                                     queue = (Queue) readMessage.getPayload();
-
                                     break;
                                 case 2:
                                     Log.i(this.getName(), "It's a HighScoreList!");
                                     list = (HighScoreList) readMessage.getPayload();
-
-
                                     break;
                                 default:
                                     Log.i(this.getName(), "unknown object");
@@ -230,10 +221,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-
 
 //    // Geofencing stuff
 //    private PendingIntent getGeofencePendingIntent() {

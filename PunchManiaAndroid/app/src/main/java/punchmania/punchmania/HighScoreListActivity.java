@@ -37,7 +37,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         });
     }
 
-    public void populateListView() {
+    private void populateListView(){
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
