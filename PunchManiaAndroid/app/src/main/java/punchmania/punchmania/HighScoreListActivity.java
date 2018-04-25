@@ -16,11 +16,13 @@ public class HighScoreListActivity extends AppCompatActivity {
 
     private static final String TAG = "HighScoreListActivity";
 
+    private ListView mListView;
     private Button btnHomeHS;
 
     protected void onCreate(Bundle savedInstaceState){
         super.onCreate(savedInstaceState);
         setContentView(R.layout.highscorelist_layout);
+        mListView = (ListView) findViewById(R.id.highScoreListView);
 
         populateListView();
 
@@ -36,7 +38,6 @@ public class HighScoreListActivity extends AppCompatActivity {
     }
 
     private void populateListView(){
-        ListView mListView = (ListView) findViewById(R.id.highScoreListView);
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
