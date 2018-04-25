@@ -35,12 +35,15 @@ public class MainActivity extends AppCompatActivity {
     private PrintWriter printWriter;
     private Socket socket = new Socket();
     private ObjectOutputStream oos;
+    private ObjectInputStream ois;
     private String ip = "192.168.1.11";
     private int port = 12346;
-    public static boolean connected= false;
-    private HighScoreListActivity hsa;
-    private QueueListActivity qla;
+    public static boolean connected = false;
+    private DataSend dataSend = new DataSend();
 
+
+
+    private String user;
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_client);
         DataReader dataReader = new DataReader();
         dataReader.start();
+        dataSend.start();
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
@@ -66,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
-                    queue.add(newEntry);
-                    list.add(newEntry, new Random().nextInt(500000));
+                    dataSend.setSend(newEntry);
                     toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
                     Log.i(newEntry, "is added ");
@@ -87,8 +90,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                queue.add(newEntry);
-                                list.add(newEntry, new Random().nextInt(500000));
+                                dataSend.setSend(newEntry);
                                 toastMessage("Successfully added to queue");
                                 enterNameEditText.setText("");
                                 return true;
@@ -136,8 +138,39 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
+
+    private class DataSend extends Thread {
+        private String send;
+
+        public void run() {
+            while (true) {
+                if (connected && send != null) {
+                    try {
+                        Log.i(send,  "received");
+
+                        oos.writeObject(new Message(send, 3));
+                        oos.reset();
+                        oos.flush();
+                        Log.i(send,  "sent");
+                        send = null;
+                    } catch (IOException e) {
+                        Log.i(send, "socket interrupted");
+                    }
+                }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        public void setSend (String arg1) {
+            send = arg1 + "";
+        }
+    }
+
     private class DataReader extends Thread {
-        private ObjectInputStream ois;
+
 
         public boolean retry() {
             connected = false;
@@ -218,9 +251,9 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(this.getName(), "Class not found!");
                     }
                 }
+
             }
         }
-    }
 
 //    // Geofencing stuff
 //    private PendingIntent getGeofencePendingIntent() {
@@ -236,4 +269,5 @@ public class MainActivity extends AppCompatActivity {
 //        return mGeofencePendingIntent;
 //
 //    }
+    }
 }
