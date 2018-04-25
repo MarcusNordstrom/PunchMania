@@ -1,0 +1,27 @@
+body {
+	font-family: 'Press Start 2P', cursive !important;
+}
+.header h1{
+	color: red;
+	text-align: center;
+	line-height: 20vh;
+}
+.list h2 {
+	text-align: center;
+	line-height: 10vh;
+}
+.list table {
+	margin-right: auto;
+	margin-left: auto;
+}
+.list tbody {
+	display: block;
+	width: inherit;
+	height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.list td {
+	padding-left: 1vw;
+	padding-right: 1vw;
+}
