@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 
 import common.HighScoreList;
 import common.Queue;
+import common.UserList;
 
 public class ServerUI extends JPanel {
 
@@ -206,7 +207,7 @@ public class ServerUI extends JPanel {
 		}
 
 	}
-
+	
 	public void clearQ() {
 		server.ms.DeleteQueueList();
 	}
@@ -269,8 +270,10 @@ public class ServerUI extends JPanel {
 	}
 
 	private void getHSList() {
-		server.ms.getAllScore();
-		print("" + server.ms.getAllScore(),0);
+		HighScoreList list = server.ms.getAllScore();
+		for(UserList score : list.getTopTen()) {
+			print(score.getUser() + ": " + score.getScore(),0);
+		}
 	}
 
 	public void print(String text, int i) {
