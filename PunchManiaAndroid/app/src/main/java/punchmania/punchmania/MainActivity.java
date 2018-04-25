@@ -33,10 +33,12 @@ public class MainActivity extends AppCompatActivity {
     private static HighScoreList list = new HighScoreList();
     private String message = "";
     private PrintWriter printWriter;
-    private Socket socket;
+    private Socket socket = new Socket();
     private ObjectOutputStream oos;
-    private String ip = "192.168.0.148";
+    private String ip = "192.168.1.11";
     private int port = 12346;
+    public static boolean connected= false;
+
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         private ObjectInputStream ois;
 
         public boolean retry() {
-            boolean connected = false;
+            connected = false;
             while (!connected) {
                 System.err.print("Reconnecting in ");
                 for (int i = 5; i > 0; i--) {
@@ -176,16 +178,20 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             Object obj;
             while (true) {
-                boolean connected = retry();
+                connected = retry();
                 try {
                     ois = new ObjectInputStream(socket.getInputStream());
+                    oos = new ObjectOutputStream(socket.getOutputStream());
                 } catch (IOException e2) {
                     e2.printStackTrace();
                 }
+
                 while (connected) {
-                    Log.i(this.getName(), "Waiting for object");
+
                     try {
+                        Log.i(this.getName(), "Waiting for object");
                         obj = ois.readObject();
+                        Log.i(this.getName(), obj.toString());
                         if (obj instanceof Message) {
                             Message readMessage = (Message) obj;
                             Log.i(this.getName(), "Object has arrived!");
@@ -199,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
                                     list = (HighScoreList) readMessage.getPayload();
                                     break;
                                 default:
+                                    Log.i(this.getName(), "unknown object");
                                     break;
                             }
                             readMessage = null;
