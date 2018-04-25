@@ -20,13 +20,14 @@ public class QueueListActivity extends AppCompatActivity {
 
     private ListView mListView;
     private Button btnHomeQ;
+    private updater updater = new updater();
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.queuelist_layout);
         mListView = (ListView) findViewById(R.id.queueListView);
 
-        populateListView();
+        updater.start();
 
         btnHomeQ = (Button) findViewById(R.id.btnHomeQ);
 
@@ -44,6 +45,16 @@ public class QueueListActivity extends AppCompatActivity {
         //create the list adapter and set the adapter to the Queue ArrayList
         ArrayList<String> copiedQueueList = new ArrayList<>();
         for (int i = 0; i < MainActivity.getQueue().size(); i++) {
+        }
+    }
+
+    public class updater extends Thread{
+
+        public void run(){
+            populateListView();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {}
         }
     }
 }
