@@ -39,10 +39,15 @@ public class MainActivity extends AppCompatActivity {
     private PrintWriter printWriter;
     private Socket socket = new Socket();
     private ObjectOutputStream oos;
+    private ObjectInputStream ois;
     private String ip = "192.168.1.11";
     private int port = 12346;
-    public static boolean connected= false;
+    public static boolean connected = false;
+    private DataSend dataSend = new DataSend();
 
+
+
+    private String user;
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_client);
         DataReader dataReader = new DataReader();
         dataReader.start();
+        dataSend.start();
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
@@ -70,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
-                    queue.add(newEntry);
-                    list.add(newEntry, new Random().nextInt(500000));
+                    dataSend.setSend(newEntry);
                     toastMessage("Successfully added to queue");
                     enterNameEditText.setText("");
                     Log.i(newEntry, "is added ");
@@ -91,8 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                queue.add(newEntry);
-                                list.add(newEntry, new Random().nextInt(500000));
+                                dataSend.setSend(newEntry);
                                 toastMessage("Successfully added to queue");
                                 enterNameEditText.setText("");
                                 return true;
@@ -140,8 +144,39 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
+
+    private class DataSend extends Thread {
+        private String send;
+
+        public void run() {
+            while (true) {
+                if (connected && send != null) {
+                    try {
+                        Log.i(send,  "received");
+
+                        oos.writeObject(new Message(send, 3));
+                        oos.reset();
+                        oos.flush();
+                        Log.i(send,  "sent");
+                        send = null;
+                    } catch (IOException e) {
+                        Log.i(send, "socket interrupted");
+                    }
+                }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        public void setSend (String arg1) {
+            send = arg1 + "";
+        }
+    }
+
     private class DataReader extends Thread {
-        private ObjectInputStream ois;
+
 
         public boolean retry() {
             connected = false;
@@ -205,12 +240,12 @@ public class MainActivity extends AppCompatActivity {
                                 case 1:
                                     Log.i(this.getName(), "It's a Queue!");
                                     queue = (Queue) readMessage.getPayload();
-                                    populateQueueListView();
+                                    //populateQueueListView();
                                     break;
                                 case 2:
                                     Log.i(this.getName(), "It's a HighScoreList!");
                                     list = (HighScoreList) readMessage.getPayload();
-                                    populateHighScoreListView();
+                                    //populateHighScoreListView();
                                     break;
                                 default:
                                     Log.i(this.getName(), "unknown object");
@@ -225,35 +260,14 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(this.getName(), "Class not found!");
                     }
                 }
+
             }
         }
-    }
 
-    private void populateHighScoreListView(){
-        ListView HighScoreListView = (ListView) findViewById(R.id.highScoreListView);
-        Log.d(TAG, "populateListView: Displaying data in the ListView.");
-        //create the list adapter and set the adapter to the HighScore ArrayList
-        ArrayList<String> convertedHighScoreList = new ArrayList<>();
-        for(int i = 0; i < MainActivity.getHighScores().size(); i++)
-        {
-            convertedHighScoreList.add(MainActivity.getHighScores().getUser(i).getUser() + "\n" +MainActivity.getHighScores().getUser(i).getScore());
-        }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,convertedHighScoreList);
-        HighScoreListView.setAdapter(adapter);
-    }
 
-    private void populateQueueListView(){
-        ListView queueListView = (ListView) findViewById(R.id.queueListView);
-        Log.d(TAG, "populateListView: Displaying data in the ListView.");
-        //create the list adapter and set the adapter to the Queue ArrayList
-        ArrayList<String> copiedQueueList = new ArrayList<>();
-        for(int i = 0; i < MainActivity.getQueue().size(); i++)
-        {
-            copiedQueueList.add(MainActivity.getQueue().peekAt(i));
-        }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,copiedQueueList);
-        queueListView.setAdapter(adapter);
-    }
+
+
+
 
 //    // Geofencing stuff
 //    private PendingIntent getGeofencePendingIntent() {
@@ -269,4 +283,5 @@ public class MainActivity extends AppCompatActivity {
 //        return mGeofencePendingIntent;
 //
 //    }
+    }
 }
