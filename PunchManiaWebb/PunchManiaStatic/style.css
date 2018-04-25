@@ -19,6 +19,7 @@ body {
 .list table {
 	margin-right: auto;
 	margin-left: auto;
+
 }
 .list tbody {
 	display: block;
@@ -30,6 +31,9 @@ body {
 .list td {
 	padding-left: 1vw;
 	padding-right: 1vw;
+}
+::-webkit-scrollbar { 
+    display: none; 
 }
 
 @media screen and (max-width: 425px) {
