@@ -33,11 +33,12 @@ public class MainActivity extends AppCompatActivity {
     private static HighScoreList list = new HighScoreList();
     private String message = "";
     private PrintWriter printWriter;
-    private Socket socket;
+    private Socket socket = new Socket();
     private ObjectOutputStream oos;
-    private String ip = "192.168.1.13";
+    private String ip = "192.168.1.11";
     private int port = 12346;
     public static boolean connected= false;
+
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -183,10 +184,13 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e2) {
                     e2.printStackTrace();
                 }
+
                 while (connected) {
-                    Log.i(this.getName(), "Waiting for object");
+
                     try {
+                        Log.i(this.getName(), "Waiting for object");
                         obj = ois.readObject();
+                        Log.i(this.getName(), obj.toString());
                         if (obj instanceof Message) {
                             Message readMessage = (Message) obj;
                             Log.i(this.getName(), "Object has arrived!");
@@ -200,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                                     list = (HighScoreList) readMessage.getPayload();
                                     break;
                                 default:
+                                    Log.i(this.getName(), "unknown object");
                                     break;
                             }
                             readMessage = null;
