@@ -18,13 +18,13 @@ public class HighScoreListActivity extends AppCompatActivity {
 
     private ListView mListView;
     private Button btnHomeHS;
+    private updater updater = new updater();
 
     protected void onCreate(Bundle savedInstaceState) {
         super.onCreate(savedInstaceState);
         setContentView(R.layout.highscorelist_layout);
         mListView = (ListView) findViewById(R.id.highScoreListView);
 
-        populateListView();
 
         btnHomeHS = (Button) findViewById(R.id.btnHomeHS);
 
@@ -47,4 +47,13 @@ public class HighScoreListActivity extends AppCompatActivity {
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
         mListView.setAdapter(adapter);
     }
-}
+
+    private class updater extends Thread{
+
+        public void run(){
+        populateListView();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+        }}
+}}
