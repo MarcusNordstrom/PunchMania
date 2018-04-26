@@ -70,10 +70,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
-                
                 Log.i(newEntry, " skrivs ut");
 
                 if (enterNameEditText.length() != 0) {
+                    dataSend.setSend(newEntry, 5);
+                    enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Name", newEntry);
                     startActivity(intent);
