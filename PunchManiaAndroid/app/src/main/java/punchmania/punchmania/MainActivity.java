@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private String message = "";
     private PrintWriter printWriter;
     private Socket socket = new Socket();
-    private ObjectOutputStream oos;
-    private ObjectInputStream ois;
+    private static ObjectOutputStream oos;
+    private static ObjectInputStream ois;
     private String ip = "192.168.1.11";
     private int port = 12346;
     public static boolean connected = false;
