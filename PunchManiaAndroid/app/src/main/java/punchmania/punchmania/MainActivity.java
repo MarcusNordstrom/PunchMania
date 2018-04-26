@@ -73,21 +73,20 @@ public class MainActivity extends AppCompatActivity {
                 
                 Log.i(newEntry, " skrivs ut");
 
-//                if (enterNameEditText.length() != 0) {
-//                    search.updateName(enterNameEditText);
-//                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-//                    intent.putExtra("Hejsan", newEntry);
-//                    startActivity(intent);
-//
-//
-//                    //dataSend.setSend(newEntry, 5);
-//                    //toastMessage("Successfully added to queue");
-//                    //enterNameEditText.setText("");
-//                    //Log.i(newEntry, "is added ");
-//                } else {
-//                    toastMessage("You must put something in the text field");
-//
-//                }
+                if (enterNameEditText.length() != 0) {
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    intent.putExtra("Name", newEntry);
+                    startActivity(intent);
+
+
+                    //dataSend.setSend(newEntry, 5);
+                    //toastMessage("Successfully added to queue");
+                    //enterNameEditText.setText("");
+                    //Log.i(newEntry, "is added ");
+                } else {
+                    toastMessage("You must put something in the text field");
+
+                }
             }
         });
 
