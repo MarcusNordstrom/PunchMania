@@ -182,6 +182,11 @@ public class Server {
 							}
 							broadcastQueue();
 							break;
+							
+						case 5:
+							ui.print("User requested hs", 0);
+							String name = (String) message.getPayload();
+							sendNameScore(name);
 						}
 
 					} catch (IOException | ClassNotFoundException e) {
@@ -197,6 +202,19 @@ public class Server {
 						clientList.remove(this);
 						this.interrupt();
 					}
+				}
+			}
+			
+			public void sendNameScore(String name) {
+				try {
+					ui.print("Sending Highscore list to client", 0);
+					hsList = ms.getUserScore(name);
+					System.out.println("name");
+					oos.writeObject(new Message(hsList, Message.PLAYERSCORES));
+					oos.reset();
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 
