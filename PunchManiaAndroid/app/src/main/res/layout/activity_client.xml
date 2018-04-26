@@ -9,13 +9,13 @@
     tools:context=".client">
 
     <Button
-        android:id="@+id/btnAdd"
+        android:id="@+id/btnSearch"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="#676767"
-        android:text="Add"
+        android:text="@android:string/search_go"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -35,7 +35,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/btnAdd"
+        app:layout_constraintTop_toBottomOf="@+id/btnSearch"
         app:layout_constraintVertical_bias="0.25" />
 
     <Button
@@ -51,7 +51,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAdd"
+        app:layout_constraintTop_toBottomOf="@+id/btnSearch"
         app:layout_constraintVertical_bias="0.25" />
 
     <EditText
@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginBottom="200dp"
-        android:hint="Enter your name!"
+        android:hint="Enter username!"
         android:textAlignment="center"
         android:textColorLink="#505050"
         app:layout_constraintBottom_toBottomOf="parent"

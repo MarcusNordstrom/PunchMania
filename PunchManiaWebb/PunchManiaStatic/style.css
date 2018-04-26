@@ -1,16 +1,40 @@
 body {
 	font-family: 'Press Start 2P', cursive !important;
 }
-.header {
-	height: 10vh;
+.container {
+	width: 100vw;
 }
-.header h2{
-	color: red;
+.header {
+	display: flex;
+	height: 10vh;
+	background-color: green;
 	text-align: center;
+}
+.header .title{
+	color: red;
 	line-height: 10vh;
 }
-.list .col-lg{
-	height: 90vh;
+.info {
+	background-color: indigo;
+	text-align: center;
+	height: 25vh;
+}
+.info .title {
+	color: red;
+	line-height: 10vh;
+	display: none;
+}
+.info h3 {
+	margin-top: 3vh;
+}
+.info button {
+	width: 75vw;
+	color: red;
+	margin: 2vh;
+	background-color: black;
+}
+.hs, .q {
+	height: 65vh;
 }
 .list h2 {
 	text-align: center;
@@ -24,23 +48,32 @@ body {
 .list tbody {
 	display: block;
 	width: inherit;
-	height: 60vh;
+	height: 50vh;
     overflow-y: auto;
     overflow-x: hidden;
 }
 .list td {
-	padding-left: 1vw;
-	padding-right: 1vw;
+	padding-left: 1vmax;
+	padding-right: 1vmax;
 }
 ::-webkit-scrollbar { 
     display: none; 
 }
 
-@media screen and (max-width: 425px) {
+@media screen and (max-width: 1024px) {
   .header {
+  	display: none !important;
+  }
+  .info {
   	height: 100vh;
   }
-  .list .col-lg {
+  .info .title {
+	display: block;
+  }
+  .hs, .q {
   	height: 100vh;
+  }
+  .list tbody {
+  	height: 75vh;
   }
 }

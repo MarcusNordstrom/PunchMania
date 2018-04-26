@@ -25,10 +25,12 @@ import common.Queue;
 
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
-    Button btnAdd, btnViewQueue, btnViewHighScore;
+    Button btnSearch, btnViewQueue, btnViewHighScore;
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
+    private static HighScoreList listPlayer;
+    private static HighScoreList highScoreDetails;
     private String message = "";
     private PrintWriter printWriter;
     private Socket socket = new Socket();
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private int port = 12346;
     public static boolean connected = false;
     private DataSend dataSend = new DataSend();
+    private SearchActivity search;
+
 
 
     private String user;
@@ -56,21 +60,26 @@ public class MainActivity extends AppCompatActivity {
         dataReader.start();
         dataSend.start();
 
-        btnAdd = (Button) findViewById(R.id.btnAdd);
+        btnSearch = (Button) findViewById(R.id.btnSearch);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
 
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
-                    dataSend.setSend(newEntry);
-                    toastMessage("Successfully added to queue");
-                    enterNameEditText.setText("");
-                    Log.i(newEntry, "is added ");
+                    search.updateName(enterNameEditText);
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    startActivity(intent);
+
+
+                    //dataSend.setSend(newEntry, 5);
+                    //toastMessage("Successfully added to queue");
+                    //enterNameEditText.setText("");
+                    //Log.i(newEntry, "is added ");
                 } else {
                     toastMessage("You must put something in the text field");
 
@@ -87,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                dataSend.setSend(newEntry);
+                                dataSend.setSend(newEntry, 5);
                                 toastMessage("Successfully added to queue");
                                 enterNameEditText.setText("");
                                 return true;
@@ -136,20 +145,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class DataSend extends Thread {
+    public class DataSend extends Thread {
         private String send;
+        private int instruction;
 
         public void run() {
             while (true) {
-                if (connected && send != null) {
+                if (connected && send != null && instruction != 0) {
                     try {
                         Log.i(send, "received");
 
-                        oos.writeObject(new Message(send, 3));
+                        oos.writeObject(new Message(send, instruction));
                         oos.reset();
                         oos.flush();
                         Log.i(send, "sent");
                         send = null;
+                        instruction = 0;
                     } catch (IOException e) {
                         Log.i(send, "socket interrupted");
                     }
@@ -162,8 +173,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void setSend(String arg1) {
+        public void setSend(String arg1, int arg2) {
             send = arg1 + "";
+            instruction = arg2;
         }
     }
 
@@ -236,7 +248,15 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i(this.getName(), "It's a HighScoreList!");
                                     list = (HighScoreList) readMessage.getPayload();
                                     break;
-                                default:
+                                case 6:
+                                    Log.i(this.getName(), "It´s userscores!");
+                                    listPlayer = (HighScoreList) readMessage.getPayload();
+                                    break;
+                                case 8:
+                                    Log.i(this.getName(), "It's HighScore details!");
+                                    highScoreDetails = (HighScoreList) readMessage.getPayload();
+                                    break;
+                                    default:
                                     Log.i(this.getName(), "unknown object");
                                     break;
                             }
