@@ -59,12 +59,25 @@ public class QueueListActivity extends AppCompatActivity {
     }
 
     public class updater extends Thread{
-
-        public void run(){
-            populateListView();
+        @Override
+        public void run() {
             try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {}
+                synchronized (this) {
+                    wait(5000);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            populateListView();
+                        }
+                    });
+
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(mainActivity);
         }
     }
 }
