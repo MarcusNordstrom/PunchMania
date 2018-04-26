@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private SearchActivity search;
 
 
-
     private String user;
 
 
@@ -70,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
+                
                 Log.i(newEntry, " skrivs ut");
 
                 if (enterNameEditText.length() != 0) {
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i(this.getName(), "It's HighScore details!");
                                     highScoreDetails = (HighScoreList) readMessage.getPayload();
                                     break;
-                                    default:
+                                default:
                                     Log.i(this.getName(), "unknown object");
                                     break;
                             }

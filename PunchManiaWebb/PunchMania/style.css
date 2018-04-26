@@ -1,0 +1,97 @@
+:root {
+  --main-bg-color: #0A0A0A;
+  --main-text-color: #3F3F3F;
+  --main-highlight-color: #FF0000;
+}
+body {
+	font-family: 'Press Start 2P', cursive !important;
+	background-color: var(--main-bg-color) !important;
+}
+a {
+	color: inherit !important;
+	text-decoration: inherit !important;
+}
+h1, h2, h3, p, td, label {
+	color: var(--main-text-color) !important;
+}
+.header {
+	display: flex;
+	height: 10vh;
+	text-align: center;
+}
+.header .title{
+	color: var(--main-highlight-color) !important;
+	line-height: 10vh;
+}
+.info {
+	text-align: center;
+	height: 25vh;
+}
+.info .title {
+	color: var(--main-highlight-color) !important;
+	line-height: 10vh;
+	display: none;
+}
+.info h3,.info p, .info .name {
+	margin-top: 3vh;
+}
+.info button {
+	width: 75vw;
+	color: red;
+	margin: 2vh;
+	background-color: var(--main-text-color);
+}
+.info input {
+	width: 50vw;
+	color: red;
+	margin-bottom: 2vh;
+	background-color: var(--main-text-color);
+}
+.hs, .q {
+	height: 65vh;
+	text-align: center;
+}
+.list h2 {
+	text-align: center;
+	line-height: 10vh;
+}
+.list table {
+	margin-right: auto;
+	margin-left: auto;
+
+}
+.list tbody {
+	display: block;
+	width: inherit;
+	height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.list td {
+	padding-left: 1vmax;
+	padding-right: 1vmax;
+}
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+@media screen and (max-width: 1024px) {
+  .header {
+  	display: none !important;
+  }
+  .info {
+  	height: 100vh;
+  }
+  .info .title {
+	display: block;
+  }
+  .hs, .q {
+  	height: 100vh;
+  }
+  .list tbody {
+  	height: 75vh;
+  }
+  .info input {
+  	width: 75vw;
+  }
+}

@@ -11,8 +11,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "SearchActivity";
     TextView usernameTextView;
