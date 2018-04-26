@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class SearchActivity extends AppCompatActivity {
     TextView usernameTextView;
     Button btnHomeSearch;
@@ -22,7 +20,7 @@ public class SearchActivity extends AppCompatActivity {
         usernameTextView = (TextView) findViewById(R.id.usernameTextView);
         btnHomeSearch = (Button) findViewById(R.id.btnHomeSearch);
 
-        Intent intent =  getIntent();
+        Intent intent = getIntent();
         String str = intent.getStringExtra("Hejsan");
         usernameTextView.setText(str);
 
