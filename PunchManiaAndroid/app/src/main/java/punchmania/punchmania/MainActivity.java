@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
-    private static HighScoreList listUser;
+    private static HighScoreList listPlayer;
+    private static HighScoreList highScoreDetails;
     private String message = "";
     private PrintWriter printWriter;
     private Socket socket = new Socket();
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
 
 
-                    //dataSend.setSend(newEntry);
+                    //dataSend.setSend(newEntry, 5);
                     //toastMessage("Successfully added to queue");
                     //enterNameEditText.setText("");
                     //Log.i(newEntry, "is added ");
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                dataSend.setSend(newEntry);
+                                dataSend.setSend(newEntry, 5);
                                 toastMessage("Successfully added to queue");
                                 enterNameEditText.setText("");
                                 return true;
@@ -144,20 +145,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class DataSend extends Thread {
+    public class DataSend extends Thread {
         private String send;
+        private int instruction;
 
         public void run() {
             while (true) {
-                if (connected && send != null) {
+                if (connected && send != null && instruction != 0) {
                     try {
                         Log.i(send, "received");
 
-                        oos.writeObject(new Message(send, 5));
+                        oos.writeObject(new Message(send, instruction));
                         oos.reset();
                         oos.flush();
                         Log.i(send, "sent");
                         send = null;
+                        instruction = 0;
                     } catch (IOException e) {
                         Log.i(send, "socket interrupted");
                     }
@@ -170,8 +173,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void setSend(String arg1) {
+        public void setSend(String arg1, int arg2) {
             send = arg1 + "";
+            instruction = arg2;
         }
     }
 
@@ -246,9 +250,12 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                                 case 6:
                                     Log.i(this.getName(), "It´s userscores!");
-                                    listUser = (HighScoreList) readMessage.getPayload();
+                                    listPlayer = (HighScoreList) readMessage.getPayload();
                                     break;
-
+                                case 8:
+                                    Log.i(this.getName(), "It's HighScore details!");
+                                    highScoreDetails = (HighScoreList) readMessage.getPayload();
+                                    break;
                                     default:
                                     Log.i(this.getName(), "unknown object");
                                     break;
