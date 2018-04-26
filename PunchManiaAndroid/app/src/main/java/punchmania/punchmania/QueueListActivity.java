@@ -34,8 +34,8 @@ public class QueueListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updater.interrupt();
-                Intent intent = new Intent(QueueListActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish();
+                return;
             }
         });
     }
@@ -63,7 +63,7 @@ public class QueueListActivity extends AppCompatActivity {
                 try {
                     synchronized (this) {
                         wait(1000);
-                        if(isInterrupted())
+                        if(!isInterrupted())
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
