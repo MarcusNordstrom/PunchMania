@@ -38,7 +38,7 @@ h1, h2, h3, p, td {
 	background-color: var(--main-text-color);
 }
 .info input {
-	width: 75vw;
+	width: 50vw;
 	color: red;
 	margin-bottom: 2vh;
 	background-color: var(--main-text-color);
@@ -85,5 +85,8 @@ h1, h2, h3, p, td {
   }
   .list tbody {
   	height: 75vh;
+  }
+  .info input {
+  	width: 75vw;
   }
 }
