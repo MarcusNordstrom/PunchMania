@@ -30,11 +30,9 @@
         <activity
             android:name=".HighScoreListActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".SearchActivity" />
         <activity
-            android:name=".HighScoreDetails"
-            android:label="@string/title_activity_high_score_details"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".SearchActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>
