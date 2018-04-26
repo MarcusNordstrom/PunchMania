@@ -30,7 +30,7 @@
         <activity
             android:name=".HighScoreListActivity"
             android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".search"></activity>
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>

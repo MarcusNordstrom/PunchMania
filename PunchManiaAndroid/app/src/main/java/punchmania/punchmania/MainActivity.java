@@ -25,7 +25,7 @@ import common.Queue;
 
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
-    Button btnAdd, btnViewQueue, btnViewHighScore;
+    Button btnSearch, btnViewQueue, btnViewHighScore;
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private int port = 12346;
     public static boolean connected = false;
     private DataSend dataSend = new DataSend();
+    private SearchActivity search;
+
 
 
     private String user;
@@ -56,21 +58,25 @@ public class MainActivity extends AppCompatActivity {
         dataReader.start();
         dataSend.start();
 
-        btnAdd = (Button) findViewById(R.id.btnAdd);
+        btnSearch = (Button) findViewById(R.id.btnSearch);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
 
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
-                    dataSend.setSend(newEntry);
-                    toastMessage("Successfully added to queue");
-                    enterNameEditText.setText("");
-                    Log.i(newEntry, "is added ");
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    startActivity(intent);
+                    search.updateName(enterNameEditText);
+
+                    //dataSend.setSend(newEntry);
+                    //toastMessage("Successfully added to queue");
+                    //enterNameEditText.setText("");
+                    //Log.i(newEntry, "is added ");
                 } else {
                     toastMessage("You must put something in the text field");
 
