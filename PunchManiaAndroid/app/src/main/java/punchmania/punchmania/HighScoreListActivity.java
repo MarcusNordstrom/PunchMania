@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -29,6 +30,8 @@ public class HighScoreListActivity extends AppCompatActivity {
 
         btnHomeHS = (Button) findViewById(R.id.btnHomeHS);
 
+
+
         btnHomeHS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,6 +40,14 @@ public class HighScoreListActivity extends AppCompatActivity {
                 return;
             }
         });
+    }
+
+    public void onItemClick(long id) {
+        Log.i("HSListView", "You clicked Item: " + id);
+        // Then you start a new Activity via Intent
+        Intent intent = new Intent();
+        intent.setClass(this, ListItemDetail.class);
+        startActivity(intent);
     }
 
     private void populateListView() {

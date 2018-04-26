@@ -12,6 +12,10 @@ public class Message implements Serializable{
 	public static final int NEW_HIGHSCORELIST = 2;
 	public static final int NEW_USER_TO_QUEUE = 3;
 	public static final int NEW_HS = 4;
+	public static final int REQUEST_PLAYERSCORES = 5;
+	public static final int PLAYERSCORES = 6;
+	public static final int REQUEST_HSDETAILS = 7;
+    public static final int HSDETAILS = 8;
 	
 	public Message(Object payload, int instruction) {
 		this.payload = payload;
