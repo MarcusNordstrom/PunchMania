@@ -45,9 +45,9 @@ public class HighScoreListActivity extends AppCompatActivity {
     public void onItemClick(long id) {
         Log.i("HSListView", "You clicked Item: " + id);
         // Then you start a new Activity via Intent
-        Intent intent = new Intent();
-        intent.setClass(this, ListItemDetail.class);
-        startActivity(intent);
+//        Intent intent = new Intent();
+//        intent.setClass(this, ListItemDetail.class);
+//        startActivity(intent);
     }
 
     private void populateListView() {
