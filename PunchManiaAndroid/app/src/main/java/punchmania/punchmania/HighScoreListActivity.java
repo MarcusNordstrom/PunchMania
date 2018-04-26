@@ -33,8 +33,8 @@ public class HighScoreListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updater.interrupt();
-                Intent intent = new Intent(HighScoreListActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish();
+                return;
             }
         });
     }
