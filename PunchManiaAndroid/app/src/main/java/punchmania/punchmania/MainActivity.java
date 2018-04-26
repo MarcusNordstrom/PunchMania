@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
+    private static HighScoreList listUser;
     private String message = "";
     private PrintWriter printWriter;
     private Socket socket = new Socket();
@@ -69,9 +70,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
+                    search.updateName(enterNameEditText);
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     startActivity(intent);
-                    search.updateName(enterNameEditText);
+
 
                     //dataSend.setSend(newEntry);
                     //toastMessage("Successfully added to queue");
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         Log.i(send, "received");
 
-                        oos.writeObject(new Message(send, 3));
+                        oos.writeObject(new Message(send, 5));
                         oos.reset();
                         oos.flush();
                         Log.i(send, "sent");
@@ -242,7 +244,12 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i(this.getName(), "It's a HighScoreList!");
                                     list = (HighScoreList) readMessage.getPayload();
                                     break;
-                                default:
+                                case 6:
+                                    Log.i(this.getName(), "It´s userscores!");
+                                    listUser = (HighScoreList) readMessage.getPayload();
+                                    break;
+
+                                    default:
                                     Log.i(this.getName(), "unknown object");
                                     break;
                             }
