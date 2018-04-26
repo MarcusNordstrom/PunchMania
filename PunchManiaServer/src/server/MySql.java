@@ -2,6 +2,8 @@ package server;
 
 import java.sql.*;
 
+import javax.swing.JOptionPane;
+
 import common.HighScoreList;
 import common.Queue;
 import common.UserList;
@@ -106,11 +108,12 @@ public class MySql {
 		Statement Stmt;
 		String score = "";
 		try {
-			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=?");
-			stmt.setString(1, name);
+			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name LIKE ? ORDER BY Score DESC LIMIT 100");
+			stmt.setString(1, name + '%');
 			ResultSet rs = stmt.executeQuery();
-			System.out.println("Getting score for user: " + name);
+			
 			while(rs.next()) {
+				System.out.println(rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4) + "\n");
 				score += rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4) + "\n";
 			}
 		} catch (SQLException e) {
@@ -262,5 +265,9 @@ public class MySql {
 			e.printStackTrace();
 		}
 		return size;
+	}
+	public static void main(String[] args) {
+		MySql ms = new MySql();
+		ms.getUserScore(JOptionPane.showInputDialog("enter name"));
 	}
 }
