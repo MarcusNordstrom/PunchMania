@@ -24,12 +24,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QueueListActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
-        <activity android:name=".HighScoreListActivity"
-            android:parentActivityName=".MainActivity">
-            </activity>
+        <activity
+            android:name=".QueueListActivity"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".HighScoreListActivity"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".search"></activity>
     </application>
 
 </manifest>
