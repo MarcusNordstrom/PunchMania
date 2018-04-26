@@ -2,6 +2,7 @@
 package server;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -22,6 +23,11 @@ public class MySql {
 	private String URL = "jdbc:mysql://ddwap.mah.se:3306/ah7115";
 	private String Password = "Grupp1";
 	private String UserName = "ah7115";
+
+	private ArrayList<ArrayList> XYZ = new ArrayList<ArrayList>();
+	private ArrayList<Integer> X = new ArrayList<Integer>();
+	private ArrayList<Integer> Y = new ArrayList<Integer>();
+	private ArrayList<Integer> Z = new ArrayList<Integer>();
 
 	private Connection myConn;
 
@@ -307,6 +313,77 @@ public class MySql {
 		}
 	}
 
+	public synchronized ArrayList NameAndX(String name, int Score) {
+		Statement Stmt;
+		String x = "";
+		String noll = "0";
+		try {
+			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
+			stmt.setString(1, name);
+			stmt.setInt(2, Score);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+
+				x = rs.getString(5);
+				String[] xx = x.split(",");
+				for(int i=0; i < xx.length; i++) {
+					int o = Integer.parseInt(xx[i]);
+					X.add(o);
+				}
+				System.out.println(X.toString());
+
+			}	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return X;
+	}
+
+	public synchronized ArrayList<Integer> NameAndY(String name, int Score) {
+		Statement Stmt;
+		String y = "";
+		try {
+			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
+			stmt.setString(1, name);
+			stmt.setInt(2, Score);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+
+				y = rs.getString(6);
+				String[] yy = y.split(",");
+				for(int i=0; i < yy.length; i++) {
+					Y.add(Integer.parseInt(yy[i]));
+				}
+				System.out.println(Y.toString());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Y;
+	}
+
+	public synchronized ArrayList<Integer> NameAndZ(String name, int Score) {
+		Statement Stmt;
+		String z = "";
+		try {
+			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
+			stmt.setString(1, name);
+			stmt.setInt(2, Score);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				z = rs.getString(7);
+				String[] zz = z.split(",");
+				for(int i=0; i < zz.length; i++) {
+					Z.add(Integer.parseInt(zz[i]));
+				}
+				System.out.println(Z.toString());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Z;
+	}
+
 	/*
 	 * Returns size of queue, used to send info to embedded system to be active or not.
 	 */
@@ -329,6 +406,8 @@ public class MySql {
 	}
 	public static void main(String[] args) {
 		MySql ms = new MySql();
-		ms.getUserScore(JOptionPane.showInputDialog("enter name"));
+		ms.NameAndX("Mackan", 999999999);
+		ms.NameAndY("Mackan", 999999999);
+		ms.NameAndZ("Mackan", 999999999);
 	}
 }

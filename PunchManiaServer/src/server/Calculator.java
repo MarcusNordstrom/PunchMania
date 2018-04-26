@@ -17,11 +17,11 @@ public class Calculator {
 	private ArrayList<Integer> x = new ArrayList<Integer>();
 	private ArrayList<Integer> y = new ArrayList<Integer>();
 	private ArrayList<Integer> z = new ArrayList<Integer>();
-	
+
 	public Calculator(Server server) {
 		this.server = server;
 	}
-	
+
 	public int popX() {
 		if(x.size() == 0) {
 			return 0;
@@ -30,7 +30,7 @@ public class Calculator {
 		x.remove(0);
 		return xint;
 	}
-	
+
 	public int popY() {
 		if(y.size() == 0) {
 			return 0;
@@ -39,7 +39,7 @@ public class Calculator {
 		y.remove(0);
 		return yint;
 	}
-	
+
 	public int popZ() {
 		if(z.size() == 0) {
 			return 0;
@@ -74,7 +74,7 @@ public class Calculator {
 
 			}
 		}
-
+		
 		for(int i=0; i < splittedString.size()-1; i++) {
 			section = splittedString.get(i);
 			String[] dev = section.split(",");
@@ -86,8 +86,9 @@ public class Calculator {
 				} else {
 					validValues = false;
 				}
-
 			}
+
+
 			for(int y1= 1; y1 <dev.length; y1+=3) {
 				String yy1 = dev[y1];
 				if(isInteger(yy1) && validValues) {
@@ -95,7 +96,7 @@ public class Calculator {
 				} else {
 					validValues = false;
 				}
-				
+
 			}
 			for(int z1= 2; z1 <dev.length; z1+=3) {
 				String zz1 = dev[z1];
@@ -104,7 +105,7 @@ public class Calculator {
 				} else {
 					validValues = false;
 				}
-				
+
 			}
 		}
 	}
@@ -132,11 +133,11 @@ public class Calculator {
 		score = (int)(componentXYZ * 10000);
 		System.out.println("SCORE: " + score);
 	}
-	
+
 	public int getScore() {
 		return score;
 	}
-	
+
 	private void clearPrevious() {
 		newString = "";
 		section = "";
@@ -146,7 +147,7 @@ public class Calculator {
 		z.clear();
 		score = 0;
 	}
-	
+
 	public int calculateScore(String values) {
 		clearPrevious();
 		splitter(values);
@@ -165,6 +166,16 @@ public class Calculator {
 		}
 		server.sendHighscore(getScore(), xx, yy, zz);
 		return getScore();
+	}
+
+	public ArrayList<Integer> getX() {
+		return x;
+	}
+	public ArrayList<Integer> getY() {
+		return y;
+	}
+	public ArrayList<Integer> getZ() {
+		return z;
 	}
 }
 
