@@ -1,11 +1,9 @@
 package punchmania.punchmania;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -21,15 +19,14 @@ public class HighScoreListActivity extends AppCompatActivity {
     private Button btnHomeHS;
     private updater updater = new updater();
 
-    protected void onCreate(Bundle savedInstaceState) {
-        super.onCreate(savedInstaceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.highscorelist_layout);
         mListView = (ListView) findViewById(R.id.highScoreListView);
 
         updater.start();
 
         btnHomeHS = (Button) findViewById(R.id.btnHomeHS);
-
 
 
         btnHomeHS.setOnClickListener(new View.OnClickListener() {
@@ -68,13 +65,13 @@ public class HighScoreListActivity extends AppCompatActivity {
                 try {
                     synchronized (this) {
                         wait(1000);
-                        if(!isInterrupted())
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                populateListView();
-                            }
-                        });
+                        if (!isInterrupted())
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    populateListView();
+                                }
+                            });
 
                     }
                 } catch (InterruptedException e) {

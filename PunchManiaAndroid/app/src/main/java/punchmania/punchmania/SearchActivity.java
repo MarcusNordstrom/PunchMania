@@ -3,28 +3,39 @@ package punchmania.punchmania;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class SearchActivity extends AppCompatActivity {
-    TextView usernameTextView;
-    Button btnHomeSearch;
+    private static final String TAG = "searchActivity";
+    private TextView usernameTextView;
+    private Button btnHomeSearch;
+    private ListView searchListView;
+    private updater updater = new updater();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        //populateListView();
+
 
         usernameTextView = (TextView) findViewById(R.id.usernameTextView);
         btnHomeSearch = (Button) findViewById(R.id.btnHomeSearch);
+        searchListView = (ListView) findViewById(R.id.searchListView);
 
-        Intent intent =  getIntent();
+
+        Intent intent = getIntent();
         String str = intent.getStringExtra("Hejsan");
         usernameTextView.setText(str);
+
+        updater.start();
 
         btnHomeSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,22 +45,48 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-
-    }
-}
-    /* private void populateListView() {
-        Log.d(TAG, "populateListView: Displaying data in the ListView.");
-        //create the list adapter and set the adapter to the Queue ArrayList
-        ArrayList<String> copiedPlayerList = new ArrayList<>();
-        for (int i = 0; i < MainActivity.getListPlayer().size(); i++) {
-            {
-                copiedPlayerList.add(MainActivity.getListPlayer().peekAt(i));
-            }
-
-            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedPlayerList);
-
-            searchListView.setAdapter(adapter);
-
         }
+
+    private void populateListView() {
+        ArrayList<String> PlayerHighScore = new ArrayList<>();
+        for (int i = 0; i < MainActivity.getListPlayer().size(); i++) {
+            Log.i(TAG,MainActivity.getListPlayer().getUser(i).getScore() +"");
+
+            PlayerHighScore.add(MainActivity.getListPlayer().getUser(i).getScore() + "\n");
+        }
+        Log.i(TAG, "1");
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScore);
+        Log.i(TAG, "2");
+        searchListView.setAdapter(adapter);
+        Log.i(TAG, "3");
+
     }
-} */
+
+    public class updater extends Thread {
+        @Override
+        public void run() {
+            while (!isInterrupted()) {
+                try {
+                    synchronized (this) {
+                        wait(1000);
+                        if(!isInterrupted())
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    populateListView();
+                                }
+                            });
+
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedListPlayer);
+        searchListView.setAdapter(adapter);
+    }
+    }
+
+
+

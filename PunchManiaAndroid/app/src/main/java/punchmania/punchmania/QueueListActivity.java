@@ -1,6 +1,5 @@
 package punchmania.punchmania;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -63,13 +62,13 @@ public class QueueListActivity extends AppCompatActivity {
                 try {
                     synchronized (this) {
                         wait(1000);
-                        if(!isInterrupted())
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                populateListView();
-                            }
-                        });
+                        if (!isInterrupted())
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    populateListView();
+                                }
+                            });
 
                     }
                 } catch (InterruptedException e) {
