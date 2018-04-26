@@ -1,20 +1,31 @@
 body {
 	font-family: 'Press Start 2P', cursive !important;
 }
+.container {
+	width: 100vmin;
+}
 .header {
-	height: 10vh;
+	height: 10vmax;
+	background-color: green;
+	text-align: center;
+	line-height: 10vmax;
 }
 .header h2{
 	color: red;
-	text-align: center;
-	line-height: 10vh;
+	line-height: 10vmax;
 }
-.list .col-lg{
-	height: 90vh;
+.header button {
+	width: 75vmin;
+}
+.hs {
+	height: 90vmax;
+}
+.q {
+	height: 90vmax;
 }
 .list h2 {
 	text-align: center;
-	line-height: 10vh;
+	line-height: 10vmax;
 }
 .list table {
 	margin-right: auto;
@@ -24,13 +35,13 @@ body {
 .list tbody {
 	display: block;
 	width: inherit;
-	height: 60vh;
+	height: 60vmax;
     overflow-y: auto;
     overflow-x: hidden;
 }
 .list td {
-	padding-left: 1vw;
-	padding-right: 1vw;
+	padding-left: 1vmin;
+	padding-right: 1vmin;
 }
 ::-webkit-scrollbar { 
     display: none; 
@@ -38,9 +49,12 @@ body {
 
 @media screen and (max-width: 425px) {
   .header {
-  	height: 100vh;
+  	height: 100vmax;
   }
-  .list .col-lg {
-  	height: 100vh;
+  .hs {
+  	height: 100vmax;
+  }
+  .q {
+  	height: 100vmax;
   }
 }
