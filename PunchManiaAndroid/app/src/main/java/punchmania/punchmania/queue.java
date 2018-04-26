@@ -8,6 +8,6 @@ public class queue extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_queue);
+        setContentView(R.layout.activity_search);
     }
 }

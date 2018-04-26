@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
                 if (enterNameEditText.length() != 0) {
-                    search.updateName(enterNameEditText);
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    intent.putExtra("Hejsan", newEntry);
                     startActivity(intent);
 
 
