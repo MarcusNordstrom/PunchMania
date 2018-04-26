@@ -11,8 +11,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "searchActivity";
     private TextView usernameTextView;
@@ -85,6 +83,8 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         }
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedListPlayer);
+        searchListView.setAdapter(adapter);
     }
     }
 

@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private SearchActivity search;
 
 
-
     private String user;
 
 
@@ -72,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    Log.i(newEntry, " skrivs ut");
                     dataSend.setSend(newEntry, 5);
+                    enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
                     startActivity(intent);
@@ -263,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i(this.getName(), "It's HighScore details!");
                                     highScoreDetails = (HighScoreList) readMessage.getPayload();
                                     break;
-                                    default:
+                                default:
                                     Log.i(this.getName(), "unknown object");
                                     break;
                             }
