@@ -61,10 +61,10 @@ public class QueueListActivity extends AppCompatActivity {
     public class updater extends Thread{
         @Override
         public void run() {
+            while(true){
             try {
                 synchronized (this) {
                     wait(5000);
-
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -76,8 +76,6 @@ public class QueueListActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
-            startActivity(mainActivity);
-        }
+        }}
     }
 }
