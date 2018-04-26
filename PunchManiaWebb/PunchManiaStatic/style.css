@@ -5,16 +5,25 @@ body {
 	width: 100vmin;
 }
 .header {
+	display: flex;
 	height: 10vmax;
 	background-color: green;
 	text-align: center;
-	line-height: 10vmax;
 }
-.header h2{
+.header .title{
 	color: red;
 	line-height: 10vmax;
 }
-.header button {
+.info {
+	background-color: indigo;
+	text-align: center;
+}
+.info .title {
+	color: red;
+	line-height: 10vmax;
+	display: none;
+}
+.info button {
 	width: 75vmin;
 }
 .hs {
@@ -47,9 +56,15 @@ body {
     display: none; 
 }
 
-@media screen and (max-width: 425px) {
+@media screen and (max-width: 768px) {
   .header {
+  	display: none !important;
+  }
+  .info {
   	height: 100vmax;
+  }
+  .info .title {
+	display: block;
   }
   .hs {
   	height: 100vmax;
