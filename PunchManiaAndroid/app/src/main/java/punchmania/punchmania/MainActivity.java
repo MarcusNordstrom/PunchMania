@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
-    private static HighScoreList listPlayer;
+    private static HighScoreList listPlayer = new HighScoreList();
     private static HighScoreList highScoreDetails;
     private String message = "";
     private PrintWriter printWriter;
@@ -70,16 +70,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
-                
-                Log.i(newEntry, " skrivs ut");
 
                 if (enterNameEditText.length() != 0) {
+                    Log.i(newEntry, " skrivs ut");
+                    dataSend.setSend(newEntry, 5);
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                    intent.putExtra("Name", newEntry);
+                    intent.putExtra("Hejsan", newEntry);
                     startActivity(intent);
 
 
-                    //dataSend.setSend(newEntry, 5);
+
                     //toastMessage("Successfully added to queue");
                     //enterNameEditText.setText("");
                     //Log.i(newEntry, "is added ");
