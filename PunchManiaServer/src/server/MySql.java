@@ -6,8 +6,17 @@ import javax.swing.JOptionPane;
 
 import common.HighScoreList;
 import common.Queue;
-import common.UserList;
 
+/**
+ * 
+ * @author Jake
+ *
+ * This class connects Java-server and SQL-server together. The SQL-backend contains and handles Users, Queue and Highscore. 
+ * The Users table consists of ID, Username and Password. The queue table consists of ID and Name. 
+ * The Highscore table consists of ID, Name, Score, Timestamps, and X,Y,Z vectors. 
+ * This class takes advantage of ther SQL commands to either send info to server or receive and act on each request. 
+ * Examples of requests: Upload a name to the queue/highscore in SQL-Table, remove, select by name(wildcard, does not have to be full name), get top 10, top 1....
+ */
 public class MySql {
 	private String URL = "jdbc:mysql://ddwap.mah.se:3306/ah7115";
 	private String Password = "Grupp1";
@@ -15,6 +24,9 @@ public class MySql {
 
 	private Connection myConn;
 
+	/*
+	 * Constructor makes connection to SQL-Server with given URL/Username/password to access it.
+	 */
 	public MySql() {
 		try {
 			myConn = DriverManager.getConnection(URL, UserName, Password);
@@ -23,6 +35,10 @@ public class MySql {
 			e.printStackTrace();
 		}	
 	}
+
+	/*
+	 * Name and Score are set in hslist table in SQL. Mainly used for testing since it does not require components of force as in-parameters.
+	 */
 	public synchronized void setMySql(String name, int score) {
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score) VALUES (?,?)");
@@ -35,6 +51,10 @@ public class MySql {
 		}
 	}
 
+	/*
+	 * Used when a real hit on the punching bag, all possible parameters that are measured and given are used to document on 
+	 * SQL-server(Name, Score and components of force).
+	 */
 	public synchronized void setMySql(String name, int score, String x, String y, String z) {
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO hslist(Name, Score, X, Y, Z) VALUES (?,?,?,?,?)");
@@ -52,6 +72,10 @@ public class MySql {
 		System.out.println("-------------------------------------------");
 	}
 
+	/*
+	 * Selects users from the hslist-table on the SQL-server limited by 10 users ordered in the column Score sorted descendingly 
+	 * this gives us top 10 users with the highest score selected from the table.
+	 */
 	public synchronized void getTop10() {
 		Statement Stmt;
 		try {
@@ -68,6 +92,9 @@ public class MySql {
 		}
 	}
 
+	/*
+	 * Returns what the highest score ever is.
+	 */
 	public synchronized int getTop1() {
 		Statement Stmt;
 		int hs = 0;
@@ -85,7 +112,10 @@ public class MySql {
 		}
 		return hs;
 	}
-	
+
+	/*
+	 * Used when a user gets the new TOP 1 score, we return the name and send it to client to display it when the highscore is beaten
+	 */
 	public synchronized String getTop1Name() {
 		Statement Stmt;
 		String name = "";
@@ -104,6 +134,9 @@ public class MySql {
 		return name;
 	}
 
+	/*
+	 * Selects all the users from the list where name = what you entered + wildcard limited by 100 users.
+	 */
 	public synchronized String getUserScore(String name) {
 		Statement Stmt;
 		String score = "";
@@ -111,7 +144,7 @@ public class MySql {
 			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name LIKE ? ORDER BY Score DESC LIMIT 100");
 			stmt.setString(1, name + '%');
 			ResultSet rs = stmt.executeQuery();
-			
+
 			while(rs.next()) {
 				System.out.println(rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4) + "\n");
 				score += rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4) + "\n";
@@ -122,6 +155,9 @@ public class MySql {
 		return score;
 	}
 
+	/*
+	 * Returns all the scores in a highscore object
+	 */
 	public synchronized HighScoreList getAllScore() {
 		Statement Stmt;
 		HighScoreList hsl = new HighScoreList();
@@ -141,6 +177,9 @@ public class MySql {
 		return hsl;
 	}
 
+	/*
+	 * Deletes specific users data.
+	 */
 	public synchronized void Delete(String name) {
 		Statement stmt;
 		try {
@@ -154,7 +193,9 @@ public class MySql {
 		System.out.println("-------------------------------- ");
 	}
 
-
+	/*
+	 * Deletes all data from hslist table
+	 */
 	public synchronized void DeleteHSList() {
 		Statement Stmt;
 		try {
@@ -172,6 +213,9 @@ public class MySql {
 		}
 	}
 
+	/*
+	 * Used to add someone to the table queue in SQL
+	 */
 	public synchronized void toQueue(String name) {
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO queue(Name) VALUES (?)");
@@ -182,6 +226,9 @@ public class MySql {
 		}
 	}
 
+	/*
+	 * Returns the full queue as a queue object
+	 */
 	public synchronized Queue getQueue() {
 		Statement Stmt;
 		Queue queue = new Queue();
@@ -201,6 +248,9 @@ public class MySql {
 		return queue;
 	}
 
+	/*
+	 * Removes specific users queue.
+	 */
 	public synchronized void deleteQueue(String name) {
 		Statement stmt;
 		try {
@@ -214,6 +264,9 @@ public class MySql {
 		System.out.println("-------------------------------- ");
 	}
 
+	/*
+	 * Used when someone hits the punching bag, selects the user and the deletes it.
+	 */
 	public synchronized String popQueue() {
 		Statement Stmt;
 		String name = "";
@@ -232,6 +285,9 @@ public class MySql {
 		return name;
 	}
 
+	/*
+	 * Deletes all data in queue table
+	 */
 	public synchronized void DeleteQueueList() {
 		Statement Stmt;
 		try {
@@ -249,6 +305,9 @@ public class MySql {
 		}
 	}
 
+	/*
+	 * Returns size of queue, used to send info to embedded system to be active or not.
+	 */
 	public synchronized int isEmpty() {
 		Statement Stmt;
 		int size = 0;
