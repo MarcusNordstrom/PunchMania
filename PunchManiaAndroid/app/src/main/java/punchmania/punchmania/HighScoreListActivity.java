@@ -32,6 +32,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         btnHomeHS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updater.interrupt();
                 Intent intent = new Intent(HighScoreListActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -52,10 +53,11 @@ public class HighScoreListActivity extends AppCompatActivity {
     public class updater extends Thread {
         @Override
         public void run() {
-            while (true) {
+            while (!isInterrupted()) {
                 try {
                     synchronized (this) {
                         wait(1000);
+                        if(!isInterrupted())
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

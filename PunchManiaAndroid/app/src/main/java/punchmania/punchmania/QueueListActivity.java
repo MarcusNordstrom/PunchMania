@@ -33,6 +33,7 @@ public class QueueListActivity extends AppCompatActivity {
         btnHomeQ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updater.interrupt();
                 Intent intent = new Intent(QueueListActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -45,9 +46,7 @@ public class QueueListActivity extends AppCompatActivity {
         ArrayList<String> copiedQueueList = new ArrayList<>();
         for (int i = 0; i < MainActivity.getQueue().size(); i++) {
             {
-
                 copiedQueueList.add(MainActivity.getQueue().peekAt(i));
-
             }
 
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
@@ -60,10 +59,11 @@ public class QueueListActivity extends AppCompatActivity {
     public class updater extends Thread {
         @Override
         public void run() {
-            while (true) {
+            while (!isInterrupted()) {
                 try {
                     synchronized (this) {
                         wait(1000);
+                        if(isInterrupted())
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
