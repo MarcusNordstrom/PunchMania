@@ -1,12 +1,12 @@
 package punchmania.punchmania;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.view.View;
-import android.content.Intent;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -38,7 +38,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         });
     }
 
-    private void populateListView(){
+    private void populateListView() {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
@@ -49,12 +49,25 @@ public class HighScoreListActivity extends AppCompatActivity {
         mListView.setAdapter(adapter);
     }
 
-    private class updater extends Thread{
+    public class updater extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    synchronized (this) {
+                        wait(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                populateListView();
+                            }
+                        });
 
-        public void run(){
-        populateListView();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-        }}
-}}
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,5 @@
 package punchmania.punchmania;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +17,9 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Random;
 
-import common.Message;
 import common.HighScoreList;
+import common.Message;
 import common.Queue;
 
 
@@ -40,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private int port = 12346;
     public static boolean connected = false;
     private DataSend dataSend = new DataSend();
-
 
 
     private String user;
@@ -146,12 +143,12 @@ public class MainActivity extends AppCompatActivity {
             while (true) {
                 if (connected && send != null) {
                     try {
-                        Log.i(send,  "received");
+                        Log.i(send, "received");
 
                         oos.writeObject(new Message(send, 3));
                         oos.reset();
                         oos.flush();
-                        Log.i(send,  "sent");
+                        Log.i(send, "sent");
                         send = null;
                     } catch (IOException e) {
                         Log.i(send, "socket interrupted");
@@ -164,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        public void setSend (String arg1) {
+
+        public void setSend(String arg1) {
             send = arg1 + "";
         }
     }

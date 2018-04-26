@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,7 +25,7 @@ public class QueueListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.queuelist_layout);
         mListView = (ListView) findViewById(R.id.queueListView);
-
+        populateListView();
         updater.start();
 
         btnHomeQ = (Button) findViewById(R.id.btnHomeQ);
@@ -40,7 +39,7 @@ public class QueueListActivity extends AppCompatActivity {
         });
     }
 
-    private void populateListView(){
+    private void populateListView() {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the Queue ArrayList
         ArrayList<String> copiedQueueList = new ArrayList<>();
@@ -51,31 +50,32 @@ public class QueueListActivity extends AppCompatActivity {
 
             }
 
-            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,copiedQueueList);
+            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
 
             mListView.setAdapter(adapter);
 
         }
     }
 
-    public class updater extends Thread{
+    public class updater extends Thread {
         @Override
         public void run() {
-            while(true){
-            try {
-                synchronized (this) {
-                    wait(5000);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            populateListView();
-                        }
-                    });
+            while (true) {
+                try {
+                    synchronized (this) {
+                        wait(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                populateListView();
+                            }
+                        });
 
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-        }}
+        }
     }
 }
