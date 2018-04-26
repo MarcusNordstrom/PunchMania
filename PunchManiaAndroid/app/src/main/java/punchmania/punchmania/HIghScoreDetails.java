@@ -10,6 +10,5 @@ public class HighScoreDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.high_score_details);
 
-
     }
 }
