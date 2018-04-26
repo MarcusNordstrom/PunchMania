@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
-    private static HighScoreList listUser;
+    private static HighScoreList listPlayer;
     private static HighScoreList highScoreDetails;
     private String message = "";
     private PrintWriter printWriter;
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class DataSend extends Thread {
+    public class DataSend extends Thread {
         private String send;
         private int instruction;
 
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                                 case 6:
                                     Log.i(this.getName(), "It´s userscores!");
-                                    listUser = (HighScoreList) readMessage.getPayload();
+                                    listPlayer = (HighScoreList) readMessage.getPayload();
                                     break;
                                 case 8:
                                     Log.i(this.getName(), "It's HighScore details!");
