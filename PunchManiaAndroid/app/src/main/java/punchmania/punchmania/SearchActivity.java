@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class SearchActivity extends AppCompatActivity {
     TextView usernameTextView;
     Button btnHomeSearch;
@@ -35,3 +37,19 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 }
+    /* private void populateListView() {
+        Log.d(TAG, "populateListView: Displaying data in the ListView.");
+        //create the list adapter and set the adapter to the Queue ArrayList
+        ArrayList<String> copiedPlayerList = new ArrayList<>();
+        for (int i = 0; i < MainActivity.getListPlayer().size(); i++) {
+            {
+                copiedPlayerList.add(MainActivity.getListPlayer().peekAt(i));
+            }
+
+            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedPlayerList);
+
+            searchListView.setAdapter(adapter);
+
+        }
+    }
+} */

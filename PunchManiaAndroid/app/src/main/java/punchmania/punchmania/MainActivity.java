@@ -70,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
+                
+                Log.i(newEntry, " skrivs ut");
+
                 if (enterNameEditText.length() != 0) {
+                    search.updateName(enterNameEditText);
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
                     startActivity(intent);
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                dataSend.setSend(newEntry, 5);
+                                dataSend.setSend(newEntry, 3);
                                 toastMessage("Successfully added to queue");
                                 enterNameEditText.setText("");
                                 return true;
@@ -142,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static HighScoreList getHighScores() {
         return list;
+    }
+
+    public static HighScoreList getListPlayer() {
+        return listPlayer;
     }
 
 
