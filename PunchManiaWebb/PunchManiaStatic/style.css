@@ -2,39 +2,43 @@ body {
 	font-family: 'Press Start 2P', cursive !important;
 }
 .container {
-	width: 100vmin;
+	width: 100vw;
 }
 .header {
 	display: flex;
-	height: 10vmax;
+	height: 10vh;
 	background-color: green;
 	text-align: center;
 }
 .header .title{
 	color: red;
-	line-height: 10vmax;
+	line-height: 10vh;
 }
 .info {
 	background-color: indigo;
 	text-align: center;
+	height: 25vh;
 }
 .info .title {
 	color: red;
-	line-height: 10vmax;
+	line-height: 10vh;
 	display: none;
 }
+.info h3 {
+	margin-top: 3vh;
+}
 .info button {
-	width: 75vmin;
+	width: 75vw;
+	color: red;
+	margin: 2vh;
+	background-color: black;
 }
-.hs {
-	height: 90vmax;
-}
-.q {
-	height: 90vmax;
+.hs, .q {
+	height: 65vh;
 }
 .list h2 {
 	text-align: center;
-	line-height: 10vmax;
+	line-height: 10vh;
 }
 .list table {
 	margin-right: auto;
@@ -44,32 +48,32 @@ body {
 .list tbody {
 	display: block;
 	width: inherit;
-	height: 60vmax;
+	height: 50vh;
     overflow-y: auto;
     overflow-x: hidden;
 }
 .list td {
-	padding-left: 1vmin;
-	padding-right: 1vmin;
+	padding-left: 1vmax;
+	padding-right: 1vmax;
 }
 ::-webkit-scrollbar { 
     display: none; 
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
   .header {
   	display: none !important;
   }
   .info {
-  	height: 100vmax;
+  	height: 100vh;
   }
   .info .title {
 	display: block;
   }
-  .hs {
-  	height: 100vmax;
+  .hs, .q {
+  	height: 100vh;
   }
-  .q {
-  	height: 100vmax;
+  .list tbody {
+  	height: 75vh;
   }
 }
