@@ -1,3 +1,4 @@
+
 package server;
 
 import java.sql.*;
@@ -137,8 +138,9 @@ public class MySql {
 	/*
 	 * Selects all the users from the list where name = what you entered + wildcard limited by 100 users.
 	 */
-	public synchronized String getUserScore(String name) {
+	public synchronized HighScoreList getUserScore(String name) {
 		Statement Stmt;
+		HighScoreList hsl = new HighScoreList();
 		String score = "";
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name LIKE ? ORDER BY Score DESC LIMIT 100");
@@ -147,12 +149,12 @@ public class MySql {
 
 			while(rs.next()) {
 				System.out.println(rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4) + "\n");
-				score += rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4) + "\n";
+				hsl.add(rs.getString(2), rs.getInt(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return score;
+		return hsl;
 	}
 
 	/*
