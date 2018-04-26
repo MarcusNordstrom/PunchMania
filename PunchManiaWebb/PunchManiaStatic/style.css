@@ -2,30 +2,43 @@ body {
 	font-family: 'Press Start 2P', cursive !important;
 }
 .container {
-	width: 100vmin;
+	width: 100vw;
 }
 .header {
-	height: 10vmax;
+	display: flex;
+	height: 10vh;
 	background-color: green;
 	text-align: center;
-	line-height: 10vmax;
 }
-.header h2{
+.header .title{
 	color: red;
-	line-height: 10vmax;
+	line-height: 10vh;
 }
-.header button {
-	width: 75vmin;
+.info {
+	background-color: indigo;
+	text-align: center;
+	height: 25vh;
 }
-.hs {
-	height: 90vmax;
+.info .title {
+	color: red;
+	line-height: 10vh;
+	display: none;
 }
-.q {
-	height: 90vmax;
+.info h3 {
+	margin-top: 3vh;
+}
+.info button {
+	width: 75vw;
+	color: red;
+	margin: 2vh;
+	background-color: black;
+}
+.hs, .q {
+	height: 65vh;
 }
 .list h2 {
 	text-align: center;
-	line-height: 10vmax;
+	line-height: 10vh;
 }
 .list table {
 	margin-right: auto;
@@ -35,26 +48,32 @@ body {
 .list tbody {
 	display: block;
 	width: inherit;
-	height: 60vmax;
+	height: 50vh;
     overflow-y: auto;
     overflow-x: hidden;
 }
 .list td {
-	padding-left: 1vmin;
-	padding-right: 1vmin;
+	padding-left: 1vmax;
+	padding-right: 1vmax;
 }
 ::-webkit-scrollbar { 
     display: none; 
 }
 
-@media screen and (max-width: 425px) {
+@media screen and (max-width: 1024px) {
   .header {
-  	height: 100vmax;
+  	display: none !important;
   }
-  .hs {
-  	height: 100vmax;
+  .info {
+  	height: 100vh;
   }
-  .q {
-  	height: 100vmax;
+  .info .title {
+	display: block;
+  }
+  .hs, .q {
+  	height: 100vh;
+  }
+  .list tbody {
+  	height: 75vh;
   }
 }
