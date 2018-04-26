@@ -33,6 +33,10 @@
         <activity
             android:name=".SearchActivity"
             android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".High"
+            android:parentActivityName=".MainActivity"/>
+
     </application>
 
 </manifest>
