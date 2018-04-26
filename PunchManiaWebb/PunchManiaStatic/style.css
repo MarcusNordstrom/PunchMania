@@ -1,26 +1,30 @@
+:root {
+  --main-bg-color: #0A0A0A;
+  --main-text-color: #3F3F3F;
+  --main-highlight-color: #FF0000;
+}
 body {
 	font-family: 'Press Start 2P', cursive !important;
+	background-color: var(--main-bg-color) !important;
 }
-.container {
-	width: 100vw;
+h1, h2, h3, p, td {
+	color: var(--main-text-color) !important;
 }
 .header {
 	display: flex;
 	height: 10vh;
-	background-color: green;
 	text-align: center;
 }
 .header .title{
-	color: red;
+	color: var(--main-highlight-color) !important;
 	line-height: 10vh;
 }
 .info {
-	background-color: indigo;
 	text-align: center;
 	height: 25vh;
 }
 .info .title {
-	color: red;
+	color: var(--main-highlight-color) !important;
 	line-height: 10vh;
 	display: none;
 }
@@ -31,7 +35,13 @@ body {
 	width: 75vw;
 	color: red;
 	margin: 2vh;
-	background-color: black;
+	background-color: var(--main-text-color);
+}
+.info input {
+	width: 50vw;
+	color: red;
+	margin-bottom: 2vh;
+	background-color: var(--main-text-color);
 }
 .hs, .q {
 	height: 65vh;
@@ -75,5 +85,8 @@ body {
   }
   .list tbody {
   	height: 75vh;
+  }
+  .info input {
+  	width: 75vw;
   }
 }
