@@ -209,6 +209,8 @@ public class Server {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getUserScore(name);
+					System.out.println(hsList.getUser(0).getUser());
+					System.out.println(hsList.getUser(0).getScore());
 					System.out.println("name");
 					oos.writeObject(new Message(hsList, Message.PLAYERSCORES));
 					oos.reset();
