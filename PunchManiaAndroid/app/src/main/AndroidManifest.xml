@@ -34,7 +34,7 @@
             android:name=".SearchActivity"
             android:parentActivityName=".MainActivity"/>
         <activity
-            android:name=".High"
+            android:name=".HighScoreDetails"
             android:parentActivityName=".MainActivity"/>
 
     </application>

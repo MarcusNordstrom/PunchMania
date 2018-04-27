@@ -10,7 +10,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
@@ -30,9 +34,9 @@ public class Server {
 	private ServerUI ui;
 	private Calculator cal = new Calculator(this);
 	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
-
+	private Timer timer = new Timer();
 	private String filepath = "files/HighScoreList.txt";
-
+	private long lastCheckSum;
 	private FileInputStream fis;
 	private FileOutputStream fos;
 	private ArrayList<ArrayList> XYZ = new ArrayList<ArrayList>();
@@ -51,10 +55,27 @@ public class Server {
 		client = new Client(serverSocketClient);
 		is = new IS(serverSocketIs);
 		ms = new MySql();
+		start();
 	}
 
 	public boolean isSendByte(byte send) {
 		return is.sendByte(send);
+	}
+
+	TimerTask task = new TimerTask() {
+		public void run() {
+			if(lastCheckSum != ms.checkSum()) {
+				lastCheckSum = ms.checkSum();
+				client.sendQueue();
+				client.sendHS();
+				System.out.println("SEND HS AND Q!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			}
+		}
+	};
+	
+	public void start() {
+		lastCheckSum = ms.checkSum();
+		timer.scheduleAtFixedRate(task, 500, 500);
 	}
 
 	public void sendQueue() {

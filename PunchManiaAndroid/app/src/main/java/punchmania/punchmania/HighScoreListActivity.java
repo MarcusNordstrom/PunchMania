@@ -1,9 +1,11 @@
 package punchmania.punchmania;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -18,6 +20,7 @@ public class HighScoreListActivity extends AppCompatActivity {
     private ListView mListView;
     private Button btnHomeHS;
     private updater updater = new updater();
+    private long clickedItemId;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,13 +42,14 @@ public class HighScoreListActivity extends AppCompatActivity {
         });
     }
 
-    public void onItemClick(long id) {
-        Log.i("HSListView", "You clicked Item: " + id);
-        // Then you start a new Activity via Intent
-//        Intent intent = new Intent();
-//        intent.setClass(this, ListItemDetail.class);
-//        startActivity(intent);
+    protected void onListItemClick(ListView l, View v, int position, long id) {}
+    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+        Cursor c = (Cursor) parent.getAdapter().getItem(position);
+        String testString = c.getString(c.getColumnIndex("col_name"));
+        Log.i("You clicked", testString);
     }
+
+
 
     private void populateListView() {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");

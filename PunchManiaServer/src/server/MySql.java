@@ -3,8 +3,8 @@ package server;
 
 import java.sql.*;
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import common.HighScoreList;
 import common.Queue;
@@ -19,7 +19,7 @@ import common.Queue;
  * This class takes advantage of ther SQL commands to either send info to server or receive and act on each request. 
  * Examples of requests: Upload a name to the queue/highscore in SQL-Table, remove, select by name(wildcard, does not have to be full name), get top 10, top 1....
  */
-public class MySql {
+public class MySql{
 	private String URL = "jdbc:mysql://ddwap.mah.se:3306/ah7115";
 	private String Password = "Grupp1";
 	private String UserName = "ah7115";
@@ -28,7 +28,6 @@ public class MySql {
 	private ArrayList<Integer> X = new ArrayList<Integer>();
 	private ArrayList<Integer> Y = new ArrayList<Integer>();
 	private ArrayList<Integer> Z = new ArrayList<Integer>();
-
 	private Connection myConn;
 
 	/*
@@ -404,10 +403,33 @@ public class MySql {
 		}
 		return size;
 	}
+
+
+	public synchronized Long checkSum() {
+		Long checkSum = null;
+		Statement Stmt;
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "CHECKSUM TABLE ah7115.queue";
+			ResultSet rs = Stmt.executeQuery(sql);
+			rs.next();
+			checkSum = rs.getLong(2);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return checkSum;
+	}
+
+
 	public static void main(String[] args) {
 		MySql ms = new MySql();
+		ms.checkSum();
 		ms.NameAndX("Mackan", 999999999);
 		ms.NameAndY("Mackan", 999999999);
 		ms.NameAndZ("Mackan", 999999999);
+
 	}
+
+
 }
