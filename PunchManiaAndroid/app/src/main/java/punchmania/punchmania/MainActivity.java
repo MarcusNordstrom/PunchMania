@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.11";
+    private String ip = "192.168.1.20";
     private int port = 12346;
     public static boolean connected = false;
     private DataSend dataSend = new DataSend();
@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
         DataReader dataReader = new DataReader();
         dataReader.start();
         dataSend.start();
-        HighScoreListActivity highScoreListActivity = new HighScoreListActivity();
-        highScoreListActivity.onCreate(savedInstanceState);
+    //    HighScoreListActivity highScoreListActivity = new HighScoreListActivity();
+     //   highScoreListActivity.onCreate(savedInstanceState);
         btnSearch = (Button) findViewById(R.id.btnSearch);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
-    public static void fetchHighScoreDetails(HighScoreList requestedHighScore){
+   /* public static void fetchHighScoreDetails(HighScoreList requestedHighScore){
         if(connected)
         {
             try {
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     public static HighScoreList getHighScoreDetails()
     {
