@@ -46,17 +46,14 @@ function templateBody($info, $highscore, $queue) {
         getInfo($info);
         echo '</div>
       </div>
-      <div class="row list">
-        <div class="col-lg hs">';
+      <div class="row list">';
         getHSList($highscore);
-        echo '</div>
-        <div class="col-lg q">';
         getQueue($queue);
         echo '</div>
-      </div>
     </div>';
 }
 function getHSList($name){
+	echo '<div class="col-lg hs">';
 	if ($name == null) {
 		$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist ORDER BY Score DESC LIMIT 100");
 		$query->execute();
@@ -88,6 +85,7 @@ function getHSList($name){
 			tableEnd();
 		}
 	}
+	echo '</div>';
 }
 function getInfo($info){
 	switch ($info) {
@@ -218,26 +216,20 @@ function getUserStats($user) {
 
 }
 function getQueue($queue) {
-	switch ($queue) {
-		case null:
-			$query = $GLOBALS["conn"]->prepare("SELECT * FROM queue ORDER BY ID ASC LIMIT 100");
-			$query->execute();
-			$query = $query->fetchAll();
-			$place = 1;
-			echo ' <h2>Queue</h2>';
-			tableStart();
-			foreach ($query as $row) {
-				echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td></tr>';
-				$place++;
-			}
-			tableEnd();
-			break;
-		case "0":
-			echo "";
-			break;
-		default:
-			# code...
-			break;
+	if ($queue == null) {
+		echo '<div class="col-lg q">';
+		$query = $GLOBALS["conn"]->prepare("SELECT * FROM queue ORDER BY ID ASC LIMIT 100");
+		$query->execute();
+		$query = $query->fetchAll();
+		$place = 1;
+		echo ' <h2>Queue</h2>';
+		tableStart();
+		foreach ($query as $row) {
+			echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td></tr>';
+			$place++;
+		}
+		tableEnd();
+		echo '</div>';
 	}
 }
 function tableStart() {

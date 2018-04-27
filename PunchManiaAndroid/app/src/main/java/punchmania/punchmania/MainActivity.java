@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean connected = false;
     private DataSend dataSend = new DataSend();
     private SearchActivity search;
+    private static long requestedHit = Long.MAX_VALUE;
 
 
     private String user;
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
         DataReader dataReader = new DataReader();
         dataReader.start();
         dataSend.start();
-
+        HighScoreListActivity highScoreListActivity = new HighScoreListActivity();
+        highScoreListActivity.onCreate(savedInstanceState);
         btnSearch = (Button) findViewById(R.id.btnSearch);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
@@ -146,29 +148,47 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
+    public static void fetchHighScoreDetails(HighScoreList requestedHighScore){
+        if(connected)
+        {
+            try {
+                oos.writeObject(new Message(requestedHighScore, 7));
+                oos.reset();
+                oos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static HighScoreList getHighScoreDetails()
+    {
+        return highScoreDetails;
+    }
+
     public static HighScoreList getListPlayer() {
         return listPlayer;
     }
 
 
     public class DataSend extends Thread {
-        private String send;
+        private Object send;
         private int instruction;
 
         public void run() {
             while (true) {
                 if (connected && send != null && instruction != 0) {
                     try {
-                        Log.i(send, "received");
+                        Log.i(send.toString(), "received");
 
                         oos.writeObject(new Message(send, instruction));
                         oos.reset();
                         oos.flush();
-                        Log.i(send, "sent");
+                        Log.i(send.toString(), "sent");
                         send = null;
                         instruction = 0;
                     } catch (IOException e) {
-                        Log.i(send, "socket interrupted");
+                        Log.i(send.toString(), "socket interrupted");
                     }
                 }
                 try {
@@ -179,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void setSend(String arg1, int arg2) {
+        public void setSend(Object arg1, int arg2) {
             send = arg1 + "";
             instruction = arg2;
         }
