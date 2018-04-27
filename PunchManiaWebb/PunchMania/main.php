@@ -60,9 +60,11 @@ function getHSList($name){
             setInterval(function(){
               var xmlhttp = new XMLHttpRequest();
               xmlhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("hs").innerHTML = this.responseText;
-              }
+              	if (this.readyState == 4 && this.status == 200) {
+              		var tbodyPosition = $(".hs tbody").scrollTop();
+                	document.getElementById("hs").innerHTML = this.responseText;
+    				$(".hs tbody").scrollTop(tbodyPosition);
+              	}
               };
               xmlhttp.open("GET", "main.php?js=hs", true);
               xmlhttp.send();
@@ -77,7 +79,9 @@ function getHSList($name){
               var xmlhttp = new XMLHttpRequest();
               xmlhttp.onreadystatechange = function() {
               if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("hs").innerHTML = this.responseText;
+                var tbodyPosition = $(".hs tbody").scrollTop();
+               	document.getElementById("hs").innerHTML = this.responseText;
+    			$(".hs tbody").scrollTop(tbodyPosition);
               }
               };
               xmlhttp.open("GET", "main.php?js=hs&user='.$name.'", true);
@@ -90,14 +94,19 @@ function getHSList($name){
 function getInfo($info){
 	switch ($info) {
 		case null:
-			if (isset($_SESSION["uname"])) {
-				echo '<h3>Välkommen '.$_SESSION["uname"].'</h3>';
-				getQplace();
-				echo '<a href="index.php?site=logout"><button class="btn">Logga ut</button></a>';
-			} else {
-				echo '<a href="index.php?site=login"><button class="btn">Logga in</button></a>
-          <a href="index.php?site=register"><button class="btn">Registrera dig</button></a>';
-			}
+			echo '<div id="info"></div>
+          	<script type="text/javascript">
+            setInterval(function(){
+              var xmlhttp = new XMLHttpRequest();
+              xmlhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("info").innerHTML = this.responseText;
+              }
+              };
+              xmlhttp.open("GET", "main.php?js=info", true);
+              xmlhttp.send();
+            }, 1000);
+          </script>';
 			break;
 		case "login":
 			echo '<form action="index.php?site=login" method="POST">
@@ -250,7 +259,7 @@ if (isset($_GET["js"])) {
 		case "hs":
 			if (isset($_GET["user"])) {
 				$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist WHERE Name LIKE :name ORDER BY Score DESC LIMIT 100");
-				$name = $name . "%";
+				$name = $_GET["user"] . "%";
 				$query->bindParam(':name',  $name);
 				$query->execute();
 				$query = $query->fetchAll();
@@ -292,15 +301,13 @@ if (isset($_GET["js"])) {
 			tableEnd();
 			break;
 		case "info":
-		if (!isset($_GET["info"])) {
-				if (isset($_SESSION["uname"])) {
-					echo '<h3>Välkommen '.$_SESSION["uname"].'</h3>';
-					getQplace();
-					echo '<a href="index.php?site=logout"><button class="btn">Logga ut</button></a>';
-				} else {
-					echo '<a href="index.php?site=login"><button class="btn">Logga in</button></a>
-          			<a href="index.php?site=register"><button class="btn">Registrera dig</button></a>';
-				}
+			if (isset($_SESSION["uname"])) {
+				echo '<h3>Välkommen '.$_SESSION["uname"].'</h3>';
+				getQplace();
+				echo '<a href="index.php?site=logout"><button class="btn">Logga ut</button></a>';
+			} else {
+				echo '<a href="index.php?site=login"><button class="btn">Logga in</button></a>
+          		<a href="index.php?site=register"><button class="btn">Registrera dig</button></a>';
 			}
 		break;
 		default:
