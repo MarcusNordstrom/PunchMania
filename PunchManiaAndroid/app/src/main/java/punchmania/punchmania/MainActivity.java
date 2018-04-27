@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_client);
         DataReader dataReader = new DataReader();
         dataReader.start();
-        dataSend.start();
         //HighScoreListActivity highScoreListActivity = new HighScoreListActivity();
         //highScoreListActivity.onCreate(savedInstanceState);
         btnSearch = (Button) findViewById(R.id.btnSearch);
@@ -165,37 +164,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class DataSend extends Thread {
-        private Object send;
-        private int instruction;
-
-        public void run() {
-            while (true) {
-                if (connected && send != null && instruction != 0) {
-                    try {
-                        Log.i(send.toString(), "received");
-
-                        oos.writeObject(new Message(send, instruction));
-                        oos.reset();
-                        oos.flush();
-                        Log.i(send.toString(), "sent");
-                        send = null;
-                        instruction = 0;
-                    } catch (IOException e) {
-                        Log.i(send.toString(), "socket interrupted");
-                    }
-                }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
+    public class DataSend {
         public void setSend(Object arg1, int arg2) {
-            send = arg1 + "";
-            instruction = arg2;
+            if (connected && arg1 != null && arg2 != 0) {
+                try {
+                    Log.i(arg1.toString(), "received");
+
+                    oos.writeObject(new Message(arg1, arg2));
+                    oos.reset();
+                    oos.flush();
+                    Log.i(arg1.toString(), "sent");
+                } catch (IOException e) {
+                    Log.i(arg1.toString(), "socket interrupted");
+                }
+            }else{
+                Log.i("Couldn't send!", "Either not connected or arguments were invalid");
+            }
         }
     }
 
