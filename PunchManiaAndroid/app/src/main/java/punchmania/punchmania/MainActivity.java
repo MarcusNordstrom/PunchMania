@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.11";
+    private String ip = "192.168.1.20";
     private int port = 12346;
     public static boolean connected = false;
     private DataSend dataSend = new DataSend();
@@ -94,9 +94,11 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                dataSend.setSend(newEntry, 3);
-                                toastMessage("Successfully added to queue");
+                                dataSend.setSend(newEntry, 5);
                                 enterNameEditText.setText("");
+                                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                                intent.putExtra("Hejsan", newEntry);
+                                startActivity(intent);
                                 return true;
                             } else {
                                 toastMessage("That's a short name you've got there");
