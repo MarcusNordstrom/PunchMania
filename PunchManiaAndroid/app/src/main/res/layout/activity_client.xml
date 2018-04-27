@@ -67,6 +67,7 @@
         android:backgroundTint="@android:color/black"
         android:fontFamily="@font/press_start_2p"
         android:hint="ENTER USERNAME!"
+        android:singleLine="true"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColorLink="#505050"
