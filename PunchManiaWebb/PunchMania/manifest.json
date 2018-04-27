@@ -4,7 +4,9 @@
   "start_url": "https://ddwap.mah.se/ah7115/PunchMania/index.php",
   "display": "standalone",
   "background_color": "#0A0A0A",
+  "theme_color": "#0A0A0A",
   "description": "Best game in the world!",
+  "scope": "/ah7115/PunchMania/",
   "icons": [{
     "src": "images/logo48.png",
     "sizes": "48x48",
