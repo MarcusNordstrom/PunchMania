@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
     private static HighScoreList listPlayer = new HighScoreList();
-    private static HighScoreList highScoreDetails;
+    private static int[][] highScoreDetails;
     private String message = "";
     private PrintWriter printWriter;
     private Socket socket = new Socket();
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static HighScoreList getHighScoreDetails()
+    public static int[][] getHighScoreDetails()
     {
         return highScoreDetails;
     }
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                                 case 8:
                                     Log.i(this.getName(), "It's HighScore details!");
-                                    highScoreDetails = (HighScoreList) readMessage.getPayload();
+                                    highScoreDetails = (int[][]) readMessage.getPayload();
                                     break;
                                 default:
                                     Log.i(this.getName(), "unknown object");

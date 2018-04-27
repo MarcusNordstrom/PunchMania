@@ -47,6 +47,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         Cursor c = (Cursor) parent.getAdapter().getItem(position);
         String testString = c.getString(c.getColumnIndex("col_name"));
         Log.i("You clicked", testString);
+        //MainActivity.fetchHighScoreDetails(requestedHighScore);
     }
 
 
