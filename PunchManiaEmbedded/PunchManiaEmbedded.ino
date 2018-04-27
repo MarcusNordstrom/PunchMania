@@ -7,11 +7,11 @@
 
 //USERCONFIG
 //Ethernet
-IPAddress server(192, 168, 1, 13);    //Ip address for server
+IPAddress server(192, 168, 1, 20);    //Ip address for server
 int port = 12345;                     //Port for server
 IPAddress ip(192, 168, 1, 101);       //This device
 //Sensitivity
-int hitValue = 150;
+int hitValue = 200;
 
 //CONFIG
 //LEDS

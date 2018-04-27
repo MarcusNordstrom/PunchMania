@@ -43,17 +43,28 @@ public class QueueListActivity extends AppCompatActivity {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the Queue ArrayList
         ArrayList<String> copiedQueueList = new ArrayList<>();
-        for (int i = 0; i < MainActivity.getQueue().size(); i++) {
-            {
+
+        if( MainActivity.getQueue().size() > 0 ) {
+            for (int i = 0; i < MainActivity.getQueue().size(); i++) {
+
                 copiedQueueList.add(MainActivity.getQueue().peekAt(i));
+
+                ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
+                mListView.setAdapter(adapter);
+
             }
 
+                } else {
+            copiedQueueList.clear();
+
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
-
             mListView.setAdapter(adapter);
-
-        }
     }
+
+
+
+            }
+
 
     public class updater extends Thread {
         @Override
