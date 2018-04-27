@@ -18,7 +18,6 @@ public class HighScoreListActivity extends AppCompatActivity {
     private static final String TAG = "HighScoreListActivity";
 
     private ListView mListView;
-    private Button btnHomeHS;
     private updater updater = new updater();
     private long clickedItemId;
 
@@ -29,17 +28,6 @@ public class HighScoreListActivity extends AppCompatActivity {
 
         updater.start();
 
-        btnHomeHS = (Button) findViewById(R.id.btnHomeHS);
-
-
-        btnHomeHS.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updater.interrupt();
-                finish();
-                return;
-            }
-        });
     }
 
     protected void onListItemClick(ListView l, View v, int position, long id) {}

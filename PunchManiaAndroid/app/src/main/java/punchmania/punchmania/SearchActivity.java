@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "searchActivity";
     private TextView usernameTextView;
-    private Button btnHomeSearch;
     private ListView searchListView;
 
 
@@ -24,11 +23,9 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        populateListView();
 
 
         usernameTextView = (TextView) findViewById(R.id.usernameTextView);
-        btnHomeSearch = (Button) findViewById(R.id.btnHomeSearch);
         searchListView = (ListView) findViewById(R.id.searchListView);
 
 
@@ -38,13 +35,7 @@ public class SearchActivity extends AppCompatActivity {
         updater updater = new updater();
         updater.start();
 
-        btnHomeSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                return;
-            }
-        });
+
 
         }
 

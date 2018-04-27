@@ -18,7 +18,7 @@ public class QueueListActivity extends AppCompatActivity {
     private static final String TAG = "QueueListActivity";
 
     private ListView mListView;
-    private Button btnHomeQ;
+
     private updater updater = new updater();
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,17 +27,6 @@ public class QueueListActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.queueListView);
         populateListView();
         updater.start();
-
-        btnHomeQ = (Button) findViewById(R.id.btnHomeQ);
-
-        btnHomeQ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updater.interrupt();
-                finish();
-                return;
-            }
-        });
     }
 
     private void populateListView() {
