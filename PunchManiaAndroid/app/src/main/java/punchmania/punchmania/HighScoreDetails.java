@@ -19,14 +19,13 @@ public class HighScoreDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.highscorelist_layout);
         mListView = (ListView) findViewById(R.id.highScoreListView);
-<<<<<<< HEAD
-        MainActivity.getHighScoreDetails(HighScoreListActivity.getClickedItemId());
-=======
+        //MainActivity.getHighScoreDetails(HighScoreListActivity.getClickedItemId());
+
     //MainActivity.getHighScoreDetails(HighScoreListActivity.getClickedItemId());
         HighScoreDetails = MainActivity.getHighScoreDetails();
         Log.i("Received x:", HighScoreDetails[0].toString());
         Log.i("Received y:", HighScoreDetails[1].toString());
         Log.i("Received z:", HighScoreDetails[2].toString());
->>>>>>> master
+
     }
 }
