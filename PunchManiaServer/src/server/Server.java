@@ -3,44 +3,46 @@ package server;
 import java.awt.Dimension;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.JFrame;
-
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
 import server.Server.Client.ClientHandler;
 
 public class Server {
+	public static final int enable = 1;
+	public static final int disable = 2;
+	public static final int ishighscore = 3;
+	public static final int Queue = 4;
+	public static final int highscore = 5;
+	public static final int TopHighscore = 6;
+	public static final int sendHighscore = 7;
+	public static final int sendQueue = 8;
+	
+
+	private Calculator cal = new Calculator(this);
+	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
+	private Timer timer = new Timer();
+
 	private ServerSocket serverSocketIs;
 	private ServerSocket serverSocketClient;
 	private HighScoreList hsList;
-	private String values;
+
 	private Client client;
 	private Queue queue;
 	private IS is;
 	private ServerUI ui;
-	private Calculator cal = new Calculator(this);
-	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
-	private Timer timer = new Timer();
-	private String filepath = "files/HighScoreList.txt";
-	private long lastCheckSum;
-	private FileInputStream fis;
-	private FileOutputStream fos;
-	private ArrayList<ArrayList> XYZ = new ArrayList<ArrayList>();
 	public MySql ms;
+
+	private long lastCheckSum;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
@@ -64,50 +66,69 @@ public class Server {
 
 	TimerTask task = new TimerTask() {
 		public void run() {
-			if(lastCheckSum != ms.checkSum()) {
-				lastCheckSum = ms.checkSum();
+			if(lastCheckSum != ms.getCheckSum()) {
+				lastCheckSum = ms.getCheckSum();
 				sendQueue();
-				if(ms.isEmpty() != 0) {
-					isSendByte((byte)1);
+				sendHighscore();
+				if(ms.queueSize() == 0) {
+					setSend(disable);
 				}else {
-					isSendByte((byte) 2);
+					setSend(enable);
 				}
-				sendSetHighscore();
 			}
 		}
 	};
 
+	public void setSend(int i) {
+		switch(i) {
+		case 1:
+			isSendByte((byte)1);
+			break;
+		case 2:
+			isSendByte((byte)2);
+			break;
+		case 3:
+			isSendByte((byte)3);
+			break;
+		case 4:
+			client.clientMethods(sendQueue);
+			break;
+		case 5:
+			client.clientMethods(sendHighscore);
+			break;
+		}
+	}
+
 	public void start() {
-		lastCheckSum = ms.checkSum();
+		lastCheckSum = ms.getCheckSum();
 		timer.scheduleAtFixedRate(task, 500, 500);
 	}
 
 	public void sendQueue() {
-		client.sendQueue();
+		setSend(Queue);
 	}
 
-	public void sendSetHighscore() {
-		client.sendSetHS();
+	public void sendHighscore() {
+		setSend(highscore);
 	}
 
 	public void newHs(int score) {
 		if(score > ms.getTop1()) {
-			isSendByte((byte) 3);
-			client.broadcastNewHS();
+			setSend(ishighscore);
+			client.clientMethods(TopHighscore);
 		}
-		System.out.println(score);
 	}
 
-	public void sendHighscore(int score, String x, String y, String z) {
-		if(ms.isEmpty() == 0) {
-			isSendByte((byte) 2);
+	public void setScore(int score, String x, String y, String z) {
+		if(ms.queueSize() == 0) {
+			setSend(disable);
 		}
 		else {
-			isSendByte((byte) 1);
+			setSend(enable);
 			newHs(score);
 			ms.setMySql(ms.popQueue(), score, x, y, z);
 		}
-		client.sendHS();
+		client.clientMethods(sendHighscore);
 	}
 
 	public void broadcastQueue() {
@@ -116,8 +137,8 @@ public class Server {
 		}
 	}
 
-	public void addToQueue(String name) {
-		isSendByte((byte) 1);
+	public void addQueue(String name) {
+		setSend(enable);
 		queue.add(name);
 		ms.toQueue(name);
 	}
@@ -128,7 +149,6 @@ public class Server {
 
 	public class Client {
 		private ServerSocket socket;
-		private ClientHandler ch;
 
 		/*
 		 * Creates the streams for values recived from IS, and stream for sending
@@ -138,30 +158,26 @@ public class Server {
 			this.socket = serverSocketClient;
 			new ConnectionClient().start();
 		}
+		
+		public void clientMethods(int i) {
+			switch (i) {
+			case 6: 
+				for (ClientHandler sendTop : clientList) {
+					sendTop.topHighscore();
+				}	
+				break;
 
-		public void sendQueue() {
-			for (ClientHandler sendq : clientList) {
-				sendq.sendQueue();
-				System.out.println("Queue sent");
-			}
-		}
-
-		public void broadcastNewHS() {
-			for (ClientHandler sendhs : clientList) {
-				sendhs.newHSSet();
-			}	
-		}
-
-		public void sendSetHS() {
-			for (ClientHandler sendSh : clientList) {
-				sendSh.sendSetHighscore();
-			}
-		}
-
-		public void sendHS() {
-			for (ClientHandler sendh : clientList) {
-				sendh.sendHighscore();
-				broadcastQueue();
+			case 7: 
+				for (ClientHandler sendHighscore : clientList) {
+					sendHighscore.sendHighscore();
+					broadcastQueue();
+				}
+				break;
+			case 8: 
+				for (ClientHandler sendQueue : clientList) {
+					sendQueue.sendQueue();
+				}
+				break;
 			}
 		}
 
@@ -169,7 +185,6 @@ public class Server {
 			private Socket socket;
 			private ObjectOutputStream oos;
 			private ObjectInputStream ois;
-			private Calculator calc;
 
 			public ClientHandler(Socket socketClient) {
 				this.socket = socketClient;
@@ -192,7 +207,7 @@ public class Server {
 				if (queue.size() > 0) {
 					sendQueue();
 				}
-				sendSetHighscore();
+				sendHighscore();
 				while (connected) {
 					try {
 						Message message = (Message) ois.readObject();
@@ -201,9 +216,9 @@ public class Server {
 							ui.print("User for queue received from: Client", 0);
 							System.out.println(message.getPayload());
 							String newtoqueue = (String) message.getPayload();
-							addToQueue(newtoqueue);
-							if(ms.isEmpty() == 0) {
-								isSendByte((byte) 2);
+							addQueue(newtoqueue);
+							if(ms.queueSize() == 0) {
+								setSend(disable);
 							}
 							broadcastQueue();
 							break;
@@ -236,13 +251,8 @@ public class Server {
 			}
 
 			public void sendXYZ(String name, int score) { 
-				XYZ.add(ms.NameAndX(name, score)); 
-				XYZ.add(ms.NameAndY(name, score)); 
-				XYZ.add(ms.NameAndZ(name, score)); 
-				System.out.println(XYZ.size()); 
 				try { 
-					oos.writeObject(new Message(XYZ, Message.HSDETAILS)); 
-					System.out.println("XYZ sent"); 
+					oos.writeObject(new Message(ms.getXYZ(name, score), Message.HSDETAILS)); 
 					oos.reset(); 
 					oos.flush(); 
 				} catch (IOException e) { 
@@ -278,22 +288,11 @@ public class Server {
 				}
 			}
 
-			public void sendSetHighscore() {
-				try {
-					ui.print("Sending Highscore list to client", 0);
-					hsList = ms.getAllScore();
-					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
-					oos.reset();
-					oos.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-			public void newHSSet() {
+			public void topHighscore() {
 				try {
 					ui.print("NEW HIGHSCORE!", 0);
-					oos.writeObject(new Message(ms.getTop1Name(), Message.NEW_HIGHSCORELIST));
+					String name = ms.getTop1Name();
+					oos.writeObject(new Message(name, Message.NEW_HIGHSCORELIST));
 					System.out.println("TOP USER SENT");
 					oos.reset();
 					oos.flush();
@@ -306,8 +305,8 @@ public class Server {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getAllScore();
-					if(ms.isEmpty() == 0) {
-						isSendByte((byte) 2);
+					if(ms.queueSize() == 0) {
+						setSend(disable);
 					}
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
 					oos.reset();
@@ -369,15 +368,13 @@ public class Server {
 		}
 
 		public class ISHandler implements Runnable {
-			private Socket socket;
 
 			public ISHandler(Socket socket) {
-				this.socket = socket;
 				try {
 					dis = new DataInputStream(socket.getInputStream());
 					dos = new DataOutputStream(socket.getOutputStream());
-					if(ms.isEmpty() == 0) {
-						isSendByte((byte) 2);
+					if(ms.queueSize() == 0) {
+						setSend(disable);
 					}
 
 				} catch (IOException e) {
@@ -386,10 +383,8 @@ public class Server {
 			}
 
 			public void run() {
-				String oldpacket = ".";
 				boolean connected = true;
 				while (connected) {
-					String packet = null;
 					byte[] string = new byte[1000];
 					try {
 						dis.readFully(string);
@@ -409,9 +404,6 @@ public class Server {
 			 * Waiting for connection, if connection is made new clienthandler is created
 			 * with socket recived as parameter. clienthandler run method is started.
 			 */
-
-			private ISHandler is = null;
-
 			public void run() {
 				ui.print("", 0);
 				while (true) {

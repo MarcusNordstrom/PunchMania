@@ -3,9 +3,6 @@ package server;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import common.HighScoreList;
 import common.Queue;
 
@@ -24,10 +21,10 @@ public class MySql{
 	private String Password = "Grupp1";
 	private String UserName = "ah7115";
 
-	private ArrayList<ArrayList> XYZ = new ArrayList<ArrayList>();
 	private ArrayList<Integer> X = new ArrayList<Integer>();
 	private ArrayList<Integer> Y = new ArrayList<Integer>();
 	private ArrayList<Integer> Z = new ArrayList<Integer>();
+	private ArrayList<ArrayList> XYZ = new ArrayList<ArrayList>();
 	private Connection myConn;
 
 	/*
@@ -36,7 +33,6 @@ public class MySql{
 	public MySql() {
 		try {
 			myConn = DriverManager.getConnection(URL, UserName, Password);
-			System.out.println("SQL running");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	
@@ -51,7 +47,6 @@ public class MySql{
 			stmt.setString(1, name);
 			stmt.setInt(2, score);
 			stmt.execute();
-			System.out.println("---------------ADDED TO HSLIST-------------- \n" + name + "		" + score);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -70,12 +65,9 @@ public class MySql{
 			stmt.setString(4, y);
 			stmt.setString(5, z);
 			stmt.execute();
-			System.out.println("---------------ADDED TO HSLIST-------------- \n" + name + "		" + score);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-		System.out.println("-------------------------------------------");
 	}
 
 	/*
@@ -88,11 +80,8 @@ public class MySql{
 			Stmt = myConn.createStatement();
 			String sql = "SELECT * FROM hslist ORDER BY Score DESC LIMIT 10";
 			ResultSet rs = Stmt.executeQuery(sql);
-			System.out.println("------------TOP10-------------");
 			while(rs.next()) {
-				System.out.println(rs.getString(2) + " : " + rs.getInt(3));
 			}
-			System.out.println("------------------------------");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -108,11 +97,8 @@ public class MySql{
 			Stmt = myConn.createStatement();
 			String sql = "SELECT * FROM hslist ORDER BY Score DESC LIMIT 1";
 			ResultSet rs = Stmt.executeQuery(sql);
-			System.out.println("------------TOP1-------------");
 			rs.next() ;
 			hs = rs.getInt(3);
-			System.out.println(hs);
-			System.out.println("------------------------------");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -129,11 +115,8 @@ public class MySql{
 			Stmt = myConn.createStatement();
 			String sql = "SELECT * FROM hslist ORDER BY Score DESC LIMIT 1";
 			ResultSet rs = Stmt.executeQuery(sql);
-			System.out.println("------------TOP1-------------");
 			rs.next() ;
 			name = rs.getString(2);
-			System.out.println(name);
-			System.out.println("------------------------------");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -144,16 +127,13 @@ public class MySql{
 	 * Selects all the users from the list where name = what you entered + wildcard limited by 100 users.
 	 */
 	public synchronized HighScoreList getUserScore(String name) {
-		Statement Stmt;
 		HighScoreList hsl = new HighScoreList();
-		String score = "";
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name LIKE ? ORDER BY Score DESC LIMIT 100");
 			stmt.setString(1, name + '%');
 			ResultSet rs = stmt.executeQuery();
 
 			while(rs.next()) {
-				System.out.println(rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4) + "\n");
 				hsl.add(rs.getString(2), rs.getInt(3));
 			}
 		} catch (SQLException e) {
@@ -172,12 +152,9 @@ public class MySql{
 			Stmt = myConn.createStatement();
 			String sql = "SELECT * FROM HSList";
 			ResultSet rs = Stmt.executeQuery(sql);
-			System.out.println("------------------ALL SOCORE-----------------");
 			while(rs.next()) {
-				System.out.println(rs.getString(2) + " : " + rs.getInt(3) + "  " + rs.getString(4));
 				hsl.add(rs.getString(2), rs.getInt(3));
 			}
-			System.out.println("--------------------------------------------------");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -188,16 +165,13 @@ public class MySql{
 	 * Deletes specific users data.
 	 */
 	public synchronized void Delete(String name) {
-		Statement stmt;
 		try {
 			PreparedStatement pstmt = myConn.prepareStatement("DELETE FROM `hslist` WHERE Name=?");
 			pstmt.setString(1, name);
-			System.out.println("-----------DELETING USER--------- \n" + name);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("-------------------------------- ");
 	}
 
 	/*
@@ -214,7 +188,6 @@ public class MySql{
 				PreparedStatement pstmt = myConn.prepareStatement(sql1);
 				pstmt.executeUpdate();
 			}
-			System.out.println("HSLIST CLEARED");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -243,12 +216,9 @@ public class MySql{
 			Stmt = myConn.createStatement();
 			String sql = "SELECT * FROM queue";
 			ResultSet rs = Stmt.executeQuery(sql);
-			System.out.println("------------------QUEUE-----------------");
 			while(rs.next()) {
-				System.out.println(rs.getString(2));
 				queue.add(rs.getString(2));
 			}
-			System.out.println("--------------------------------------------------");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -259,16 +229,13 @@ public class MySql{
 	 * Removes specific users queue.
 	 */
 	public synchronized void deleteQueue(String name) {
-		Statement stmt;
 		try {
 			PreparedStatement pstmt = myConn.prepareStatement("DELETE FROM queue WHERE Name=?");
 			pstmt.setString(1, name);
-			System.out.println("-----------DELETING USER FROM QUEUE--------- \n" + name);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("-------------------------------- ");
 	}
 
 	/*
@@ -282,8 +249,6 @@ public class MySql{
 			String sql = "SELECT * FROM queue";
 			ResultSet rs = Stmt.executeQuery(sql);
 			rs.next();
-			System.out.println("------------------QUEUE-----------------");
-			System.out.println(rs.getString(2));
 			name = rs.getString(2);
 			deleteQueue(name);
 		}catch (SQLException e) {
@@ -306,87 +271,63 @@ public class MySql{
 				PreparedStatement pstmt = myConn.prepareStatement(sql1);
 				pstmt.executeUpdate();
 			}
-			System.out.println("QUEUE CLEARED");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public synchronized ArrayList NameAndX(String name, int Score) {
-		Statement Stmt;
+	public synchronized ArrayList getXYZ(String name, int Score) {
 		String x = "";
-		String noll = "0";
+		String y = "";
+		String z = "";
 		try {
-			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
-			stmt.setString(1, name);
-			stmt.setInt(2, Score);
-			ResultSet rs = stmt.executeQuery();
-			while(rs.next()){
-
-				x = rs.getString(5);
+			PreparedStatement stmtx = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
+			stmtx.setString(1, name);
+			stmtx.setInt(2, Score);
+			ResultSet rsx = stmtx.executeQuery();
+			while(rsx.next()){
+				x = rsx.getString(5);
 				String[] xx = x.split(",");
 				for(int i=0; i < xx.length; i++) {
 					int o = Integer.parseInt(xx[i]);
 					X.add(o);
 				}
-				System.out.println(X.toString());
-
 			}	
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return X;
-	}
-
-	public synchronized ArrayList<Integer> NameAndY(String name, int Score) {
-		Statement Stmt;
-		String y = "";
-		try {
-			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
-			stmt.setString(1, name);
-			stmt.setInt(2, Score);
-			ResultSet rs = stmt.executeQuery();
-			while(rs.next()){
-
-				y = rs.getString(6);
+			PreparedStatement stmty = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
+			stmty.setString(1, name);
+			stmty.setInt(2, Score);
+			ResultSet rsy = stmty.executeQuery();
+			while(rsy.next()){
+				y = rsy.getString(6);
 				String[] yy = y.split(",");
 				for(int i=0; i < yy.length; i++) {
 					Y.add(Integer.parseInt(yy[i]));
 				}
-				System.out.println(Y.toString());
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return Y;
-	}
-
-	public synchronized ArrayList<Integer> NameAndZ(String name, int Score) {
-		Statement Stmt;
-		String z = "";
-		try {
-			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
-			stmt.setString(1, name);
-			stmt.setInt(2, Score);
-			ResultSet rs = stmt.executeQuery();
+			PreparedStatement stmtz = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
+			stmtz.setString(1, name);
+			stmtz.setInt(2, Score);
+			ResultSet rs = stmtz.executeQuery();
 			while(rs.next()){
 				z = rs.getString(7);
 				String[] zz = z.split(",");
 				for(int i=0; i < zz.length; i++) {
 					Z.add(Integer.parseInt(zz[i]));
 				}
-				System.out.println(Z.toString());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return Z;
+		XYZ.add(X);
+		XYZ.add(Y);
+		XYZ.add(Z);
+		return XYZ;
 	}
 
 	/*
 	 * Returns size of queue, used to send info to embedded system to be active or not.
 	 */
-	public synchronized int isEmpty() {
+	public synchronized int queueSize() {
 		Statement Stmt;
 		int size = 0;
 		try {
@@ -396,7 +337,6 @@ public class MySql{
 			while(rs.next()){
 				size++;
 			}
-			System.out.println(size);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -405,7 +345,7 @@ public class MySql{
 	}
 
 
-	public synchronized Long checkSum() {
+	public synchronized Long getCheckSum() {
 		Long checkSum = null;
 		Statement Stmt;
 		try {
@@ -417,18 +357,13 @@ public class MySql{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return checkSum;
 	}
 
 
 	public static void main(String[] args) {
 		MySql ms = new MySql();
-		ms.checkSum();
-		ms.NameAndX("Mackan", 999999999);
-		ms.NameAndY("Mackan", 999999999);
-		ms.NameAndZ("Mackan", 999999999);
-
 	}
 
 

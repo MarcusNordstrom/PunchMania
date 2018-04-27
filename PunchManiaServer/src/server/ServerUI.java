@@ -3,7 +3,6 @@ package server;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -101,16 +100,16 @@ public class ServerUI extends JPanel {
 
 		case "removeHS":
 			remove(cmd);
-			server.sendSetHighscore();
+			server.setSend(Server.highscore);
 			break;
 
 		case "addHS":
 			add(cmd);
-			server.sendSetHighscore();
+			server.setSend(Server.highscore);
 			break;
 
 		case "sendHS":
-			server.sendSetHighscore();
+			server.setSend(Server.highscore);
 
 			break;
 
@@ -120,21 +119,21 @@ public class ServerUI extends JPanel {
 
 		case "addQ":
 			addQ(cmd);
-			server.isSendByte((byte) 1);
-			server.sendQueue();
+			server.setSend(Server.enable);
+			server.setSend(Server.Queue);
 			break;
 
 		case "sendQ":
-			server.sendQueue();
+			server.setSend(Server.Queue);
 			print("Sending queue", 0);
 			break;
 
 		case "removeQ":
 			removeQ(cmd);
-			if(server.ms.isEmpty() == 0) {
-				server.isSendByte((byte) 2);
+			if(server.ms.queueSize() == 0) {
+				server.setSend(Server.disable);
 			}
-			server.sendQueue();
+			server.setSend(Server.Queue);
 			break;
 
 		case "delay":
@@ -143,10 +142,10 @@ public class ServerUI extends JPanel {
 
 		case "clearQ":
 			clearQ();
-			if(server.ms.isEmpty() == 0) {
-				server.isSendByte((byte) 2);
+			if(server.ms.queueSize() == 0) {
+				server.setSend(Server.disable);
 			}
-			server.sendQueue();
+			server.setSend(Server.Queue);
 			break;
 
 		case "kek":
@@ -157,15 +156,15 @@ public class ServerUI extends JPanel {
 
 		case "clearHS":
 			clearHS();
-			server.sendSetHighscore();
+			server.setSend(Server.highscore);
 			break;
 
 		case "isEnable":
-			server.isSendByte((byte) 1);
+			server.setSend(Server.enable);
 			break;
 
 		case "isDisable":
-			server.isSendByte((byte) 2);
+			server.setSend(Server.disable);
 			break;
 
 		case "help":
@@ -217,7 +216,6 @@ public class ServerUI extends JPanel {
 
 	}
 	private void removeQ(String[] cmd) {
-		Queue q = server.getQueue();
 		for(int i = 1; i < cmd.length;i++) {
 			String name = cmd[i];
 			server.ms.deleteQueue(name);

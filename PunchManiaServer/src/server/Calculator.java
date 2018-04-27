@@ -164,7 +164,7 @@ public class Calculator {
 		for(int i=0; i < z.size(); i++) {
 			zz += popZ() + ",";
 		}
-		server.sendHighscore(getScore(), xx, yy, zz);
+		server.setScore(getScore(), xx, yy, zz);
 		return getScore();
 	}
 
