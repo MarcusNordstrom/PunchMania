@@ -35,7 +35,7 @@ public class Server {
 
 	private FileInputStream fis;
 	private FileOutputStream fos;
-
+	private ArrayList<ArrayList> XYZ = new ArrayList<ArrayList>();
 	public MySql ms;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
@@ -182,12 +182,17 @@ public class Server {
 							}
 							broadcastQueue();
 							break;
-							
+
 						case 5:
 							ui.print("User requested hs", 0);
 							String name = (String) message.getPayload();
 							sendNameScore(name);
-						}
+
+						case 7: 
+							ui.print("User requested hs", 0); 
+							HighScoreList hslNameScore = (HighScoreList) message.getPayload(); 
+							sendXYZ(hslNameScore.getUser(0).getUser(), hslNameScore.getUser(0).getScore()); 
+						} 
 
 					} catch (IOException | ClassNotFoundException e) {
 						try {
@@ -204,13 +209,28 @@ public class Server {
 					}
 				}
 			}
-			
+
+			public void sendXYZ(String name, int score) { 
+				XYZ.add(ms.NameAndX(name, score)); 
+				XYZ.add(ms.NameAndY(name, score)); 
+				XYZ.add(ms.NameAndZ(name, score)); 
+				System.out.println(XYZ.size()); 
+				try { 
+					oos.writeObject(new Message(XYZ, Message.HSDETAILS)); 
+					System.out.println("XYZ sent"); 
+					oos.reset(); 
+					oos.flush(); 
+				} catch (IOException e) { 
+					e.printStackTrace(); 
+				} 
+			}
+
 			public void sendNameScore(String name) {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getUserScore(name);
-					System.out.println(hsList.getUser(0).getUser());
-					System.out.println(hsList.getUser(0).getScore());
+					System.out.println(hsList.getUser(0).getUser()); 
+					System.out.println(hsList.getUser(0).getScore()); 
 					System.out.println("name");
 					oos.writeObject(new Message(hsList, Message.PLAYERSCORES));
 					oos.reset();
