@@ -18,14 +18,13 @@ public class SearchActivity extends AppCompatActivity {
     private TextView usernameTextView;
     private Button btnHomeSearch;
     private ListView searchListView;
-    private updater updater = new updater();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        //populateListView();
+        populateListView();
 
 
         usernameTextView = (TextView) findViewById(R.id.usernameTextView);
@@ -36,7 +35,7 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String str = intent.getStringExtra("Hejsan");
         usernameTextView.setText(str);
-
+        updater updater = new updater();
         updater.start();
 
         btnHomeSearch.setOnClickListener(new View.OnClickListener() {
