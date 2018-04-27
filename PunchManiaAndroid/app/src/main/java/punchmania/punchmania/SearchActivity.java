@@ -54,7 +54,7 @@ public class SearchActivity extends AppCompatActivity {
         for (int i = 0; i < MainActivity.getListPlayer().size(); i++) {
             Log.i(TAG,MainActivity.getListPlayer().getUser(i).getScore() +"");
 
-            PlayerHighScore.add(MainActivity.getListPlayer().getUser(i).getScore() + "\n");
+            PlayerHighScore.add(MainActivity.getListPlayer().getUser(i).getUser() + "   " +MainActivity.getListPlayer().getUser(i).getScore() + "\n");
         }
         Log.i(TAG, "1");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScore);

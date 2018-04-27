@@ -47,7 +47,7 @@ public class QueueListActivity extends AppCompatActivity {
         if( MainActivity.getQueue().size() > 0 ) {
             for (int i = 0; i < MainActivity.getQueue().size(); i++) {
 
-                copiedQueueList.add(MainActivity.getQueue().peekAt(i));
+                copiedQueueList.add(i+1 + ":   " + MainActivity.getQueue().peekAt(i));
 
                 ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
                 mListView.setAdapter(adapter);
