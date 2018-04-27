@@ -57,6 +57,7 @@ public class Server {
 		client = new Client(serverSocketClient);
 		is = new IS(serverSocketIs);
 		ms = new MySql();
+		ui.print("SQL connected",0);
 		start();
 	}
 
@@ -292,7 +293,7 @@ public class Server {
 				try {
 					ui.print("NEW HIGHSCORE!", 0);
 					String name = ms.getTop1Name();
-					oos.writeObject(new Message(name, Message.NEW_HIGHSCORELIST));
+					oos.writeObject(new Message(name, Message.NEW_HS));
 					System.out.println("TOP USER SENT");
 					oos.reset();
 					oos.flush();

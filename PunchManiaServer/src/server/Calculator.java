@@ -1,5 +1,6 @@
 package server;
 
+
 import java.sql.Array;
 import java.util.ArrayList;
 
@@ -130,7 +131,7 @@ public class Calculator {
 		avrgZ = avrgZ/z.size();
 		double componentXYZ = Math.sqrt((Math.pow(avrgZ, 2) + Math.pow(componentXY, 2)));
 		System.out.println("Component of x, y and z: " + componentXYZ);
-		score = (int)(componentXYZ * 10000);
+		score = (int)(componentXYZ * 10);
 		System.out.println("SCORE: " + score);
 	}
 
