@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.11";
+    private String ip = "192.168.1.43";
     private int port = 12346;
     public static boolean connected = false;
     private DataSend dataSend = new DataSend();

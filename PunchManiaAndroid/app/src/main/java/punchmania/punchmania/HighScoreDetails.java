@@ -14,6 +14,6 @@ public class HighScoreDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.highscorelist_layout);
         mListView = (ListView) findViewById(R.id.highScoreListView);
-        MainActivity.getHighScoreDetails(HighScoreListActivity.getClickedItemId())
+        MainActivity.getHighScoreDetails(HighScoreListActivity.getClickedItemId());
     }
 }
