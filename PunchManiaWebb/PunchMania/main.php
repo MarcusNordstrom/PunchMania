@@ -55,35 +55,35 @@ function templateBody($info, $highscore, $queue) {
 function getHSList($name){
 	echo '<div class="col-lg hs">';
 	if ($name == null) {
-		$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist ORDER BY Score DESC LIMIT 100");
-		$query->execute();
-		$query = $query->fetchAll();
-		$place = 1;
-		echo '<h2>Highscore</h2>';
-		tableStart();
-		foreach ($query as $row) {
-			echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
-			$place++;
-		}
-		tableEnd();
+		echo '<div id="hs"></div>
+          <script type="text/javascript">
+            setInterval(function(){
+              var xmlhttp = new XMLHttpRequest();
+              xmlhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("hs").innerHTML = this.responseText;
+              }
+              };
+              xmlhttp.open("GET", "main.php?js=hs", true);
+              xmlhttp.send();
+            }, 500);
+          </script>';
 	} elseif ($name == "0") {
 		echo '';
 	} else {
-		$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist WHERE Name LIKE :name ORDER BY Score DESC LIMIT 100");
-		$name = $name . "%";
-		$query->bindParam(':name',  $name);
-		$query->execute();
-		$query = $query->fetchAll();
-		$place = 1;
-		if (!empty($query)) {
-			echo '<h2>Highscore</h2>';
-			tableStart();
-			foreach ($query as $row) {
-				echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
-				$place++;
-			}
-			tableEnd();
-		}
+		echo '<div id="hs"></div>
+          <script type="text/javascript">
+            setInterval(function(){
+              var xmlhttp = new XMLHttpRequest();
+              xmlhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("hs").innerHTML = this.responseText;
+              }
+              };
+              xmlhttp.open("GET", "main.php?js=hs&user='.$name.'", true);
+              xmlhttp.send();
+            }, 500);
+          </script>';
 	}
 	echo '</div>';
 }
@@ -93,7 +93,7 @@ function getInfo($info){
 			if (isset($_SESSION["uname"])) {
 				echo '<h3>Välkommen '.$_SESSION["uname"].'</h3>';
 				getQplace();
-				echo '<a href="index.php?site=logout"><button class="btn">logga ut</button></a>';
+				echo '<a href="index.php?site=logout"><button class="btn">Logga ut</button></a>';
 			} else {
 				echo '<a href="index.php?site=login"><button class="btn">Logga in</button></a>
           <a href="index.php?site=register"><button class="btn">Registrera dig</button></a>';
@@ -105,15 +105,15 @@ function getInfo($info){
           <input type="text" name="uname" pattern=".{3,15}" required><br>
             <label>Password:</label><br>
           <input type="password" name="pw" required><br><br>
-          <input type="submit" value="Logga in">
+          <input type="submit" value="Logga in" class="btn">
         </form>';
         	if (isset($_POST["uname"]) && isset($_POST["pw"])) {
-        		$query = $GLOBALS["conn"]->prepare("SELECT PW FROM user WHERE Uname=:uname");
+        		$query = $GLOBALS["conn"]->prepare("SELECT * FROM user WHERE Uname=:uname");
     			$query->bindParam(':uname', $_POST["uname"]);
     			$query->execute();
     			$result = $query->fetch();
     			if (password_verify($_POST["pw"], $result["PW"])) {
-    				$_SESSION["uname"] = $_POST["uname"];
+    				$_SESSION["uname"] = $result["Uname"];
     				redirect("index.php");
     			} else {
     				redirect("index.php?site=login&error=1");		
@@ -151,7 +151,7 @@ function getInfo($info){
           		<input type="text" name="uname" pattern=".{3,15}" required><br>
             	<label>Password:</label><br>
           		<input type="password" name="pw" required><br><br>
-          		<input type="submit" value="Registrera dig"></form>';
+          		<input type="submit" value="Registrera dig" class="btn"></form>';
 			if (isset($_POST["uname"]) && isset($_POST["pw"])) {
 				$hashpw = password_hash($_POST["pw"], PASSWORD_DEFAULT);
 				$query = $GLOBALS["conn"]->prepare("SELECT Uname FROM user WHERE Uname=:uname");			//check if user exists
@@ -186,9 +186,9 @@ function getQplace() {
 		$query->execute();
 		$query = $query->fetch();
 		if ($query["num"] > 0) {
-			echo '<button><a href="index.php?site=line">Ta bort mig från köplats '. $query["num"] .'</a></button><br>';
+			echo '<button class="btn"><a href="index.php?site=line">Ta bort mig från köplats '. $query["num"] .'</a></button><br>';
 		} else {
-			echo '<button><a href="index.php?site=line">Ställ mig i kö!</a></button><br>';
+			echo '<button class="btn"><a href="index.php?site=line">Ställ mig i kö!</a></button><br>';
 		}
 	}
 }
@@ -218,17 +218,19 @@ function getUserStats($user) {
 function getQueue($queue) {
 	if ($queue == null) {
 		echo '<div class="col-lg q">';
-		$query = $GLOBALS["conn"]->prepare("SELECT * FROM queue ORDER BY ID ASC LIMIT 100");
-		$query->execute();
-		$query = $query->fetchAll();
-		$place = 1;
-		echo ' <h2>Queue</h2>';
-		tableStart();
-		foreach ($query as $row) {
-			echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td></tr>';
-			$place++;
-		}
-		tableEnd();
+		echo '<div id="q"></div>
+          <script type="text/javascript">
+            setInterval(function(){
+              var xmlhttp = new XMLHttpRequest();
+              xmlhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("q").innerHTML = this.responseText;
+              }
+              };
+              xmlhttp.open("GET", "main.php?js=q", true);
+              xmlhttp.send();
+            }, 500);
+          </script>';
 		echo '</div>';
 	}
 }
@@ -244,5 +246,59 @@ function redirect($extra) {
 	$host  = $_SERVER['HTTP_HOST'];
 	$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 	header("Location: https://$host$uri/$extra");
+}
+if (isset($_GET["js"])) {
+	switch ($_GET["js"]) {
+		case "hs":
+			if (isset($_GET["user"])) {
+				$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist WHERE Name LIKE :name ORDER BY Score DESC LIMIT 100");
+				$name = $name . "%";
+				$query->bindParam(':name',  $name);
+				$query->execute();
+				$query = $query->fetchAll();
+				$place = 1;
+				if (!empty($query)) {
+					echo '<h2>Highscore</h2>';
+					tableStart();
+					foreach ($query as $row) {
+					echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
+					$place++;
+					}
+				}
+				tableEnd();
+			} else {
+				$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist ORDER BY Score DESC LIMIT 100");
+				$query->execute();
+				$query = $query->fetchAll();
+				$place = 1;
+				echo '<h2>Highscore</h2>';
+				tableStart();
+				foreach ($query as $row) {
+					echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
+					$place++;
+				}
+				tableEnd();
+			}
+			break;
+		case "q":
+			$query = $GLOBALS["conn"]->prepare("SELECT * FROM queue ORDER BY ID ASC LIMIT 100");
+			$query->execute();
+			$query = $query->fetchAll();
+			$place = 1;
+			echo ' <h2>Queue</h2>';
+			tableStart();
+			foreach ($query as $row) {
+				echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td></tr>';
+				$place++;
+			}
+			tableEnd();
+			break;
+		case "info":
+			echo $_SESSION["uname"];
+			break;
+		default:
+			# code...
+			break;
+	}
 }
 ?>
