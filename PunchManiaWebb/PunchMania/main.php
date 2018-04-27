@@ -196,7 +196,7 @@ function getQplace() {
 }
 function getUserStats($user) {
 	$queryq = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
-	$queryq->bindParam(':name', $_SESSION["uname"]);
+	$queryq->bindParam(':name', $user);
 	$queryq->execute();
 	$queryq = $queryq->fetch();
 	if ($queryq["num"] > 0) {
