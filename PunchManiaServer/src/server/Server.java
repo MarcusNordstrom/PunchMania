@@ -66,13 +66,17 @@ public class Server {
 		public void run() {
 			if(lastCheckSum != ms.checkSum()) {
 				lastCheckSum = ms.checkSum();
-				client.sendQueue();
-				client.sendHS();
-				System.out.println("SEND HS AND Q!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				sendQueue();
+				if(ms.isEmpty() != 0) {
+					isSendByte((byte)1);
+				}else {
+					isSendByte((byte) 2);
+				}
+				sendSetHighscore();
 			}
 		}
 	};
-	
+
 	public void start() {
 		lastCheckSum = ms.checkSum();
 		timer.scheduleAtFixedRate(task, 500, 500);
