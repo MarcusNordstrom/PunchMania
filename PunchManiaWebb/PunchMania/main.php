@@ -100,7 +100,11 @@ function getInfo($info){
               var xmlhttp = new XMLHttpRequest();
               xmlhttp.onreadystatechange = function() {
               if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("info").innerHTML = this.responseText;
+              	var previousState = document.getElementById("info").innerHTML;
+                var state = this.responseText;
+                if(previousState != state) {
+                	document.getElementById("info").innerHTML = state;
+                }
               }
               };
               xmlhttp.open("GET", "main.php?js=info", true);
@@ -195,9 +199,9 @@ function getQplace() {
 		$query->execute();
 		$query = $query->fetch();
 		if ($query["num"] > 0) {
-			echo '<button class="btn"><a href="index.php?site=line">Ta bort mig från köplats '. $query["num"] .'</a></button><br>';
+			echo '<a href="index.php?site=line"><button class="btn">Ta bort mig från köplats '. $query["num"] .'</button></a><br>';
 		} else {
-			echo '<button class="btn"><a href="index.php?site=line">Ställ mig i kö!</a></button><br>';
+			echo '<a href="index.php?site=line"><button class="btn">Ställ mig i kö!</button></a><br>';
 		}
 	}
 }
