@@ -212,8 +212,6 @@ function getUserStats($user) {
 	} else {
 		echo "<p>Best score: No score</p>";
 	}
-	
-
 }
 function getQueue($queue) {
 	if ($queue == null) {
@@ -294,8 +292,17 @@ if (isset($_GET["js"])) {
 			tableEnd();
 			break;
 		case "info":
-			echo $_SESSION["uname"];
-			break;
+		if (!isset($_GET["info"])) {
+				if (isset($_SESSION["uname"])) {
+					echo '<h3>Välkommen '.$_SESSION["uname"].'</h3>';
+					getQplace();
+					echo '<a href="index.php?site=logout"><button class="btn">Logga ut</button></a>';
+				} else {
+					echo '<a href="index.php?site=login"><button class="btn">Logga in</button></a>
+          			<a href="index.php?site=register"><button class="btn">Registrera dig</button></a>';
+				}
+			}
+		break;
 		default:
 			# code...
 			break;
