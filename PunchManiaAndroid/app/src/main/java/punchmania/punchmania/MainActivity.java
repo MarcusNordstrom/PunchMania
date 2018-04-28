@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private String ip = "192.168.0.148";
     private int port = 12346;
     public static boolean connected = false;
-    private DataSend dataSend = new DataSend();
+    private DataSender dataSender = new DataSender();
     private SearchActivity search;
     private static long requestedHit = Long.MAX_VALUE;
 
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    dataSend.setSend(newEntry, 5);
+                    dataSender.Send(newEntry, 5);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                dataSend.setSend(newEntry, 5);
+                                dataSender.Send(newEntry, 5);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class DataSend extends Thread {
+    public class DataSender extends Thread {
         private Object send;
         private int instruction;
 
@@ -187,10 +187,10 @@ public class MainActivity extends AppCompatActivity {
                 }
         }
 
-        public void setSend(Object arg1, int arg2) {
+        public void Send(Object arg1, int arg2) {
             send = arg1 + "";
             instruction = arg2;
-            dataSend.start();
+            dataSender.start();
         }
     }
 
