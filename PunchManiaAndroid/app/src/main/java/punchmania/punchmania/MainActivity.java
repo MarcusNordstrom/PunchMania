@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.20";
+    private String ip = "192.168.0.148";
     private int port = 12346;
     public static boolean connected = false;
     private DataSend dataSend = new DataSend();
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_client);
         DataReader dataReader = new DataReader();
         dataReader.start();
-        dataSend.start();
         //HighScoreListActivity highScoreListActivity = new HighScoreListActivity();
         //highScoreListActivity.onCreate(savedInstanceState);
         btnSearch = (Button) findViewById(R.id.btnSearch);
@@ -172,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         private int instruction;
 
         public void run() {
-            while (true) {
                 if (connected && send != null && instruction != 0) {
                     try {
                         Log.i(send.toString(), "received");
@@ -187,17 +185,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(send.toString(), "socket interrupted");
                     }
                 }
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         public void setSend(Object arg1, int arg2) {
             send = arg1 + "";
             instruction = arg2;
+            dataSend.start();
         }
     }
 
