@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -34,26 +32,25 @@ public class QueueListActivity extends AppCompatActivity {
         //create the list adapter and set the adapter to the Queue ArrayList
         ArrayList<String> copiedQueueList = new ArrayList<>();
 
-        if( MainActivity.getQueue().size() > 0 ) {
+        if (MainActivity.getQueue().size() > 0) {
             for (int i = 0; i < MainActivity.getQueue().size(); i++) {
 
-                copiedQueueList.add(i+1 + ":   " + MainActivity.getQueue().peekAt(i));
+                copiedQueueList.add(i + 1 + ":   " + MainActivity.getQueue().peekAt(i));
 
                 ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
                 mListView.setAdapter(adapter);
 
             }
 
-                } else {
+        } else {
             copiedQueueList.clear();
 
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
             mListView.setAdapter(adapter);
+        }
+
+
     }
-
-
-
-            }
 
 
     public class updater extends Thread {

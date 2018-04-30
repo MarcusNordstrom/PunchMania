@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,15 +34,14 @@ public class SearchActivity extends AppCompatActivity {
         updater.start();
 
 
-
-        }
+    }
 
     private void populateListView() {
         ArrayList<String> PlayerHighScore = new ArrayList<>();
         for (int i = 0; i < MainActivity.getListPlayer().size(); i++) {
-            Log.i(TAG,MainActivity.getListPlayer().getUser(i).getScore() +"");
+            Log.i(TAG, MainActivity.getListPlayer().getUser(i).getScore() + "");
 
-            PlayerHighScore.add(MainActivity.getListPlayer().getUser(i).getUser() + "   " +MainActivity.getListPlayer().getUser(i).getScore() + "\n");
+            PlayerHighScore.add(MainActivity.getListPlayer().getUser(i).getUser() + "   " + MainActivity.getListPlayer().getUser(i).getScore() + "\n");
         }
         Log.i(TAG, "1");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScore);
@@ -62,7 +59,7 @@ public class SearchActivity extends AppCompatActivity {
                 try {
                     synchronized (this) {
                         wait(1000);
-                        if(!isInterrupted())
+                        if (!isInterrupted())
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -78,7 +75,7 @@ public class SearchActivity extends AppCompatActivity {
         }
 
     }
-    }
+}
 
 
 

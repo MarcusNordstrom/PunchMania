@@ -21,7 +21,7 @@ public class GLES20Activity extends Activity {
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if(hasGLES20()){
+        if (hasGLES20()) {
             mGLView = new GLSurfaceView(this);
             mGLView.setEGLContextClientVersion(2);
             mGLView.setPreserveEGLContextOnPause(true);
@@ -30,23 +30,25 @@ public class GLES20Activity extends Activity {
 
     }
 
-    private boolean hasGLES20(){
+    private boolean hasGLES20() {
         ActivityManager am = (ActivityManager)
                 getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo info = am.getDeviceConfigurationInfo();
         return info.reqGlEsVersion >= 0x20000;
     }
-    protected void onResume(){
+
+    protected void onResume() {
         super.onResume();
 
-        if(mSurfaceView != null){
+        if (mSurfaceView != null) {
             mSurfaceView.onResume();
         }
     }
-    protected void onPause(){
+
+    protected void onPause() {
         super.onPause();
 
-        if(mSurfaceView != null){
+        if (mSurfaceView != null) {
             mSurfaceView.onPause();
         }
     }

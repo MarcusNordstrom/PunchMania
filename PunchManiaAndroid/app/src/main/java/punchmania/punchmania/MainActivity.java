@@ -39,9 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private String ip = "192.168.0.148";
     private int port = 12346;
     public static boolean connected = false;
-    private DataSender dataSender = new DataSender();
+    private static DataSender dataSender = new DataSender();
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
+    private static boolean dataSenderRunning = false;
     private SearchActivity search;
     private static long requestedHit = Long.MAX_VALUE;
 
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    dataSender.Send(newEntry, 5);
+                    dataSender.send(newEntry, 5);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                dataSender.Send(newEntry, 5);
+                                dataSender.send(newEntry, 5);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -144,9 +145,8 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
-  /* public static void fetchHighScoreDetails(HighScoreList requestedHighScore){
-        if(connected)
-        {
+    public static void fetchHighScoreDetails(HighScoreList requestedHighScore) {
+        if (connected) {
             try {
                 oos.writeObject(new Message(requestedHighScore, 7));
                 oos.reset();
@@ -155,10 +155,14 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }*/
+    }
 
     public static int[][] getHighScoreDetails() {
         return highScoreDetails;
+    }
+
+    public static void send(Object arg1, int arg2) {
+        dataSender.send(arg1, arg2);
     }
 
     public static HighScoreList getListPlayer() {
@@ -166,31 +170,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class DataSender extends Thread {
+    public static class DataSender extends Thread {
         private Object send;
         private int instruction;
 
-        public void run() {
+        public synchronized void run() {
             if (connected && send != null && instruction != 0) {
                 try {
-                    Log.i(send.toString(), "received");
-
                     oos.writeObject(new Message(send, instruction));
                     oos.reset();
                     oos.flush();
-                    Log.i(send.toString(), "sent");
                     send = null;
                     instruction = 0;
+                    Log.i("DataSender: ", "Sent!");
                 } catch (IOException e) {
                     Log.i(send.toString(), "socket interrupted");
                 }
             }
+            dataSenderRunning = false;
         }
 
-        public void Send(Object arg1, int arg2) {
-            send = arg1 + "";
-            instruction = arg2;
-            dataSender.start();
+        public synchronized void send(Object arg1, int arg2) {
+            if (!dataSenderRunning) {
+                send = arg1 + "";
+                instruction = arg2;
+                dataSenderRunning = true;
+                dataSender.start();
+            }
         }
     }
 

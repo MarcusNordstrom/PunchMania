@@ -1,6 +1,5 @@
 package punchmania.punchmania;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,10 +8,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import common.HighScoreList;
 
 public class HighScoreListActivity extends AppCompatActivity {
 
@@ -35,10 +35,14 @@ public class HighScoreListActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(HighScoreListActivity.this,MainActivity.getHighScores().getUser(position).getUser(),Toast.LENGTH_LONG).show();
+                HighScoreList userToFetch = new HighScoreList();
+                String userToFetchName = MainActivity.getHighScores().getUser(position).getUser();
+                int userToFetchScore = MainActivity.getHighScores().getUser(position).getScore();
+                userToFetch.add(userToFetchName, userToFetchScore);
+                MainActivity.send(userToFetch, 7);
+                Toast.makeText(HighScoreListActivity.this, MainActivity.getHighScores().getUser(position).getUser(), Toast.LENGTH_LONG).show();
             }
         });
-
 
 
     }
@@ -48,7 +52,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
         for (int i = 0; i < MainActivity.getHighScores().size(); i++) {
-            convertedHighScoreList.add(i+1 + ":   "+ MainActivity.getHighScores().getUser(i).getUser() +"    " + MainActivity.getHighScores().getUser(i).getScore());
+            convertedHighScoreList.add(i + 1 + ":   " + MainActivity.getHighScores().getUser(i).getUser() + "    " + MainActivity.getHighScores().getUser(i).getScore());
         }
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
         listView.setAdapter(adapter);
