@@ -24,7 +24,7 @@ public class MySql{
 	private ArrayList<Integer> X = new ArrayList<Integer>();
 	private ArrayList<Integer> Y = new ArrayList<Integer>();
 	private ArrayList<Integer> Z = new ArrayList<Integer>();
-	private ArrayList<ArrayList> XYZ = new ArrayList<ArrayList>();
+	private ArrayList<ArrayList<Integer>> XYZ = new ArrayList<ArrayList<Integer>>();
 	private Connection myConn;
 
 	/*
@@ -276,10 +276,11 @@ public class MySql{
 		}
 	}
 
-	public synchronized ArrayList getXYZ(String name, int Score) {
+	public synchronized ArrayList<ArrayList<Integer>> getXYZ(String name, int Score) {
 		String x = "";
 		String y = "";
 		String z = "";
+		XYZ = new ArrayList<ArrayList<Integer>>();
 		try {
 			PreparedStatement stmtx = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
 			stmtx.setString(1, name);

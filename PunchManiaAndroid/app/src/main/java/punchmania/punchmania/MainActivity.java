@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import common.HighScoreList;
 import common.Message;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
     private static HighScoreList listPlayer = new HighScoreList();
-    private static int[][] highScoreDetails;
+    private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private String message = "";
     private PrintWriter printWriter;
     private Socket socket = new Socket();
@@ -145,19 +146,7 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
-    public static void fetchHighScoreDetails(HighScoreList requestedHighScore) {
-        if (connected) {
-            try {
-                oos.writeObject(new Message(requestedHighScore, 7));
-                oos.reset();
-                oos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static int[][] getHighScoreDetails() {
+    public static ArrayList getHighScoreDetails() {
         return highScoreDetails;
     }
 
@@ -188,11 +177,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             dataSenderRunning = false;
+            return;
         }
 
         public synchronized void send(Object arg1, int arg2) {
             if (!dataSenderRunning) {
-                send = arg1 + "";
+                send = arg1;
                 instruction = arg2;
                 dataSenderRunning = true;
                 dataSender.start();
@@ -276,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                                         break;
                                     case 8:
                                         Log.i(this.getName(), "It's HighScore details!");
-                                        highScoreDetails = (int[][]) readMessage.getPayload();
+                                        highScoreDetails = (ArrayList<ArrayList<Integer>>) readMessage.getPayload();
                                         break;
                                     default:
                                         Log.i(this.getName(), "unknown object");
