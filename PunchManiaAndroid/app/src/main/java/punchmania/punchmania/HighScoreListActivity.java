@@ -9,6 +9,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,32 +27,21 @@ public class HighScoreListActivity extends AppCompatActivity {
         setContentView(R.layout.highscorelist_layout);
         listView = (ListView) findViewById(R.id.highScoreListView);
 
+        Log.d(TAG, "populateListView: Displaying data in the ListView.");
+        //create the list adapter and set the adapter to the HighScore ArrayList
+
         updater.start();
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(HighScoreListActivity.this,MainActivity.getHighScores().getUser(position).getUser(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
     }
-
-//    listView.setOnItemClickListener(
-//            new AdapterView.OnItemClickListener()
-//    {
-//        @Override
-//                public void onItemClick(AdapterView<?> arg0, View view, int position, long id)
-//        {
-//
-//        }
-//    });
-
-
-
-
-
-//   protected void onListItemClick(ListView l, View v, int position, long id) {}{
-//        Cursor c = (Cursor) parent.getAdapter().getItem(position);
-//        String testString = c.getString(c.getColumnIndex("col_name"));
-//        Log.i("HighScoreListActivity","You clicked" + testString);
-//        //MainActivity.fetchHighScoreDetails(requestedHighScore);
-//    }
-
-
 
     private void populateListView() {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
