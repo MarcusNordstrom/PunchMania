@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         return highScoreDetails;
     }
 
-    public static void send(Object arg1, int arg2) {
+    public synchronized static void send(Object arg1, int arg2) {
         dataSender.send(arg1, arg2);
     }
 
@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
         public synchronized void run() {
             if (connected && send != null && instruction != 0) {
                 try {
+                    Log.i("DataSender: ", "Trying to send!");
                     oos.writeObject(new Message(send, instruction));
                     oos.reset();
                     oos.flush();
@@ -173,15 +174,15 @@ public class MainActivity extends AppCompatActivity {
                     instruction = 0;
                     Log.i("DataSender: ", "Sent!");
                 } catch (IOException e) {
-                    Log.i(send.toString(), "socket interrupted");
+                    Log.i("DataSender: ", "Socket interrupted");
                 }
             }
             dataSenderRunning = false;
-            return;
+            Thread.currentThread().interrupt();
         }
 
         public synchronized void send(Object arg1, int arg2) {
-            if (!dataSenderRunning) {
+            if (dataSender.isInterrupted()) {
                 send = arg1;
                 instruction = arg2;
                 dataSenderRunning = true;
