@@ -23,7 +23,6 @@ import common.HighScoreList;
 import common.Message;
 import common.Queue;
 
-
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
     Button btnSearch, btnViewQueue, btnViewHighScore;
@@ -43,9 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private SearchActivity search;
     private static long requestedHit = Long.MAX_VALUE;
 
-
     private String user;
-
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -131,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-
     public static Queue getQueue() {
         return queue;
     }
@@ -152,12 +148,11 @@ public class MainActivity extends AppCompatActivity {
         DataSender dataSender = new DataSender(arg1, arg2);
     }
 
-        public synchronized static void staticSend(Object arg1, int arg2) {
+    public synchronized static void staticSend(Object arg1, int arg2) {
         StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
     }
 
-
-        public static class StaticDataSender extends Thread {
+    public static class StaticDataSender extends Thread {
         private Object send;
         private int instruction;
 
