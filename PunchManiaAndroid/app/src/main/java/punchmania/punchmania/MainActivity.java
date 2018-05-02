@@ -32,18 +32,14 @@ public class MainActivity extends AppCompatActivity {
     private static HighScoreList list = new HighScoreList();
     private static HighScoreList listPlayer = new HighScoreList();
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
-    private String message = "";
-    private PrintWriter printWriter;
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
     private String ip = "192.168.0.148";
     private int port = 12346;
     public static boolean connected = false;
-    private static DataSender dataSender = new DataSender();
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
-    private static boolean dataSenderRunning = false;
     private SearchActivity search;
     private static long requestedHit = Long.MAX_VALUE;
 
@@ -75,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    dataSender.send(newEntry, 5);
+                    send(newEntry, 5);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -96,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                dataSender.send(newEntry, 5);
+                                send(newEntry, 5);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -135,8 +131,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    // Umm, keep the rest of the example code underneath this comment
-    // 404: Example code not found :)
 
     public static Queue getQueue() {
         return queue;
@@ -150,21 +144,31 @@ public class MainActivity extends AppCompatActivity {
         return highScoreDetails;
     }
 
-    public synchronized static void send(Object arg1, int arg2) {
-        dataSender.send(arg1, arg2);
-    }
-
     public static HighScoreList getListPlayer() {
         return listPlayer;
     }
 
+    public synchronized void send(Object arg1, int arg2) {
+        DataSender dataSender = new DataSender(arg1, arg2);
+    }
 
-    public static class DataSender extends Thread {
+        public synchronized static void staticSend(Object arg1, int arg2) {
+        StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
+    }
+
+
+        public static class StaticDataSender extends Thread {
         private Object send;
         private int instruction;
 
+        public StaticDataSender(Object send, int instruction){
+            this.send = send;
+            this.instruction = instruction;
+            this.start();
+}
+
         public synchronized void run() {
-            if (connected && send != null && instruction != 0) {
+            if (connected && send != null && instruction != 0 && !isInterrupted()) {
                 try {
                     Log.i("DataSender: ", "Trying to send!");
                     oos.writeObject(new Message(send, instruction));
@@ -177,16 +181,32 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("DataSender: ", "Socket interrupted");
                 }
             }
-            dataSenderRunning = false;
-            Thread.currentThread().interrupt();
         }
+    }
 
-        public synchronized void send(Object arg1, int arg2) {
-            if (dataSender.isInterrupted()) {
-                send = arg1;
-                instruction = arg2;
-                dataSenderRunning = true;
-                dataSender.start();
+    public class DataSender extends Thread {
+        private Object send;
+        private int instruction;
+
+        public DataSender(Object send, int instruction){
+            this.send = send;
+            this.instruction = instruction;
+            this.start();
+}
+
+        public synchronized void run() {
+            if (connected && send != null && instruction != 0 && !isInterrupted()) {
+                try {
+                    Log.i("DataSender: ", "Trying to send!");
+                    oos.writeObject(new Message(send, instruction));
+                    oos.reset();
+                    oos.flush();
+                    send = null;
+                    instruction = 0;
+                    Log.i("DataSender: ", "Sent!");
+                } catch (IOException e) {
+                    Log.i("DataSender: ", "Socket interrupted");
+                }
             }
         }
     }

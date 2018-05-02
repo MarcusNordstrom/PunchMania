@@ -285,7 +285,7 @@ public class Server {
 					oos.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
-					System.out.println("sendQ sucks");
+					System.out.println("Request to send queue failed");
 				}
 			}
 

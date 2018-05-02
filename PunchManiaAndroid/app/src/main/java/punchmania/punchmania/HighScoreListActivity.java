@@ -40,7 +40,7 @@ public class HighScoreListActivity extends AppCompatActivity {
                 int userToFetchScore = MainActivity.getHighScores().getUser(position).getScore();
                 userToFetch.add(userToFetchName, userToFetchScore);
                 Log.i("HighScoreList: ", "Requesting details for " + userToFetch.getUser(0).getUser());
-                MainActivity.send(userToFetch, 7);
+                MainActivity.staticSend(userToFetch, 7);
                 Toast.makeText(HighScoreListActivity.this, MainActivity.getHighScores().getUser(position).getUser(), Toast.LENGTH_LONG).show();
                 ArrayList HighScoreDetails;
                 boolean printed = false;
