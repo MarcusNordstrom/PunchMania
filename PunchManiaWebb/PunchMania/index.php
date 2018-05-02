@@ -6,11 +6,13 @@ require 'main.php';
   <head>
     <!-- Usermade -->
     <title>PunchMania</title>
+    <script type="text/javascript" src="main.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.txt">
     <meta name="theme-color" content="#0A0A0A">
     <meta name="display" content="standalone">
     <link rel="icon" href="images/logo192.png" sizes="192x192" />
