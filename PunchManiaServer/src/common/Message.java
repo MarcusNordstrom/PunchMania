@@ -17,7 +17,8 @@ public class Message implements Serializable {
     public static final int REQUEST_HSDETAILS = 7;
     public static final int HSDETAILS = 8;
     public static final int GAMEMODE = 9;
-    public static final int  NEW_FASTPUNCH_HIGHSCORELIST = 10;
+    public static final int NEW_HIGHSCORELIST_FASTPUNCH = 10;
+    public static final int PLAYERSCORES_FASTPUNCH = 11;
 	
 	public Message(Object payload, int instruction) {
 		this.payload = payload;
