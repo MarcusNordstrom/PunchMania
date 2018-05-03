@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="@font/press_start_2p"
         android:text="WELCOME TO"
         android:textAlignment="center"
@@ -117,6 +117,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="192dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="139dp"
+        android:layout_height="118dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="122dp"
+        android:layout_marginStart="123dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/punching"
+        app:layout_constraintBottom_toTopOf="@+id/enterNameEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/punchMania" />
 
 
 </android.support.constraint.ConstraintLayout>

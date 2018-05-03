@@ -17,11 +17,11 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
-
 
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
@@ -30,22 +30,19 @@ public class MainActivity extends AppCompatActivity {
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
     private static HighScoreList listPlayer = new HighScoreList();
-    private static int[][] highScoreDetails;
-    private String message = "";
-    private PrintWriter printWriter;
+    private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.11";
+    private String ip = "192.168.0.148";
     private int port = 12346;
     public static boolean connected = false;
-    private DataSend dataSend = new DataSend();
+    private DataReader dataReader = new DataReader();
+    private static boolean dataReaderRunning = false;
     private SearchActivity search;
     private static long requestedHit = Long.MAX_VALUE;
 
-
     private String user;
-
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -56,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
-        DataReader dataReader = new DataReader();
         dataReader.start();
         //HighScoreListActivity highScoreListActivity = new HighScoreListActivity();
         //highScoreListActivity.onCreate(savedInstanceState);
@@ -72,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    dataSend.setSend(newEntry, 5);
+                    send(newEntry, 5);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -93,9 +89,11 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                dataSend.setSend(newEntry, 3);
-                                toastMessage("Successfully added to queue");
+                                send(newEntry, 5);
                                 enterNameEditText.setText("");
+                                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                                intent.putExtra("Hejsan", newEntry);
+                                startActivity(intent);
                                 return true;
                             } else {
                                 toastMessage("That's a short name you've got there");
@@ -130,9 +128,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    // Umm, keep the rest of the example code underneath this comment
-    // 404: Example code not found :)
-
     public static Queue getQueue() {
         return queue;
     }
@@ -141,21 +136,7 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
-   /* public static void fetchHighScoreDetails(HighScoreList requestedHighScore){
-        if(connected)
-        {
-            try {
-                oos.writeObject(new Message(requestedHighScore, 7));
-                oos.reset();
-                oos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
-
-    public static int[][] getHighScoreDetails()
-    {
+    public static ArrayList getHighScoreDetails() {
         return highScoreDetails;
     }
 
@@ -163,31 +144,71 @@ public class MainActivity extends AppCompatActivity {
         return listPlayer;
     }
 
+    public synchronized void send(Object arg1, int arg2) {
+        DataSender dataSender = new DataSender(arg1, arg2);
+    }
 
-    public class DataSend {
-        public void setSend(Object arg1, int arg2) {
-            if (connected && arg1 != null && arg2 != 0) {
+    public synchronized static void staticSend(Object arg1, int arg2) {
+        StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
+    }
+
+    public static class StaticDataSender extends Thread {
+        private Object send;
+        private int instruction;
+
+        public StaticDataSender(Object send, int instruction){
+            this.send = send;
+            this.instruction = instruction;
+            this.start();
+}
+
+        public synchronized void run() {
+            if (connected && send != null && instruction != 0 && !isInterrupted()) {
                 try {
-                    Log.i(arg1.toString(), "received");
-
-                    oos.writeObject(new Message(arg1, arg2));
+                    Log.i("DataSender: ", "Trying to send!");
+                    oos.writeObject(new Message(send, instruction));
                     oos.reset();
                     oos.flush();
-                    Log.i(arg1.toString(), "sent");
+                    send = null;
+                    instruction = 0;
+                    Log.i("DataSender: ", "Sent!");
                 } catch (IOException e) {
-                    Log.i(arg1.toString(), "socket interrupted");
+                    Log.i("DataSender: ", "Socket interrupted");
                 }
-            }else{
-                Log.i("Couldn't send!", "Either not connected or arguments were invalid");
+            }
+        }
+    }
+
+    public class DataSender extends Thread {
+        private Object send;
+        private int instruction;
+
+        public DataSender(Object send, int instruction){
+            this.send = send;
+            this.instruction = instruction;
+            this.start();
+}
+
+        public synchronized void run() {
+            if (connected && send != null && instruction != 0 && !isInterrupted()) {
+                try {
+                    Log.i("DataSender: ", "Trying to send!");
+                    oos.writeObject(new Message(send, instruction));
+                    oos.reset();
+                    oos.flush();
+                    send = null;
+                    instruction = 0;
+                    Log.i("DataSender: ", "Sent!");
+                } catch (IOException e) {
+                    Log.i("DataSender: ", "Socket interrupted");
+                }
             }
         }
     }
 
     private class DataReader extends Thread {
 
-
         public boolean retry() {
-            connected = false;
             while (!connected) {
                 System.err.print("Reconnecting in ");
                 for (int i = 5; i > 0; i--) {
@@ -225,55 +246,58 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void run() {
-            Object obj;
-            while (true) {
-                connected = retry();
-                try {
-                    ois = new ObjectInputStream(socket.getInputStream());
-                    oos = new ObjectOutputStream(socket.getOutputStream());
-                } catch (IOException e2) {
-                    e2.printStackTrace();
-                }
-
-                while (connected) {
+            if (!dataReaderRunning) {
+                Log.i("DataReader", "Starting");
+                dataReaderRunning = true;
+                Object obj;
+                while (true) {
+                    connected = retry();
                     try {
-                        Log.i(this.getName(), "Waiting for object");
-                        obj = ois.readObject();
-                        Log.i(this.getName(), obj.toString());
-                        if (obj instanceof Message) {
-                            Message readMessage = (Message) obj;
-                            Log.i(this.getName(), "Object has arrived!");
-                            switch (readMessage.getInstruction()) {
-                                case 1:
-                                    Log.i(this.getName(), "It's a Queue!");
-                                    queue = (Queue) readMessage.getPayload();
-                                    break;
-                                case 2:
-                                    Log.i(this.getName(), "It's a HighScoreList!");
-                                    list = (HighScoreList) readMessage.getPayload();
-                                    break;
-                                case 6:
-                                    Log.i(this.getName(), "It´s userscores!");
-                                    listPlayer = (HighScoreList) readMessage.getPayload();
-                                    break;
-                                case 8:
-                                    Log.i(this.getName(), "It's HighScore details!");
-                                    highScoreDetails = (int[][]) readMessage.getPayload();
-                                    break;
-                                default:
-                                    Log.i(this.getName(), "unknown object");
-                                    break;
+                        ois = new ObjectInputStream(socket.getInputStream());
+                        oos = new ObjectOutputStream(socket.getOutputStream());
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                    }
+
+                    while (connected) {
+                        try {
+                            Log.i(this.getName(), "Waiting for object");
+                            obj = ois.readObject();
+                            Log.i(this.getName(), obj.toString());
+                            if (obj instanceof Message) {
+                                Message readMessage = (Message) obj;
+                                Log.i(this.getName(), "Object has arrived!");
+                                switch (readMessage.getInstruction()) {
+                                    case 1:
+                                        Log.i(this.getName(), "It's a Queue!");
+                                        queue = (Queue) readMessage.getPayload();
+                                        break;
+                                    case 2:
+                                        Log.i(this.getName(), "It's a HighScoreList!");
+                                        list = (HighScoreList) readMessage.getPayload();
+                                        break;
+                                    case 6:
+                                        Log.i(this.getName(), "It´s userscores!");
+                                        listPlayer = (HighScoreList) readMessage.getPayload();
+                                        break;
+                                    case 8:
+                                        Log.i(this.getName(), "It's HighScore details!");
+                                        highScoreDetails = (ArrayList<ArrayList<Integer>>) readMessage.getPayload();
+                                        break;
+                                    default:
+                                        Log.i(this.getName(), "unknown object");
+                                        break;
+                                }
+                                readMessage = null;
                             }
-                            readMessage = null;
+                        } catch (IOException e1) {
+                            Log.i(this.getName(), "Connection lost!");
+                            connected = false;
+                        } catch (ClassNotFoundException e) {
+                            Log.i(this.getName(), "Class not found!");
                         }
-                    } catch (IOException e1) {
-                        Log.i(this.getName(), "Connection lost!");
-                        connected = false;
-                    } catch (ClassNotFoundException e) {
-                        Log.i(this.getName(), "Class not found!");
                     }
                 }
-
             }
         }
 

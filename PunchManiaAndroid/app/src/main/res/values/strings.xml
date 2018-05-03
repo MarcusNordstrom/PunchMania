@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Punchmania</string>
+    <string name="app_name">Punch Mania</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_high_score_details">HighScoreDetails</string>
 
