@@ -71,9 +71,11 @@ function getHSList($name) {
               xmlhttp.send();
             }, 500);
           </script>';
+          echo '</div>';
 	} elseif ($name == "0") {
 		echo '';
 	} else {
+		echo '<div class="col-lg hs">';
 		echo '<div id="hs"></div>
           <script type="text/javascript">
             setInterval(function(){
@@ -89,8 +91,9 @@ function getHSList($name) {
               xmlhttp.send();
             }, 500);
           </script>';
+        echo '</div>';
 	}
-	echo '</div>';
+	
 }
 function getInfo($info){
 	switch ($info) {

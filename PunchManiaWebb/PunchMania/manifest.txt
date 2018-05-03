@@ -1,12 +1,12 @@
 {
   "short_name": "PunchMania",
   "name": "PunchMania",
-  "start_url": "/",
+  "start_url": "/?app=true",
   "display": "standalone",
   "background_color": "#0A0A0A",
-  "theme_color": "#0A0A0A",
+  "theme_color": "#FF0000",
   "description": "Best game in the world!",
-  "scope": "http://ddwap.mah.se/ah7115/PunchMania/",
+  "scope": "https://ddwap.mah.se/ah7115/PunchMania/",
   "icons": [{
     "src": "images/logo48.png",
     "sizes": "48x48",
