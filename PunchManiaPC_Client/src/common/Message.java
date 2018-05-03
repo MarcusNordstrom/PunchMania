@@ -16,19 +16,19 @@ public class Message implements Serializable {
     public static final int PLAYERSCORES = 6;
     public static final int REQUEST_HSDETAILS = 7;
     public static final int HSDETAILS = 8;
-
-
-    public Message(Object payload, int instruction) {
-        this.payload = payload;
-        this.instruction = instruction;
-    }
-
-    public Object getPayload() {
-        return payload;
-    }
-
-    public int getInstruction() {
-        return this.instruction;
-    }
-
+    public static final int GAMEMODE = 9;
+	
+	public Message(Object payload, int instruction) {
+		this.payload = payload;
+		this.instruction = instruction;
+	}
+	
+	public Object getPayload() {
+		return payload;
+	}
+	
+	public int getInstruction() {
+		return this.instruction;
+	}
+	
 }

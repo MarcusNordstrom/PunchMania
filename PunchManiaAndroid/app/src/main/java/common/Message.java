@@ -16,6 +16,7 @@ public class Message implements Serializable {
     public static final int PLAYERSCORES = 6;
     public static final int REQUEST_HSDETAILS = 7;
     public static final int HSDETAILS = 8;
+    public static final int GAMEMODE = 9;
 
 
     public Message(Object payload, int instruction) {
