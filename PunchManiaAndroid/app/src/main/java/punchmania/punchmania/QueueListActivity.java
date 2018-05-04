@@ -36,12 +36,13 @@ public class QueueListActivity extends AppCompatActivity {
         if (MainActivity.getQueue().size() > 0) {
             for (int i = 0; i < MainActivity.getQueue().size(); i++) {
 
-                copiedQueueList.add(i + 1 + ":   " + MainActivity.getQueue().peekAt(i));
-                if(copiedQueueListOld != copiedQueueList) {
-                    copiedQueueListOld = copiedQueueList;
-                    ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
-                    mListView.setAdapter(adapter);
-                }
+                copiedQueueList.add(i + 1 + ":   " + (String)MainActivity.getQueue().peekAt(i));
+
+            }
+            if(!copiedQueueListOld.toString().equals(copiedQueueList.toString())) {
+                copiedQueueListOld = copiedQueueList;
+                ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
+                mListView.setAdapter(adapter);
             }
 
         } else {
