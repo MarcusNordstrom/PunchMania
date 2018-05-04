@@ -22,6 +22,7 @@ public class Message implements Serializable {
 	
     public static final int NEW_HIGHSCORELIST_FASTPUNCH = 10;
     public static final int PLAYERSCORES_FASTPUNCH = 11;
+    public static final int NEW_USER_TO_QUEUE_FASTPUNCH = 13;
 	
 	public Message(Object payload, int instruction) {
 		this.payload = payload;
