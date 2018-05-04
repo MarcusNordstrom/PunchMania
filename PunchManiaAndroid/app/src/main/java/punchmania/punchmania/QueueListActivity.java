@@ -18,6 +18,7 @@ public class QueueListActivity extends AppCompatActivity {
     private ListView mListView;
 
     private updater updater = new updater();
+    private ArrayList<String> copiedQueueListOld = new ArrayList<>();
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,10 +37,11 @@ public class QueueListActivity extends AppCompatActivity {
             for (int i = 0; i < MainActivity.getQueue().size(); i++) {
 
                 copiedQueueList.add(i + 1 + ":   " + MainActivity.getQueue().peekAt(i));
-
-                ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
-                mListView.setAdapter(adapter);
-
+                if(copiedQueueListOld != copiedQueueList) {
+                    copiedQueueListOld = copiedQueueList;
+                    ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
+                    mListView.setAdapter(adapter);
+                }
             }
 
         } else {

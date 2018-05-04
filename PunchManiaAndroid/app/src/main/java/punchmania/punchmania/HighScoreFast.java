@@ -2,23 +2,23 @@ package punchmania.punchmania;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class HighscoreMode2 extends AppCompatActivity {
+public class HighScoreFast extends AppCompatActivity {
 
     private static final String TAG = "HighScore FastMode";
     private ListView listViewFast;
     private updater updater = new updater();
+    private ArrayList<String> convertedHighScoreListOld = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_highscore_mode2);
+        setContentView(R.layout.activity_highscore_fast);
         listViewFast = (ListView) findViewById(R.id.highScoreListViewFast);
 
         updater.start();
@@ -30,8 +30,11 @@ public class HighscoreMode2 extends AppCompatActivity {
         for (int i = 0; i < MainActivity.getHighScoresFast().size(); i++) {
             convertedHighScoreList.add(i + 1 + ":   " + MainActivity.getHighScoresFast().getUser(i).getUser() + "    " + MainActivity.getHighScoresFast().getUser(i).getScore());
         }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
-        listViewFast.setAdapter(adapter);
+        if(convertedHighScoreListOld != convertedHighScoreList) {
+            convertedHighScoreListOld = convertedHighScoreList;
+            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
+            listViewFast.setAdapter(adapter);
+        }
     }
 
     public class updater extends Thread {

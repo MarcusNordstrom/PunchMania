@@ -25,18 +25,19 @@ import common.Queue;
 
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
-    Button btnSearch, btnViewQueue, btnViewHighScore;
+    Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast, btnPunch;
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
     private static HighScoreList listPlayer = new HighScoreList();
     private static HighScoreList listFast = new HighScoreList();
+    private static HighScoreList listPlayerFast = new HighScoreList();
 
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.0.148";
+    private String ip = "83.248.13.179";
     private int port = 12346;
     public static boolean connected = false;
     private DataReader dataReader = new DataReader();
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         btnSearch = (Button) findViewById(R.id.btnSearch);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
+        btnViewHighScoreFast = (Button) findViewById(R.id.btnViewHSFast);
+        btnPunch = (Button) findViewById(R.id.btnPunch);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
 
 
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, 5);
+                    send(newEntry, REQUEST_PLAYERSCORES);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -108,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                send(newEntry, 5);
+                                send(newEntry, REQUEST_PLAYERSCORES);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -141,6 +144,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnViewHighScoreFast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HighScoreFast.class);
+                startActivity(intent);
+            }
+        });
+
+        btnPunch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SelectMode.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void toastMessage(String message) {
@@ -161,6 +180,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static HighScoreList getListPlayer() {
         return listPlayer;
+    }
+
+    public static HighScoreList getListPlayerFast() {
+        return listPlayerFast;
     }
 
     public static HighScoreList getHighScoresFast() {
@@ -313,6 +336,7 @@ public class MainActivity extends AppCompatActivity {
                                         break;
                                     case PLAYERSCORES_FASTPUNCH:
                                         Log.i(this.getName(), "It´s userscores FastPunch");
+                                        listPlayerFast = (HighScoreList) readMessage.getPayload();
                                         break;
                                     default:
                                         Log.i(this.getName(), "get object");
