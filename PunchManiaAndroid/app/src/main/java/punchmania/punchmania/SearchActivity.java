@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "searchActivity";
     private TextView usernameTextView;
-    private ListView searchListView;
+    private ListView searchListView, searchListViewFast;
 
 
     @Override
@@ -25,7 +25,7 @@ public class SearchActivity extends AppCompatActivity {
 
         usernameTextView = (TextView) findViewById(R.id.usernameTextView);
         searchListView = (ListView) findViewById(R.id.searchListView);
-
+        searchListViewFast = (ListView) findViewById(R.id.searchListViewFast);
 
         Intent intent = getIntent();
         String str = intent.getStringExtra("Hejsan");
