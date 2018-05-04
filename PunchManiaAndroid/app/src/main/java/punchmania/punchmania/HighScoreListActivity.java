@@ -1,5 +1,6 @@
 package punchmania.punchmania;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -51,6 +52,8 @@ public class HighScoreListActivity extends AppCompatActivity {
                         Log.i("Received y:", HighScoreDetails.get(1).toString());
                         Log.i("Received z:", HighScoreDetails.get(2).toString());
                         printed = true;
+                        Intent intent = new Intent(HighScoreListActivity.this, GLES20Activity.class);
+                        startActivity(intent);
                     }
                 }
             }

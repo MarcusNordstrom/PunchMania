@@ -6,6 +6,7 @@
 body {
 	font-family: 'Press Start 2P', cursive !important;
 	background-color: var(--main-bg-color) !important;
+	word-wrap: break-word !important; 
 }
 a {
 	color: inherit !important;
@@ -13,6 +14,7 @@ a {
 }
 h1, h2, h3, p, td, label {
 	color: var(--main-text-color) !important;
+	word-wrap: break-word;
 }
 .header {
 	display: flex;
@@ -36,10 +38,10 @@ h1, h2, h3, p, td, label {
 	margin-top: 3vh;
 }
 .info button {
-	width: 75vw;
 	color: red;
 	margin: 2vh;
 	background-color: var(--main-text-color);
+	word-wrap: break-word;
 }
 .info input {
 	width: 50vw;
@@ -82,13 +84,13 @@ h1, h2, h3, p, td, label {
   .header {
   	display: none !important;
   }
-  .info {
+  /*.info {
   	height: 100vh;
-  }
+  }*/
   .info .title {
 	display: block;
   }
-  .hs, .q {
+  /*.hs, .q {
   	height: 100vh;
   }
   .list tbody {
@@ -96,5 +98,5 @@ h1, h2, h3, p, td, label {
   }
   .info input {
   	width: 75vw;
-  }
+  }*/
 }

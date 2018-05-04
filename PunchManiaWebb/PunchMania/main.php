@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 session_start();
 $servername = "ddwap.mah.se:3306/ah7115";
 $username = "ah7115";
@@ -52,9 +53,9 @@ function templateBody($info, $highscore, $queue) {
         echo '</div>
     </div>';
 }
-function getHSList($name){
-	echo '<div class="col-lg hs">';
+function getHSList($name) {
 	if ($name == null) {
+		echo '<div class="col-lg hs">';
 		echo '<div id="hs"></div>
           <script type="text/javascript">
             setInterval(function(){
@@ -66,13 +67,15 @@ function getHSList($name){
     				$(".hs tbody").scrollTop(tbodyPosition);
               	}
               };
-              xmlhttp.open("GET", "main.php?js=hs", true);
+              xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hs", true);
               xmlhttp.send();
             }, 500);
           </script>';
+          echo '</div>';
 	} elseif ($name == "0") {
 		echo '';
 	} else {
+		echo '<div class="col-lg hs">';
 		echo '<div id="hs"></div>
           <script type="text/javascript">
             setInterval(function(){
@@ -84,12 +87,13 @@ function getHSList($name){
     			$(".hs tbody").scrollTop(tbodyPosition);
               }
               };
-              xmlhttp.open("GET", "main.php?js=hs&user='.$name.'", true);
+              xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hs&user='.$name.'", true);
               xmlhttp.send();
             }, 500);
           </script>';
+        echo '</div>';
 	}
-	echo '</div>';
+	
 }
 function getInfo($info){
 	switch ($info) {
@@ -107,7 +111,7 @@ function getInfo($info){
                 }
               }
               };
-              xmlhttp.open("GET", "main.php?js=info", true);
+              xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=info", true);
               xmlhttp.send();
             }, 1000);
           </script>';
@@ -199,9 +203,13 @@ function getQplace() {
 		$query->execute();
 		$query = $query->fetch();
 		if ($query["num"] > 0) {
-			echo '<a href="index.php?site=line"><button class="btn">Ta bort mig från köplats '. $query["num"] .'</button></a><br>';
+			echo '<button class="btn" onclick="';
+			echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
+			echo '">Ta bort mig <br>från köplats '. $query["num"] .'</button>';
 		} else {
-			echo '<a href="index.php?site=line"><button class="btn">Ställ mig i kö!</button></a><br>';
+			echo '<button class="btn" onclick="';
+			echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
+			echo '">Ställ mig i kö!</button>';
 		}
 	}
 }
@@ -238,7 +246,7 @@ function getQueue($queue) {
                 document.getElementById("q").innerHTML = this.responseText;
               }
               };
-              xmlhttp.open("GET", "main.php?js=q", true);
+              xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=q", true);
               xmlhttp.send();
             }, 500);
           </script>';
@@ -314,6 +322,21 @@ if (isset($_GET["js"])) {
           		<a href="index.php?site=register"><button class="btn">Registrera dig</button></a>';
 			}
 		break;
+		case 'line':
+			$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
+			$query->bindParam(':name', $_SESSION["uname"]);
+			$query->execute();
+			$query = $query->fetch();
+			if($query["num"] == 0) {
+				$ins = $GLOBALS["conn"]->prepare("INSERT INTO queue (Name) VALUES (:name)");
+				$ins->bindParam(':name', $_SESSION["uname"]);
+				$ins->execute();
+			} else {
+				$del = $GLOBALS["conn"]->prepare("DELETE FROM `queue` WHERE `Name` = :name");
+				$del->bindParam(':name', $_SESSION["uname"]);
+				$del->execute();
+			}
+			break;
 		default:
 			# code...
 			break;

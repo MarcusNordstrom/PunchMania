@@ -362,10 +362,52 @@ public class MySql{
 		return checkSum;
 	}
 
+	public synchronized void setFastPunch(String name, int score) {
+		try {
+			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO fastpunch(Name, Score) VALUES (?,?)");
+			stmt.setString(1, name);
+			stmt.setInt(2, score);
+			stmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public synchronized HighScoreList getFastPunch(String name){
+		HighScoreList hsl = new HighScoreList();
+		try {
+			PreparedStatement stmt = myConn.prepareStatement("SELECT * FROM fastpunch WHERE Name LIKE ? ORDER BY Score DESC LIMIT 100");
+			stmt.setString(1, name + '%');
+			ResultSet rs = stmt.executeQuery();
+
+			while(rs.next()) {
+				hsl.add(rs.getString(2), rs.getInt(3));
+				System.out.println(rs.getString(2).toString() + rs.getInt(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return hsl;
+	}
+	
+	public synchronized HighScoreList getAllScoreFastPunch() {
+		Statement Stmt;
+		HighScoreList hsl = new HighScoreList();
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT * FROM fastpunch";
+			ResultSet rs = Stmt.executeQuery(sql);
+			while(rs.next()) {
+				hsl.add(rs.getString(2), rs.getInt(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return hsl;
+	}
 
 	public static void main(String[] args) {
 		MySql ms = new MySql();
-	}
-
-
+		ms.getFastPunch("Jake");	
+		}
 }
