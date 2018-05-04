@@ -36,20 +36,30 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void populateListView() {
-        ArrayList<String> PlayerHighScore = new ArrayList<>();
+    private void populateListViewHard() {
+        ArrayList<String> PlayerHighScoreHard = new ArrayList<>();
         for (int i = 0; i < MainActivity.getListPlayer().size(); i++) {
             Log.i(TAG, MainActivity.getListPlayer().getUser(i).getScore() + "");
 
-            PlayerHighScore.add(MainActivity.getListPlayer().getUser(i).getUser() + "   " + MainActivity.getListPlayer().getUser(i).getScore() + "\n");
+            PlayerHighScoreHard.add(MainActivity.getListPlayer().getUser(i).getUser() + "   " + MainActivity.getListPlayer().getUser(i).getScore() + "\n");
         }
         Log.i(TAG, "1");
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScore);
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
         Log.i(TAG, "2");
         searchListView.setAdapter(adapter);
         Log.i(TAG, "3");
+    }
 
+    private void populateListViewFast() {
+        ArrayList<String> PlayerHighScoreFast = new ArrayList<>();
+        for (int i = 0; i < MainActivity.getListPlayerFast().size(); i++) {
+            Log.i(TAG, MainActivity.getListPlayerFast().getUser(i).getScore() + "");
 
+            PlayerHighScoreFast.add(MainActivity.getListPlayerFast().getUser(i).getUser() + "   " + MainActivity.getListPlayerFast().getUser(i).getScore() + "\n");
+        }
+
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreFast);
+        searchListView.setAdapter(adapter);
     }
 
     public class updater extends Thread {
@@ -63,7 +73,8 @@ public class SearchActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    populateListView();
+                                    populateListViewHard();
+                                    populateListViewFast();
                                 }
                             });
 

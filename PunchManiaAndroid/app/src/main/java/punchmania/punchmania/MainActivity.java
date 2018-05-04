@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static HighScoreList list = new HighScoreList();
     private static HighScoreList listPlayer = new HighScoreList();
     private static HighScoreList listFast = new HighScoreList();
+    private static HighScoreList listPlayerFast = new HighScoreList();
 
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private Socket socket = new Socket();
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, 5);
+                    send(newEntry, REQUEST_PLAYERSCORES);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                send(newEntry, 5);
+                                send(newEntry, REQUEST_PLAYERSCORES);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -170,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static HighScoreList getListPlayer() {
         return listPlayer;
+    }
+
+    public static HighScoreList getListPlayerFast() {
+        return listPlayerFast;
     }
 
     public static HighScoreList getHighScoresFast() {
@@ -322,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
                                         break;
                                     case PLAYERSCORES_FASTPUNCH:
                                         Log.i(this.getName(), "It´s userscores FastPunch");
+                                        listPlayerFast = (HighScoreList) readMessage.getPayload();
                                         break;
                                     default:
                                         Log.i(this.getName(), "get object");
