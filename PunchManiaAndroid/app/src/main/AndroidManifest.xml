@@ -40,7 +40,7 @@
         <activity
             android:name=".HighScoreDetails"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".HighscoreMode2"></activity>
+        <activity android:name=".HighScoreFast" />
     </application>
 
 </manifest>

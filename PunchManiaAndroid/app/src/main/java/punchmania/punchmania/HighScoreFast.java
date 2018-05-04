@@ -2,14 +2,13 @@ package punchmania.punchmania;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class HighscoreMode2 extends AppCompatActivity {
+public class HighScoreFast extends AppCompatActivity {
 
     private static final String TAG = "HighScore FastMode";
     private ListView listViewFast;
@@ -18,7 +17,7 @@ public class HighscoreMode2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_highscore_mode2);
+        setContentView(R.layout.activity_highscore_fast);
         listViewFast = (ListView) findViewById(R.id.highScoreListViewFast);
 
         updater.start();

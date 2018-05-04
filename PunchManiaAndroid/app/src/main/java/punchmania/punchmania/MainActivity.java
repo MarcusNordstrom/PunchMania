@@ -25,7 +25,7 @@ import common.Queue;
 
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
-    Button btnSearch, btnViewQueue, btnViewHighScore;
+    Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast;
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         btnSearch = (Button) findViewById(R.id.btnSearch);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
+        btnViewHighScoreFast = (Button) findViewById(R.id.btnViewHSFast);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
 
 
@@ -138,6 +139,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, HighScoreListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnViewHighScoreFast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HighScoreFast.class);
                 startActivity(intent);
             }
         });
