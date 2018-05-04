@@ -41,6 +41,7 @@
             android:name=".HighScoreDetails"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".HighScoreFast" />
+        <activity android:name=".SelectMode"></activity>
     </application>
 
 </manifest>
