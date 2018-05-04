@@ -68,7 +68,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtSelectMode" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btnFastPunch"
         android:layout_width="246dp"
         android:layout_height="75dp"
         android:layout_marginEnd="69dp"
