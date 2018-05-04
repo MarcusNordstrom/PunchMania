@@ -89,7 +89,7 @@ function getHSList($name) {
 			};
 			xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hsFast", true);
 			xmlhttp.send();
-		}, 750);
+		}, 500);
 		</script>';
 		echo '</div>';
 	} elseif ($name == "0") {
@@ -244,11 +244,11 @@ function getInfo($info){
 			if ($query["num"] > 0) {
 				echo '<button class="btn" onclick="';
 				echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
-				echo '">Ta bort mig <br>från köplats '. $query["num"] .'</button>';
+				echo '">Remove me<br>from # '. $query["num"] .'</button>';
 			} else {
 				echo '<button class="btn" onclick="';
 				echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
-				echo '">Ställ mig i kö!</button>';
+				echo '">Put me in line</button>';
 			}
 		}
 	}
@@ -382,12 +382,12 @@ function getInfo($info){
 			break;
 			case "info":
 			if (isset($_SESSION["uname"])) {
-				echo '<h3>Välkommen '.$_SESSION["uname"].'</h3>';
+				echo '<h3>Welcome '.$_SESSION["uname"].'</h3>';
 				getQplace();
-				echo '<a href="index.php?site=logout"><button class="btn">Logga ut</button></a>';
+				echo '<a href="index.php?site=logout"><button class="btn">Logout</button></a>';
 			} else {
-				echo '<a href="index.php?site=login"><button class="btn">Logga in</button></a>
-				<a href="index.php?site=register"><button class="btn">Registrera dig</button></a>';
+				echo '<a href="index.php?site=login"><button class="btn">Login</button></a>
+				<a href="index.php?site=register"><button class="btn">Register</button></a>';
 			}
 			echo '<img src="images/logo512.png">';
 			break;

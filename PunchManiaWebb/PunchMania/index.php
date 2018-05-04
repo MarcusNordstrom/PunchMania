@@ -40,7 +40,6 @@ require 'main.php';
   <body onload="init();">
     <div class="pageScroll">
       <h2 class="uparrow" onclick="up()">&uarr;</h2>
-      <br>
       <h2 class="downarrow" onclick="down()">&darr;</h2>
     </div>
     <?php
