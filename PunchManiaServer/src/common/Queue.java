@@ -23,6 +23,11 @@ public class Queue implements Serializable {
         list.add(name);
         syso("added user : " + name);
     }
+    
+    public void add(String name, int mode) {
+        list.add(name);
+        syso("added user : ");
+    }
 
     /**
      * This method is used to look at top of the queue list.
