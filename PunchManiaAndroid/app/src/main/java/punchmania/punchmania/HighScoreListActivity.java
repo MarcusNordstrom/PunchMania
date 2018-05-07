@@ -37,26 +37,28 @@ public class HighScoreListActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HighScoreList userToFetch = new HighScoreList();
-                String userToFetchName = MainActivity.getHighScores().getUser(position).getUser();
-                int userToFetchScore = MainActivity.getHighScores().getUser(position).getScore();
-                userToFetch.add(userToFetchName, userToFetchScore);
-                Log.i("HighScoreList: ", "Requesting details for " + userToFetch.getUser(0).getUser());
-                MainActivity.staticSend(userToFetch, 7);
-                Toast.makeText(HighScoreListActivity.this, MainActivity.getHighScores().getUser(position).getUser(), Toast.LENGTH_LONG).show();
-                ArrayList HighScoreDetails;
-                boolean printed = false;
-                while (!printed) {
-                    if (MainActivity.getHighScoreDetails() != null && MainActivity.getHighScoreDetails().size() != 0) {
-                        HighScoreDetails = MainActivity.getHighScoreDetails();
-                        Log.i("Received x:", HighScoreDetails.get(0).toString());
-                        Log.i("Received y:", HighScoreDetails.get(1).toString());
-                        Log.i("Received z:", HighScoreDetails.get(2).toString());
-                        printed = true;
-                        Intent intent = new Intent(HighScoreListActivity.this, GLES20Activity.class);
-                        startActivity(intent);
-                    }
-                }
+                Intent intent = new Intent(HighScoreListActivity.this, OpenGLES20Activity.class);
+                startActivity(intent);
+
+//                HighScoreList userToFetch = new HighScoreList();
+//                String userToFetchName = MainActivity.getHighScores().getUser(position).getUser();
+//                int userToFetchScore = MainActivity.getHighScores().getUser(position).getScore();
+//                userToFetch.add(userToFetchName, userToFetchScore);
+//                Log.i("HighScoreList: ", "Requesting details for " + userToFetch.getUser(0).getUser());
+//                MainActivity.staticSend(userToFetch, 7);
+//                Toast.makeText(HighScoreListActivity.this, MainActivity.getHighScores().getUser(position).getUser(), Toast.LENGTH_LONG).show();
+//                ArrayList HighScoreDetails;
+//                boolean printed = false;
+//                while (!printed) {
+//                    if (MainActivity.getHighScoreDetails() != null && MainActivity.getHighScoreDetails().size() != 0) {
+//                        HighScoreDetails = MainActivity.getHighScoreDetails();
+//                        Log.i("Received x:", HighScoreDetails.get(0).toString());
+//                        Log.i("Received y:", HighScoreDetails.get(1).toString());
+//                        Log.i("Received z:", HighScoreDetails.get(2).toString());
+//                        printed = true;
+//                    }
+//                }
+//
             }
         });
 
