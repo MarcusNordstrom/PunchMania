@@ -241,13 +241,13 @@ public class Server {
 							break;
 
 						case 5:
-							ui.print("User requested hs", 0);
+							ui.print("User requested hs case 5", 0);
 							String name = (String) message.getPayload();
 							sendNameScore(name);
 							break;
 
 						case 7: 
-							ui.print("User requested hs", 0); 
+							ui.print("User requested hs case 7", 0); 
 							HighScoreList hslNameScore = (HighScoreList) message.getPayload(); 
 							sendXYZ(hslNameScore.getUser(0).getUser(), hslNameScore.getUser(0).getScore()); 
 							break;

@@ -38,12 +38,12 @@ public class HighScoreListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 HighScoreList userToFetch = new HighScoreList();
-                String userToFetchName = MainActivity.getHighScores().getUser(position).getUser();
-                int userToFetchScore = MainActivity.getHighScores().getUser(position).getScore();
+                String userToFetchName = MainActivity.getHighScoresHard().getUser(position).getUser();
+                int userToFetchScore = MainActivity.getHighScoresHard().getUser(position).getScore();
                 userToFetch.add(userToFetchName, userToFetchScore);
                 Log.i("HighScoreList: ", "Requesting details for " + userToFetch.getUser(0).getUser());
                 MainActivity.staticSend(userToFetch, 7);
-                Toast.makeText(HighScoreListActivity.this, MainActivity.getHighScores().getUser(position).getUser(), Toast.LENGTH_LONG).show();
+                Toast.makeText(HighScoreListActivity.this, MainActivity.getHighScoresHard().getUser(position).getUser(), Toast.LENGTH_LONG).show();
                 ArrayList HighScoreDetails;
                 boolean printed = false;
                 while (!printed) {
@@ -67,8 +67,8 @@ public class HighScoreListActivity extends AppCompatActivity {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
-        for (int i = 0; i < MainActivity.getHighScores().size(); i++) {
-            convertedHighScoreList.add(i + 1 + ":   " + MainActivity.getHighScores().getUser(i).getUser() + "    " + MainActivity.getHighScores().getUser(i).getScore());
+        for (int i = 0; i < MainActivity.getHighScoresHard().size(); i++) {
+            convertedHighScoreList.add(i + 1 + ":   " + MainActivity.getHighScoresHard().getUser(i).getUser() + "    " + MainActivity.getHighScoresHard().getUser(i).getScore());
         }
         if(!convertedHighScoreListOld.toString().equals(convertedHighScoreList.toString())) {
             convertedHighScoreListOld = convertedHighScoreList;
