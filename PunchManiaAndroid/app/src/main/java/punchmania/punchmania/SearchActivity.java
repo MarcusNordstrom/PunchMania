@@ -44,11 +44,14 @@ public class SearchActivity extends AppCompatActivity {
 
                 PlayerHighScoreHard.add(MainActivity.getListPlayerHard().getUser(i).getUser() + "   " + MainActivity.getListPlayerHard().getUser(i).getScore() + "\n");
             }
+
+
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
 
             searchListViewHard.setAdapter(adapter);
         } else {
-            PlayerHighScoreHard.clear();
+            PlayerHighScoreHard = new ArrayList<>();
+            PlayerHighScoreHard.add("No scores to show");
 
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
 
@@ -71,7 +74,8 @@ public class SearchActivity extends AppCompatActivity {
 
             searchListViewFast.setAdapter(adapter);
         } else {
-            PlayerHighScoreFast.clear();
+            PlayerHighScoreFast = new ArrayList<>();
+            PlayerHighScoreFast.add("No scores to show");
 
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreFast);
 
@@ -83,7 +87,7 @@ public class SearchActivity extends AppCompatActivity {
     public class updater extends Thread {
         @Override
         public void run() {
-            while (!isInterrupted()) {
+
                 try {
                     synchronized (this) {
                         wait(1000);
@@ -104,7 +108,7 @@ public class SearchActivity extends AppCompatActivity {
         }
 
     }
-}
+
 
 
 

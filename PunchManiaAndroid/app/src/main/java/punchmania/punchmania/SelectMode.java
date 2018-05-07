@@ -22,14 +22,14 @@ public class SelectMode extends AppCompatActivity {
 
         btnHardPunch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                main.send("HARD", GAMEMODE);    // staticSend eller send?
+                main.staticSend("HARD", GAMEMODE);    // staticSend eller send?
 
             }
         });
 
         btnFastPunch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                main.send("FAST", GAMEMODE);
+                main.staticSend("FAST", GAMEMODE);
 
             }
         });
