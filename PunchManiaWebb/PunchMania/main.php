@@ -227,8 +227,23 @@ function getInfo($info){
 			}
 			break;
 			case "user":
-			echo '<a href="index.php?site=user&user='.$_GET["user"].'"><h2 class="name">'.$_GET["user"].'</h2></a>';
-			getUserStats($_GET["user"]);
+			echo '<div id="info"></div>
+			<script type="text/javascript">
+			setInterval(function(){
+				var xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						var previousState = document.getElementById("info").innerHTML;
+						var state = this.responseText;
+						if(previousState != state) {
+							document.getElementById("info").innerHTML = state;
+						}
+					}
+				};
+				xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=user&user='.$_GET["user"].'", true);
+				xmlhttp.send();
+			}, 1000);
+			</script>';
 			break;
 			default:
 			# code...
@@ -277,7 +292,7 @@ function getInfo($info){
 				echo '<p id="Hp">Best HardPunch: '. $queryhs["Score"] .'</p>';
 			}
 			if (isset($queryhsf["Score"])) {
-				echo '<p id="Fp">Best FastPunch: '. $queryhs["Score"] .'</p>';
+				echo '<p id="Fp">Best FastPunch: '. $queryhsf["Score"] .'</p>';
 			}
 		} else {
 			echo "<p>Best score: No score</p>";
@@ -415,6 +430,10 @@ function getInfo($info){
 				$del->bindParam(':name', $_SESSION["uname"]);
 				$del->execute();
 			}
+			break;
+			case 'user':
+			echo '<a href="index.php?site=user&user='.$_GET["user"].'"><h2 class="name">'.$_GET["user"].'</h2></a>';
+			getUserStats($_GET["user"]);
 			break;
 			default:
 			# code...

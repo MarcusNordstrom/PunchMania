@@ -41,8 +41,8 @@ h2 {
 	line-height: 10vh;
 	display: none;
 }
-.info h3,.info p, .info .name {
-	margin-top: 3vh;
+.info .name {
+	margin-bottom: 2vh;
 }
 .info button {
 	color: var(--main-highlight-color);
@@ -144,13 +144,13 @@ h2 {
 	}
 	.uparrow {
 		position: fixed;
-		top: 80%;
+		top: 75%;
 		left: 90%;
 		z-index: 100 !important;
 	}
 	.downarrow {
 		position: fixed;
-		top: 90%;
+		top: 85%;
 		left: 90%;
 		z-index: 100 !important;
 	}
