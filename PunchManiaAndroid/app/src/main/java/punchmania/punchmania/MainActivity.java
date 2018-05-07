@@ -81,11 +81,6 @@ public class MainActivity extends AppCompatActivity {
                     send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
                     send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
-                    try {
-                        wait(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
                     startActivity(intent);
