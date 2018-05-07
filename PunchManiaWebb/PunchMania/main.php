@@ -10,265 +10,306 @@ $GLOBALS["conn"]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 function index($site) {
 	switch ($site) {
 		case null:
-			templateBody(null, null, null);
-			break;
+		templateBody(null, null, null);
+		break;
 		case "login":
-			templateBody("login", "0", "0");
-			break;
+		templateBody("login", "0", "0");
+		break;
 		case "logout":
-			templateBody("logout", "0", "0");
-			break;
+		templateBody("logout", "0", "0");
+		break;
 		case "line":
-			templateBody("line", null, null);
-			break;
+		templateBody("line", null, null);
+		break;
 		case "register":
-			templateBody("register", "0", "0");
-			break;
+		templateBody("register", "0", "0");
+		break;
 		case "user":
-			if (isset($_GET["user"])) {
-				templateBody("user", $_GET["user"], "0");
-			}
+		if (isset($_GET["user"])) {
+			templateBody("user", $_GET["user"], "0");
+		}
 		default:
 			# code...
-			break;
+		break;
 	}
 }
 
 function templateBody($info, $highscore, $queue) {
 	echo '<div class="container-fluid">
-      <div class="row header">
-        <div class="col-lg">
-          <h2 class="title"><a href="index.php">PunchMania</a></h2>
-        </div>
-      </div>
-      <div class="row info">
-        <div class="col-lg info">
-        	<h2 class="title"><a href="index.php">PunchMania</a></h2>';
-        getInfo($info);
-        echo '</div>
-      </div>
-      <div class="row list">';
-        getHSList($highscore);
-        getQueue($queue);
-        echo '</div>
-    </div>';
+	<div class="row header">
+	<div class="col-lg">
+	<h2 class="title"><a href="index.php">PunchMania</a></h2>
+	</div>
+	</div>
+	<div class="row info">
+	<div class="col-lg info">
+	<h2 class="title"><a href="index.php">PunchMania</a></h2>';
+	getInfo($info);
+	echo '</div>
+	</div>
+	<div class="row list">';
+	getHSList($highscore);
+	getQueue($queue);
+	echo '</div>
+	</div>';
 }
 function getHSList($name) {
 	if ($name == null) {
-		echo '<div class="col-lg hs">';
+		echo '<div class="col-lg hs"><h2>HighScore</h2>';
+		echo '<button class="btn" onclick="';
+		echo "$('#hsF').css('display', 'block');$('#hs').css('display', 'none');$('.hs h2').text('FastPunch');";
+		echo '">Fast</button><button class="btn" onclick="';
+		echo "$('#hsF').css('display', 'none');$('#hs').css('display', 'block');$('.hs h2').text('HardPunch');";
+		echo '">Hard</button>';
 		echo '<div id="hs"></div>
-          <script type="text/javascript">
-            setInterval(function(){
-              var xmlhttp = new XMLHttpRequest();
-              xmlhttp.onreadystatechange = function() {
-              	if (this.readyState == 4 && this.status == 200) {
-              		var tbodyPosition = $(".hs tbody").scrollTop();
-                	document.getElementById("hs").innerHTML = this.responseText;
-    				$(".hs tbody").scrollTop(tbodyPosition);
-              	}
-              };
-              xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hs", true);
-              xmlhttp.send();
-            }, 500);
-          </script>';
-          echo '</div>';
+		<script type="text/javascript">
+		setInterval(function(){
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var tbodyPosition = $("#hs tbody").scrollTop();
+					document.getElementById("hs").innerHTML = this.responseText;
+					$("#hs tbody").scrollTop(tbodyPosition);
+				}
+			};
+			xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hs", true);
+			xmlhttp.send();
+		}, 500);
+		</script>';
+		echo '<div id="hsF"></div>
+		<script type="text/javascript">
+		setInterval(function(){
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var tbodyPosition = $("#hsF tbody").scrollTop();
+					document.getElementById("hsF").innerHTML = this.responseText;
+					$("#hsF tbody").scrollTop(tbodyPosition);
+				}
+			};
+			xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hsFast", true);
+			xmlhttp.send();
+		}, 500);
+		</script>';
+		echo '</div>';
 	} elseif ($name == "0") {
 		echo '';
 	} else {
-		echo '<div class="col-lg hs">';
+		echo '<div class="col-lg hs"><h2>HighScore</h2>';
+		echo '<button class="btn" onclick="';
+		echo "$('.fasths').css('display', 'table');$('.hardhs').css('display', 'none');$('.hs h2').text('FastPunch');";
+		echo '">Fast</button><button class="btn" onclick="';
+		echo "$('.fasths').css('display', 'none');$('.hardhs').css('display', 'table');$('.hs h2').text('HardPunch');";
+		echo '">Hard</button>';
 		echo '<div id="hs"></div>
-          <script type="text/javascript">
-            setInterval(function(){
-              var xmlhttp = new XMLHttpRequest();
-              xmlhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                var tbodyPosition = $(".hs tbody").scrollTop();
-               	document.getElementById("hs").innerHTML = this.responseText;
-    			$(".hs tbody").scrollTop(tbodyPosition);
-              }
-              };
-              xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hs&user='.$name.'", true);
-              xmlhttp.send();
-            }, 500);
-          </script>';
-        echo '</div>';
+		<script type="text/javascript">
+		setInterval(function(){
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var tbodyPosition = $("#hs tbody").scrollTop();
+					document.getElementById("hs").innerHTML = this.responseText;
+					$("#hs tbody").scrollTop(tbodyPosition);
+				}
+			};
+			xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hs&user='.$name.'", true);
+			xmlhttp.send();
+		}, 500);
+		</script>';
+		echo '<div id="hsF"></div>
+		<script type="text/javascript">
+		setInterval(function(){
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var tbodyPosition = $("#hsf tbody").scrollTop();
+					document.getElementById("hsF").innerHTML = this.responseText;
+					$("#hsf tbody").scrollTop(tbodyPosition);
+				}
+			};
+			xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hsFast&user='.$name.'", true);
+			xmlhttp.send();
+		}, 500);
+		</script>';
+		echo '</div>';
 	}
 	
 }
 function getInfo($info){
 	switch ($info) {
 		case null:
-			echo '<div id="info"></div>
-          	<script type="text/javascript">
-            setInterval(function(){
-              var xmlhttp = new XMLHttpRequest();
-              xmlhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-              	var previousState = document.getElementById("info").innerHTML;
-                var state = this.responseText;
-                if(previousState != state) {
-                	document.getElementById("info").innerHTML = state;
-                }
-              }
-              };
-              xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=info", true);
-              xmlhttp.send();
-            }, 1000);
-          </script>';
-			break;
-		case "login":
-			echo '<form action="index.php?site=login" method="POST">
-            <label>Username:</label><br>
-          <input type="text" name="uname" pattern=".{3,15}" required><br>
-            <label>Password:</label><br>
-          <input type="password" name="pw" required><br><br>
-          <input type="submit" value="Logga in" class="btn">
-        </form>';
-        	if (isset($_POST["uname"]) && isset($_POST["pw"])) {
-        		$query = $GLOBALS["conn"]->prepare("SELECT * FROM user WHERE Uname=:uname");
-    			$query->bindParam(':uname', $_POST["uname"]);
-    			$query->execute();
-    			$result = $query->fetch();
-    			if (password_verify($_POST["pw"], $result["PW"])) {
-    				$_SESSION["uname"] = $result["Uname"];
-    				redirect("index.php");
-    			} else {
-    				redirect("index.php?site=login&error=1");		
-    			}
-        	}
-			break;
-		case "logout":
-			session_destroy();
-			redirect("index.php");
-			break;
-		case "line":
-			$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
-			$query->bindParam(':name', $_SESSION["uname"]);
-			$query->execute();
-			$query = $query->fetch();
-			if($query["num"] == 0) {
-				$ins = $GLOBALS["conn"]->prepare("INSERT INTO queue (Name) VALUES (:name)");
-				$ins->bindParam(':name', $_SESSION["uname"]);
-				$ins->execute();
-				redirect("index.php");
-    			die();
-			} else {
-				$del = $GLOBALS["conn"]->prepare("DELETE FROM `queue` WHERE `Name` = :name");
-				$del->bindParam(':name', $_SESSION["uname"]);
-				$del->execute();
-    			redirect("index.php");
-			}
-			break;
-		case "register":
-			if (isset($_GET["error"])) {
-				echo "<p>Användarnamnet finns!</p>";
-			}
-			echo '<form action="index.php?site=register" method="POST">
-				<label>Username:</label><br>
-          		<input type="text" name="uname" pattern=".{3,15}" required><br>
-            	<label>Password:</label><br>
-          		<input type="password" name="pw" required><br><br>
-          		<input type="submit" value="Registrera dig" class="btn"></form>';
-			if (isset($_POST["uname"]) && isset($_POST["pw"])) {
-				$hashpw = password_hash($_POST["pw"], PASSWORD_DEFAULT);
-				$query = $GLOBALS["conn"]->prepare("SELECT Uname FROM user WHERE Uname=:uname");			//check if user exists
-    			$query->bindParam(':uname', $_POST["uname"]);
-    			$query->execute();
-    			$checkuname = $query->fetch();
-    			if (!empty($checkuname["Uname"])) {
-		    		redirect("index.php?site=register&error=1");
-		    	}
-   			 	$ins = $GLOBALS["conn"]->prepare("INSERT INTO user (Uname, PW) VALUES (:uname, :hash)");
-   			 	$ins->bindParam(':uname', $_POST["uname"]);
-	    		$ins->bindParam(':hash', $hashpw);
-    			$ins->execute();
-    			$_SESSION["uname"] = $_POST["uname"];
-    			redirect("index.php");
+		echo '<div id="info"></div>
+		<script type="text/javascript">
+		setInterval(function(){
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var previousState = document.getElementById("info").innerHTML;
+					var state = this.responseText;
+					if(previousState != state) {
+						document.getElementById("info").innerHTML = state;
+					}
 				}
-			break;
-		case "user":
-			echo '<a href="index.php?site=user&user='.$_GET["user"].'"><h2 class="name">'.$_GET["user"].'</h2></a>';
-			getUserStats($_GET["user"]);
-			break;
-		default:
-			# code...
-			break;
-	}
-
-}
-function getQplace() {
-	if (isset($_SESSION["uname"])) {
+			};
+			xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=info", true);
+			xmlhttp.send();
+		}, 1000);
+		</script>';
+		break;
+		case "login":
+		echo '<form action="index.php?site=login" method="POST">
+		<label>Username:</label><br>
+		<input type="text" name="uname" pattern=".{3,15}" required><br>
+		<label>Password:</label><br>
+		<input type="password" name="pw" required><br><br>
+		<input type="submit" value="Logga in" class="btn">
+		</form>';
+		if (isset($_POST["uname"]) && isset($_POST["pw"])) {
+			$query = $GLOBALS["conn"]->prepare("SELECT * FROM user WHERE Uname=:uname");
+			$query->bindParam(':uname', $_POST["uname"]);
+			$query->execute();
+			$result = $query->fetch();
+			if (password_verify($_POST["pw"], $result["PW"])) {
+				$_SESSION["uname"] = $result["Uname"];
+				redirect("index.php");
+			} else {
+				redirect("index.php?site=login&error=1");		
+			}
+		}
+		break;
+		case "logout":
+		session_destroy();
+		redirect("index.php");
+		break;
+		case "line":
 		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
 		$query->bindParam(':name', $_SESSION["uname"]);
 		$query->execute();
 		$query = $query->fetch();
-		if ($query["num"] > 0) {
-			echo '<button class="btn" onclick="';
-			echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
-			echo '">Ta bort mig <br>från köplats '. $query["num"] .'</button>';
+		if($query["num"] == 0) {
+			$ins = $GLOBALS["conn"]->prepare("INSERT INTO queue (Name) VALUES (:name)");
+			$ins->bindParam(':name', $_SESSION["uname"]);
+			$ins->execute();
+			redirect("index.php");
+			die();
 		} else {
-			echo '<button class="btn" onclick="';
-			echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
-			echo '">Ställ mig i kö!</button>';
+			$del = $GLOBALS["conn"]->prepare("DELETE FROM `queue` WHERE `Name` = :name");
+			$del->bindParam(':name', $_SESSION["uname"]);
+			$del->execute();
+			redirect("index.php");
+		}
+		break;
+		case "register":
+		if (isset($_GET["error"])) {
+			echo "<p>Användarnamnet finns!</p>";
+		}
+		echo '<form action="index.php?site=register" method="POST">
+		<label>Username:</label><br>
+		<input type="text" name="uname" pattern=".{3,15}" required><br>
+		<label>Password:</label><br>
+		<input type="password" name="pw" required><br><br>
+		<input type="submit" value="Registrera dig" class="btn"></form>';
+		if (isset($_POST["uname"]) && isset($_POST["pw"])) {
+			$hashpw = password_hash($_POST["pw"], PASSWORD_DEFAULT);
+				$query = $GLOBALS["conn"]->prepare("SELECT Uname FROM user WHERE Uname=:uname");			//check if user exists
+				$query->bindParam(':uname', $_POST["uname"]);
+				$query->execute();
+				$checkuname = $query->fetch();
+				if (!empty($checkuname["Uname"])) {
+					redirect("index.php?site=register&error=1");
+				}
+				$ins = $GLOBALS["conn"]->prepare("INSERT INTO user (Uname, PW) VALUES (:uname, :hash)");
+				$ins->bindParam(':uname', $_POST["uname"]);
+				$ins->bindParam(':hash', $hashpw);
+				$ins->execute();
+				$_SESSION["uname"] = $_POST["uname"];
+				redirect("index.php");
+			}
+			break;
+			case "user":
+			echo '<a href="index.php?site=user&user='.$_GET["user"].'"><h2 class="name">'.$_GET["user"].'</h2></a>';
+			getUserStats($_GET["user"]);
+			break;
+			default:
+			# code...
+			break;
 		}
 	}
-}
-function getUserStats($user) {
-	$queryq = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
-	$queryq->bindParam(':name', $user);
-	$queryq->execute();
-	$queryq = $queryq->fetch();
-	if ($queryq["num"] > 0) {
-		echo "<p>Queue: ". $queryq["num"]."</p>";
-	} else {
-		echo "<p>Queue: Not in queue</p>";
+	function getQplace() {
+		if (isset($_SESSION["uname"])) {
+			$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
+			$query->bindParam(':name', $_SESSION["uname"]);
+			$query->execute();
+			$query = $query->fetch();
+			if ($query["num"] > 0) {
+				echo '<button class="btn" onclick="';
+				echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
+				echo '">Remove me<br>from # '. $query["num"] .'</button>';
+			} else {
+				echo '<button class="btn" onclick="';
+				echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
+				echo '">Put me in line</button>';
+			}
+		}
 	}
-	$queryhs = $GLOBALS["conn"]->prepare("SELECT * FROM `hslist` WHERE `Name` = :name AND `Score` = (SELECT MAX(Score) FROM `hslist` WHERE Name = :name1)");
-	$queryhs->bindParam(':name', $user);
-	$queryhs->bindParam(':name1', $user);
-	$queryhs->execute();
-	$queryhs = $queryhs->fetch();
-	if(isset($queryhs["Score"])) {
-		echo '<p>Best score: '. $queryhs["Score"] .'</p>';
-	} else {
-		echo "<p>Best score: No score</p>";
+	function getUserStats($user) {
+		$queryq = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
+		$queryq->bindParam(':name', $user);
+		$queryq->execute();
+		$queryq = $queryq->fetch();
+		if ($queryq["num"] > 0) {
+			echo "<p>Queue: ". $queryq["num"]."</p>";
+		} else {
+			echo "<p>Queue: Not in queue</p>";
+		}
+		$queryhs = $GLOBALS["conn"]->prepare("SELECT * FROM `hslist` WHERE `Name` = :name AND `Score` = (SELECT MAX(Score) FROM `hslist` WHERE Name = :name1)");
+		$queryhs->bindParam(':name', $user);
+		$queryhs->bindParam(':name1', $user);
+		$queryhs->execute();
+		$queryhs = $queryhs->fetch();
+		if(isset($queryhs["Score"])) {
+			echo '<p>Best score: '. $queryhs["Score"] .'</p>';
+		} else {
+			echo "<p>Best score: No score</p>";
+		}
 	}
-}
-function getQueue($queue) {
-	if ($queue == null) {
-		echo '<div class="col-lg q">';
-		echo '<div id="q"></div>
-          <script type="text/javascript">
-            setInterval(function(){
-              var xmlhttp = new XMLHttpRequest();
-              xmlhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("q").innerHTML = this.responseText;
-              }
-              };
-              xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=q", true);
-              xmlhttp.send();
-            }, 500);
-          </script>';
-		echo '</div>';
+	function getQueue($queue) {
+		if ($queue == null) {
+			echo '<div class="col-lg q">';
+			echo '<div id="q"></div>
+			<script type="text/javascript">
+			setInterval(function(){
+				var xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						var tbodyPosition = $("#q tbody").scrollTop();
+						document.getElementById("q").innerHTML = this.responseText;
+						$("#q tbody").scrollTop(tbodyPosition);
+					}
+				};
+				xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=q", true);
+				xmlhttp.send();
+			}, 500);
+			</script>';
+			echo '</div>';
+		}
 	}
-}
-function tableStart() {
-	echo "<table><tbody>";
-}
+	function tableStart() {
+		echo "<table><tbody>";
+	}
 
-function tableEnd() {
-	echo '</tbody></table>';
-}
+	function tableEnd() {
+		echo '</tbody></table>';
+	}
 
-function redirect($extra) {
-	$host  = $_SERVER['HTTP_HOST'];
-	$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-	header("Location: https://$host$uri/$extra");
-}
-if (isset($_GET["js"])) {
-	switch ($_GET["js"]) {
-		case "hs":
+	function redirect($extra) {
+		$host  = $_SERVER['HTTP_HOST'];
+		$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+		header("Location: https://$host$uri/$extra");
+	}
+	if (isset($_GET["js"])) {
+		switch ($_GET["js"]) {
+			case "hs":
 			if (isset($_GET["user"])) {
 				$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist WHERE Name LIKE :name ORDER BY Score DESC LIMIT 100");
 				$name = $_GET["user"] . "%";
@@ -277,11 +318,10 @@ if (isset($_GET["js"])) {
 				$query = $query->fetchAll();
 				$place = 1;
 				if (!empty($query)) {
-					echo '<h2>Highscore</h2>';
-					tableStart();
+					echo "<table class='hardhs'><tbody>";
 					foreach ($query as $row) {
-					echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
-					$place++;
+						echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
+						$place++;
 					}
 				}
 				tableEnd();
@@ -290,8 +330,7 @@ if (isset($_GET["js"])) {
 				$query->execute();
 				$query = $query->fetchAll();
 				$place = 1;
-				echo '<h2>Highscore</h2>';
-				tableStart();
+				echo "<table class='hardhs'><tbody>";
 				foreach ($query as $row) {
 					echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
 					$place++;
@@ -299,7 +338,36 @@ if (isset($_GET["js"])) {
 				tableEnd();
 			}
 			break;
-		case "q":
+			case "hsFast":
+			if (isset($_GET["user"])) {
+				$query = $GLOBALS["conn"]->prepare("SELECT * FROM fastpunch WHERE Name LIKE :name ORDER BY Score DESC LIMIT 100");
+				$name = $_GET["user"] . "%";
+				$query->bindParam(':name',  $name);
+				$query->execute();
+				$query = $query->fetchAll();
+				$place = 1;
+				if (!empty($query)) {
+					echo "<table class='fasths'><tbody>";
+					foreach ($query as $row) {
+						echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
+						$place++;
+					}
+				}
+				tableEnd();
+			} else {
+				$query = $GLOBALS["conn"]->prepare("SELECT * FROM fastpunch ORDER BY Score DESC LIMIT 100");
+				$query->execute();
+				$query = $query->fetchAll();
+				$place = 1;
+				echo "<table class='fasths'><tbody>";
+				foreach ($query as $row) {
+					echo '<tr><td><a href="index.php?site=user&user='.$row["Name"].'">'.$place.'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Name"].'</a></td><td><a href="index.php?site=user&user='.$row["Name"].'">'.$row["Score"].'</a></td></tr>';
+					$place++;
+				}
+				tableEnd();
+			}
+			break;
+			case "q":
 			$query = $GLOBALS["conn"]->prepare("SELECT * FROM queue ORDER BY ID ASC LIMIT 100");
 			$query->execute();
 			$query = $query->fetchAll();
@@ -312,17 +380,18 @@ if (isset($_GET["js"])) {
 			}
 			tableEnd();
 			break;
-		case "info":
+			case "info":
 			if (isset($_SESSION["uname"])) {
-				echo '<h3>Välkommen '.$_SESSION["uname"].'</h3>';
+				echo '<h3>Welcome '.$_SESSION["uname"].'</h3>';
 				getQplace();
-				echo '<a href="index.php?site=logout"><button class="btn">Logga ut</button></a>';
+				echo '<a href="index.php?site=logout"><button class="btn">Logout</button></a>';
 			} else {
-				echo '<a href="index.php?site=login"><button class="btn">Logga in</button></a>
-          		<a href="index.php?site=register"><button class="btn">Registrera dig</button></a>';
+				echo '<a href="index.php?site=login"><button class="btn">Login</button></a>
+				<a href="index.php?site=register"><button class="btn">Register</button></a>';
 			}
-		break;
-		case 'line':
+			echo '<img src="images/logo512.png">';
+			break;
+			case 'line':
 			$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
 			$query->bindParam(':name', $_SESSION["uname"]);
 			$query->execute();
@@ -337,9 +406,9 @@ if (isset($_GET["js"])) {
 				$del->execute();
 			}
 			break;
-		default:
+			default:
 			# code...
 			break;
+		}
 	}
-}
-?>
+	?>

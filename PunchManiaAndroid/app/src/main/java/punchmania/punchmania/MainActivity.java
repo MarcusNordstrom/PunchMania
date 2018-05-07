@@ -25,16 +25,19 @@ import common.Queue;
 
 public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
-    Button btnSearch, btnViewQueue, btnViewHighScore;
+    Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast, btnPunch;
 
     private static Queue queue = new Queue();
     private static HighScoreList list = new HighScoreList();
     private static HighScoreList listPlayer = new HighScoreList();
+    private static HighScoreList listFast = new HighScoreList();
+    private static HighScoreList listPlayerFast = new HighScoreList();
+
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.0.148";
+    private String ip = "192.168.1.13";
     private int port = 12346;
     public static boolean connected = false;
     private DataReader dataReader = new DataReader();
@@ -42,7 +45,24 @@ public class MainActivity extends AppCompatActivity {
     private SearchActivity search;
     private static long requestedHit = Long.MAX_VALUE;
 
+    private Message message;
     private String user;
+
+    public static final int NEW_QUEUE = 1;
+    public static final int NEW_HIGHSCORELIST = 2;
+    public static final int NEW_USER_TO_QUEUE = 3;
+    public static final int NEW_HS = 4;
+    public static final int REQUEST_PLAYERSCORES = 5;
+    public static final int PLAYERSCORES = 6;
+    public static final int REQUEST_HSDETAILS = 7;
+    public static final int HSDETAILS = 8;
+
+    public static final int GAMEMODE_FASTPUNCH = 9;
+    public static final int GAMEMODE_HARDPUNCH = 12;
+
+    public static final int NEW_HIGHSCORELIST_FASTPUNCH = 10;
+    public static final int PLAYERSCORES_FASTPUNCH = 11;
+    public static final int NEW_USER_TO_QUEUE_FASTPUNCH = 13;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -59,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         btnSearch = (Button) findViewById(R.id.btnSearch);
         btnViewQueue = (Button) findViewById(R.id.btnViewQueue);
         btnViewHighScore = (Button) findViewById(R.id.btnViewHighScore);
+        btnViewHighScoreFast = (Button) findViewById(R.id.btnViewHSFast);
+        btnPunch = (Button) findViewById(R.id.btnPunch);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
 
 
@@ -68,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, 5);
+                    send(newEntry, REQUEST_PLAYERSCORES);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -89,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                send(newEntry, 5);
+                                send(newEntry, REQUEST_PLAYERSCORES);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -122,6 +144,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnViewHighScoreFast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HighScoreFast.class);
+                startActivity(intent);
+            }
+        });
+
+        btnPunch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SelectMode.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void toastMessage(String message) {
@@ -142,6 +180,14 @@ public class MainActivity extends AppCompatActivity {
 
     public static HighScoreList getListPlayer() {
         return listPlayer;
+    }
+
+    public static HighScoreList getListPlayerFast() {
+        return listPlayerFast;
+    }
+
+    public static HighScoreList getHighScoresFast() {
+        return listFast;
     }
 
     public synchronized void send(Object arg1, int arg2) {
@@ -268,24 +314,32 @@ public class MainActivity extends AppCompatActivity {
                                 Message readMessage = (Message) obj;
                                 Log.i(this.getName(), "Object has arrived!");
                                 switch (readMessage.getInstruction()) {
-                                    case 1:
+                                    case NEW_QUEUE:
                                         Log.i(this.getName(), "It's a Queue!");
                                         queue = (Queue) readMessage.getPayload();
                                         break;
-                                    case 2:
-                                        Log.i(this.getName(), "It's a HighScoreList!");
+                                    case NEW_HIGHSCORELIST:
+                                        Log.i(this.getName(), "It's a HighScoreList HardPunch!");
                                         list = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case 6:
-                                        Log.i(this.getName(), "It´s userscores!");
+                                    case PLAYERSCORES:
+                                        Log.i(this.getName(), "It´s userscores HardPunch!");
                                         listPlayer = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case 8:
+                                    case HSDETAILS:
                                         Log.i(this.getName(), "It's HighScore details!");
                                         highScoreDetails = (ArrayList<ArrayList<Integer>>) readMessage.getPayload();
                                         break;
+                                    case NEW_HIGHSCORELIST_FASTPUNCH:
+                                        Log.i(this.getName(), "It´s a HighScoreList FastPunch");
+                                        listFast = (HighScoreList) readMessage.getPayload();
+                                        break;
+                                    case PLAYERSCORES_FASTPUNCH:
+                                        Log.i(this.getName(), "It´s userscores FastPunch");
+                                        listPlayerFast = (HighScoreList) readMessage.getPayload();
+                                        break;
                                     default:
-                                        Log.i(this.getName(), "unknown object");
+                                        Log.i(this.getName(), "get object");
                                         break;
                                 }
                                 readMessage = null;

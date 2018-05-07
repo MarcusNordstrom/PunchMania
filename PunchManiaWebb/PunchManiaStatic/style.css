@@ -37,7 +37,7 @@ h1, h2, h3, p, td, label {
 }
 .info button {
 	width: 75vw;
-	color: red;
+	color: var(--main-highlight-color);
 	margin: 2vh;
 	background-color: var(--main-text-color);
 }
@@ -51,9 +51,21 @@ h1, h2, h3, p, td, label {
 	height: 65vh;
 	text-align: center;
 }
+.hs button {
+	color: var(--main-highlight-color);
+	margin-left: 1vw;
+	margin-right: 1vw;
+	margin-bottom: 1vh;
+	background-color: var(--main-text-color);
+}
 .list h2 {
 	text-align: center;
-	line-height: 10vh;
+}
+.fasths {
+	display: none;
+}
+.hardhs {
+	display: table;
 }
 .list table {
 	margin-right: auto;
@@ -63,9 +75,14 @@ h1, h2, h3, p, td, label {
 .list tbody {
 	display: block;
 	width: inherit;
-	height: 50vh;
     overflow-y: auto;
     overflow-x: hidden;
+}
+.hs tbody {
+	height: 44vh;
+}
+.q tbody {
+	height: 50vh;
 }
 .list td {
 	padding-left: 1vmax;

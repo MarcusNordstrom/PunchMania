@@ -22,6 +22,7 @@ public class HighScoreListActivity extends AppCompatActivity {
     private ListView listView;
     private updater updater = new updater();
     private long clickedItemId;
+    private ArrayList<String> convertedHighScoreListOld = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +70,11 @@ public class HighScoreListActivity extends AppCompatActivity {
         for (int i = 0; i < MainActivity.getHighScores().size(); i++) {
             convertedHighScoreList.add(i + 1 + ":   " + MainActivity.getHighScores().getUser(i).getUser() + "    " + MainActivity.getHighScores().getUser(i).getScore());
         }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
-        listView.setAdapter(adapter);
+        if(!convertedHighScoreListOld.toString().equals(convertedHighScoreList.toString())) {
+            convertedHighScoreListOld = convertedHighScoreList;
+            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
+            listView.setAdapter(adapter);
+        }
     }
 
     public class updater extends Thread {
