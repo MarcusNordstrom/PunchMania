@@ -72,7 +72,7 @@ public class HighScoreListActivity extends AppCompatActivity {
         for (int i = 0; i < MainActivity.getHighScores().size(); i++) {
             convertedHighScoreList.add(i + 1 + ":   " + MainActivity.getHighScores().getUser(i).getUser() + "    " + MainActivity.getHighScores().getUser(i).getScore());
         }
-        if(convertedHighScoreListOld != convertedHighScoreList) {
+        if(!convertedHighScoreListOld.toString().equals(convertedHighScoreList.toString())) {
             convertedHighScoreListOld = convertedHighScoreList;
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
             listView.setAdapter(adapter);

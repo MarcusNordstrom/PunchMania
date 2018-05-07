@@ -25,6 +25,9 @@ EthernetClient client;
 ADXL345 adxl = ADXL345();
 //Boolean for hit detect and enable
 boolean hit_detected = false;
+
+unsigned long startTime = 0;
+
 //Counter for the cycles
 int counter = 0;
 //String for storage of all values
@@ -86,6 +89,12 @@ void setLed(int led) {
       digitalWrite(yellow, HIGH);
       digitalWrite(red, HIGH);
       break;
+    case 5:
+      Serial.println("LED NONE");
+      digitalWrite(green, LOW);
+      digitalWrite(yellow, LOW);
+      digitalWrite(red, LOW);
+      break;
   }
 }
 
@@ -139,83 +148,12 @@ void loop() {
     case 0: //defualt aka calibration
       setLed(3);
       calibrationCounter++;
-      switch (calibrationCounter) {
-        case 50:
-          calibrationXStorage[0] = x;
-          calibrationYStorage[0] = y;
-          calibrationZStorage[0] = z;
-          break;
-        case 100:
-          calibrationXStorage[1] = x;
-          calibrationYStorage[1] = y;
-          calibrationZStorage[1] = z;
-          break;
-        case 150:
-          calibrationXStorage[2] = x;
-          calibrationYStorage[2] = y;
-          calibrationZStorage[2] = z;
-          break;
-        case 200:
-          calibrationXStorage[3] = x;
-          calibrationYStorage[3] = y;
-          calibrationZStorage[3] = z;
-          break;
-        case 250:
-          calibrationXStorage[4] = x;
-          calibrationYStorage[4] = y;
-          calibrationZStorage[4] = z;
-          break;
-        case 300:
-          calibrationXStorage[5] = x;
-          calibrationYStorage[5] = y;
-          calibrationZStorage[5] = z;
-          calibrationCounter = 0;
-          break;
-      }
-      for (int i = 0; i < 6; i++) {
-        calibrationXOffset += calibrationXStorage[i];
-        calibrationYOffset += calibrationYStorage[i];
-        calibrationZOffset += calibrationZStorage[i];
-      }
-      calibrationXOffset = calibrationXOffset / 6;
-      calibrationYOffset = calibrationYOffset / 6;
-      calibrationZOffset = calibrationZOffset / 6;
-      x -= calibrationXOffset;
-      y -= calibrationYOffset;
-      z -= calibrationZOffset;
-      break;
+      calibrate();
     case 1: //HardPunch
-      setLed(1);
-      if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {
-        setLed(2);
-        hit_detected = true;
-        Serial.println("h:");
-        Serial.println(x);
-        Serial.println(y);
-        Serial.println(z);
-      }
-      if (hit_detected) {
-        if (counter < 1000) {
-          counter++;
-          storage += String(x);
-          storage += ",";
-          storage += String(y);
-          storage += ",";
-          storage += String(z);
-          storage += ";";
-        } else {
-          counter = 0;
-          hit_detected = false;
-          Serial.println(client.print(storage));
-          client.flush();
-          //client.write(buff, 2000);
-          Serial.println(storage);
-          storage = "";
-        }
-      }
+      doHardPunch();
       break;
     case 2: //FastPunch
-
+      doFastPunch();
       break;
   }
   if (client.available()) {
@@ -243,5 +181,126 @@ void loop() {
         next_state = 2;
         break;
     }
+  }
+  current_state = next_state;
+}
+void calibrate(){
+    calibrationCounter++;
+    switch (calibrationCounter) {
+          case 50:
+            calibrationXStorage[0] = x;
+            calibrationYStorage[0] = y;
+            calibrationZStorage[0] = z;
+            break;
+          case 100:
+            calibrationXStorage[1] = x;
+            calibrationYStorage[1] = y;
+            calibrationZStorage[1] = z;
+            break;
+          case 150:
+            calibrationXStorage[2] = x;
+            calibrationYStorage[2] = y;
+            calibrationZStorage[2] = z;
+            break;
+          case 200:
+            calibrationXStorage[3] = x;
+            calibrationYStorage[3] = y;
+            calibrationZStorage[3] = z;
+            break;
+          case 250:
+            calibrationXStorage[4] = x;
+            calibrationYStorage[4] = y;
+            calibrationZStorage[4] = z;
+            break;
+          case 300:
+            calibrationXStorage[5] = x;
+            calibrationYStorage[5] = y;
+            calibrationZStorage[5] = z;
+            calibrationCounter = 0;
+            break;
+    }
+
+  for (int i = 0; i < 6; i++) {
+    calibrationXOffset += calibrationXStorage[i];
+    calibrationYOffset += calibrationYStorage[i];
+    calibrationZOffset += calibrationZStorage[i];
+  }
+  calibrationXOffset = calibrationXOffset / 6;
+  calibrationYOffset = calibrationYOffset / 6;
+  calibrationZOffset = calibrationZOffset / 6;
+  x -= calibrationXOffset;
+  y -= calibrationYOffset;
+  z -= calibrationZOffset;
+  break;
+}
+
+void doHardPunch(){
+  setLed(1);
+  hitValue = 200;
+  if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {
+    setLed(2);
+    hit_detected = true;
+    Serial.println("h:");
+    Serial.println(x);
+    Serial.println(y);
+    Serial.println(z);
+  }
+  if (hit_detected) {
+    if (counter < 1000) {
+      counter++;
+      storage += String(x);
+      storage += ",";
+      storage += String(y);
+      storage += ",";
+      storage += String(z);
+      storage += ";";
+    } else {
+      counter = 0;
+      hit_detected = false;
+      Serial.println(client.print(storage));
+      client.flush();
+      //client.write(buff, 2000);
+      Serial.println(storage);
+      storage = "";
+      next_state(0);
+    }
+  }
+}
+void doFastPunch(){
+  if(startTime == 0){
+    startTime = millis();
+  }
+  unsigned long currentTime = millis();
+  hitValue = 100;
+  int timer = 30;
+  int hitCount = 0;
+  int countdown = 3;
+  int hitRegX, hitRegY, hitRegZ;
+  if(currentTime - startTime <= 30000){
+    if(countdown > 0){
+      setLed(2);
+      setLed(5);
+      countdown--;
+    }else {
+      setLed(1);
+      if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue)&&!hit_detected ) {
+        hit_detected = true;
+        hitRegX = x;
+        hitRegY = y;
+        hitRegZ = z;
+        Serial.println("h:");
+        quickCalibrate();
+      }
+      if(hit_detected){
+        hitCount++;
+        
+        if(abs(x) < abs(hitRegX) || abs(y) < abs(hitRegY) || abs(z) < abs(hitRegZ)){
+          hit_detected = false;
+        }
+      }
+      timer--;
+    }
+  }else{
+    
   }
 }
