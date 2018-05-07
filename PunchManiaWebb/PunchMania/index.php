@@ -48,7 +48,7 @@ require 'main.php';
     } else {
       index($_GET["site"]);
     }
-    
+
     ?>
   </body>
   </html>
