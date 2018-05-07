@@ -36,7 +36,7 @@ h2 {
 #info {
 	height: 15vh;
 }
-.info .title {
+.info .title, .hs .title, .q .title {
 	color: var(--main-highlight-color) !important;
 	line-height: 10vh;
 	display: none;
@@ -116,14 +116,14 @@ h2 {
 	.info {
 		height: 100vh;
 	}
-	.info .title {
+	.info .title, .hs .title, .q .title {
 		display: block;
 	}
 	.hs, .q {
 		height: 100vh;
 	}
 	.list tbody {
-		height: 75vh;
+		height: 70vh;
 	}
 	.info input {
 		width: 75vw;
