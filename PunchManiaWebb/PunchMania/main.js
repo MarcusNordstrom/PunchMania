@@ -34,6 +34,10 @@ function down() {
 		$('html,body').scrollTop($(".hs").offset().top);
 		$('.uparrow').show();
 		current_elem = "hs";
+		if (!($('.q').length)) {
+			$('.downarrow').hide();
+		}
+		$('.info img').hide();
 		break;
 		case "hs":
 		$('html,body').scrollTop($(".q").offset().top);
@@ -49,7 +53,9 @@ function up() {
 		case "hs":
 		$('html,body').scrollTop($(".info").offset().top);
 		$('.uparrow').hide();
+		$('.downarrow').show();
 		current_elem = "info";
+		$('.info img').show();
 		break;
 		case "q":
 		$('html,body').scrollTop($(".hs").offset().top);

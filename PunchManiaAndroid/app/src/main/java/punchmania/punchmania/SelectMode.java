@@ -7,8 +7,7 @@ import android.widget.Button;
 
 public class SelectMode extends AppCompatActivity {
 
-    public static final int GAMEMODE_FASTPUNCH = 9;
-    public static final int GAMEMODE_HARDPUNCH = 12;
+    public static final int GAMEMODE = 9;
 
     private Button btnHardPunch, btnFastPunch;
     private MainActivity main;
@@ -23,14 +22,15 @@ public class SelectMode extends AppCompatActivity {
 
         btnHardPunch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                main.staticSend(null, GAMEMODE_HARDPUNCH);
+                main.staticSend("HARD", GAMEMODE);    // staticSend eller send?
 
             }
         });
 
         btnFastPunch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                main.staticSend(null, GAMEMODE_FASTPUNCH);
+                main.staticSend("FAST", GAMEMODE);
+
             }
         });
     }

@@ -13,7 +13,6 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -28,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast, btnPunch;
 
     private static Queue queue = new Queue();
-    private static HighScoreList list = new HighScoreList();
-    private static HighScoreList listPlayer = new HighScoreList();
+    private static HighScoreList listHard = new HighScoreList();
+    private static HighScoreList listPlayerHard = new HighScoreList();
     private static HighScoreList listFast = new HighScoreList();
     private static HighScoreList listPlayerFast = new HighScoreList();
 
@@ -42,27 +41,16 @@ public class MainActivity extends AppCompatActivity {
     public static boolean connected = false;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
-    private SearchActivity search;
     private static long requestedHit = Long.MAX_VALUE;
 
-    private Message message;
-    private String user;
-
     public static final int NEW_QUEUE = 1;
-    public static final int NEW_HIGHSCORELIST = 2;
-    public static final int NEW_USER_TO_QUEUE = 3;
-    public static final int NEW_HS = 4;
-    public static final int REQUEST_PLAYERSCORES = 5;
-    public static final int PLAYERSCORES = 6;
-    public static final int REQUEST_HSDETAILS = 7;
-    public static final int HSDETAILS = 8;
-
-    public static final int GAMEMODE_FASTPUNCH = 9;
-    public static final int GAMEMODE_HARDPUNCH = 12;
-
+    public static final int SERVER_SEND_PLAYERSCORES_HARDPUNCH = 6;
+    public static final int SERVER_SEND_PLAYERSCORES_FASTPUNCH = 12;
+    public static final int SERVER_SEND_HSDETAILS = 8;
+    public static final int NEW_HIGHSCORELIST_HARDPUNCH = 2;
     public static final int NEW_HIGHSCORELIST_FASTPUNCH = 10;
-    public static final int PLAYERSCORES_FASTPUNCH = 11;
-    public static final int NEW_USER_TO_QUEUE_FASTPUNCH = 13;
+    public static final int CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH = 5;
+    public static final int CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH = 11;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -90,8 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, REQUEST_PLAYERSCORES);
+                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
+                    try {
+                        wait(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
                     startActivity(intent);
@@ -111,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                send(newEntry, REQUEST_PLAYERSCORES);
+                                send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                                send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -170,16 +165,16 @@ public class MainActivity extends AppCompatActivity {
         return queue;
     }
 
-    public static HighScoreList getHighScores() {
-        return list;
+    public static HighScoreList getHighScoresHard() {
+        return listHard;
     }
 
     public static ArrayList getHighScoreDetails() {
         return highScoreDetails;
     }
 
-    public static HighScoreList getListPlayer() {
-        return listPlayer;
+    public static HighScoreList getListPlayerHard() {
+        return listPlayerHard;
     }
 
     public static HighScoreList getListPlayerFast() {
@@ -192,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     public synchronized void send(Object arg1, int arg2) {
         DataSender dataSender = new DataSender(arg1, arg2);
+        Log.i("instruktion", "skickar arg" + arg2);
     }
 
     public synchronized static void staticSend(Object arg1, int arg2) {
@@ -202,11 +198,11 @@ public class MainActivity extends AppCompatActivity {
         private Object send;
         private int instruction;
 
-        public StaticDataSender(Object send, int instruction){
+        public StaticDataSender(Object send, int instruction) {
             this.send = send;
             this.instruction = instruction;
             this.start();
-}
+        }
 
         public synchronized void run() {
             if (connected && send != null && instruction != 0 && !isInterrupted()) {
@@ -229,11 +225,11 @@ public class MainActivity extends AppCompatActivity {
         private Object send;
         private int instruction;
 
-        public DataSender(Object send, int instruction){
+        public DataSender(Object send, int instruction) {
             this.send = send;
             this.instruction = instruction;
             this.start();
-}
+        }
 
         public synchronized void run() {
             if (connected && send != null && instruction != 0 && !isInterrupted()) {
@@ -318,15 +314,15 @@ public class MainActivity extends AppCompatActivity {
                                         Log.i(this.getName(), "It's a Queue!");
                                         queue = (Queue) readMessage.getPayload();
                                         break;
-                                    case NEW_HIGHSCORELIST:
+                                    case NEW_HIGHSCORELIST_HARDPUNCH:
                                         Log.i(this.getName(), "It's a HighScoreList HardPunch!");
-                                        list = (HighScoreList) readMessage.getPayload();
+                                        listHard = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case PLAYERSCORES:
+                                    case SERVER_SEND_PLAYERSCORES_HARDPUNCH:
                                         Log.i(this.getName(), "It´s userscores HardPunch!");
-                                        listPlayer = (HighScoreList) readMessage.getPayload();
+                                        listPlayerHard = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case HSDETAILS:
+                                    case SERVER_SEND_HSDETAILS:
                                         Log.i(this.getName(), "It's HighScore details!");
                                         highScoreDetails = (ArrayList<ArrayList<Integer>>) readMessage.getPayload();
                                         break;
@@ -334,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                                         Log.i(this.getName(), "It´s a HighScoreList FastPunch");
                                         listFast = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case PLAYERSCORES_FASTPUNCH:
+                                    case SERVER_SEND_PLAYERSCORES_FASTPUNCH:
                                         Log.i(this.getName(), "It´s userscores FastPunch");
                                         listPlayerFast = (HighScoreList) readMessage.getPayload();
                                         break;

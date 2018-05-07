@@ -382,7 +382,6 @@ public class MySql{
 
 			while(rs.next()) {
 				hsl.add(rs.getString(2), rs.getInt(3));
-				System.out.println(rs.getString(2).toString() + rs.getInt(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

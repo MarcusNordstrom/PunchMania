@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "searchActivity";
     private TextView usernameTextView;
-    private ListView searchListView, searchListViewFast;
+    private ListView searchListViewHard, searchListViewFast;
 
 
     @Override
@@ -24,7 +24,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
         usernameTextView = (TextView) findViewById(R.id.usernameTextView);
-        searchListView = (ListView) findViewById(R.id.searchListView);
+        searchListViewHard = (ListView) findViewById(R.id.searchListView);
         searchListViewFast = (ListView) findViewById(R.id.searchListViewFast);
 
         Intent intent = getIntent();
@@ -38,34 +38,56 @@ public class SearchActivity extends AppCompatActivity {
 
     private void populateListViewHard() {
         ArrayList<String> PlayerHighScoreHard = new ArrayList<>();
-        for (int i = 0; i < MainActivity.getListPlayer().size(); i++) {
-            Log.i(TAG, MainActivity.getListPlayer().getUser(i).getScore() + "");
+        if(MainActivity.getListPlayerHard().size() > 0) {
+            for (int i = 0; i < MainActivity.getListPlayerHard().size(); i++) {
+                Log.i(TAG, MainActivity.getListPlayerHard().getUser(i).getScore() + "");
 
-            PlayerHighScoreHard.add(MainActivity.getListPlayer().getUser(i).getUser() + "   " + MainActivity.getListPlayer().getUser(i).getScore() + "\n");
+                PlayerHighScoreHard.add(MainActivity.getListPlayerHard().getUser(i).getUser() + "   " + MainActivity.getListPlayerHard().getUser(i).getScore() + "\n");
+            }
+
+
+            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
+
+            searchListViewHard.setAdapter(adapter);
+        } else {
+            PlayerHighScoreHard = new ArrayList<>();
+            PlayerHighScoreHard.add("No scores to show");
+
+            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
+
+            searchListViewHard.setAdapter(adapter);
+
         }
-        Log.i(TAG, "1");
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
-        Log.i(TAG, "2");
-        searchListView.setAdapter(adapter);
-        Log.i(TAG, "3");
-    }
+
+        }
+
 
     private void populateListViewFast() {
         ArrayList<String> PlayerHighScoreFast = new ArrayList<>();
-        for (int i = 0; i < MainActivity.getListPlayerFast().size(); i++) {
-            Log.i(TAG, MainActivity.getListPlayerFast().getUser(i).getScore() + "");
+        if(MainActivity.getListPlayerFast().size() > 0) {
+            for (int i = 0; i < MainActivity.getListPlayerFast().size(); i++) {
+                Log.i(TAG, MainActivity.getListPlayerFast().getUser(i).getScore() + "");
 
-            PlayerHighScoreFast.add(MainActivity.getListPlayerFast().getUser(i).getUser() + "   " + MainActivity.getListPlayerFast().getUser(i).getScore() + "\n");
+                PlayerHighScoreFast.add(MainActivity.getListPlayerFast().getUser(i).getUser() + "   " + MainActivity.getListPlayerFast().getUser(i).getScore() + "\n");
+            }
+            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreFast);
+
+            searchListViewFast.setAdapter(adapter);
+        } else {
+            PlayerHighScoreFast = new ArrayList<>();
+            PlayerHighScoreFast.add("No scores to show");
+
+            ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreFast);
+
+            searchListViewFast.setAdapter(adapter);
         }
 
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreFast);
-        searchListView.setAdapter(adapter);
     }
 
     public class updater extends Thread {
         @Override
         public void run() {
-            while (!isInterrupted()) {
+
                 try {
                     synchronized (this) {
                         wait(1000);
@@ -86,7 +108,7 @@ public class SearchActivity extends AppCompatActivity {
         }
 
     }
-}
+
 
 
 
