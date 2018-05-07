@@ -231,7 +231,6 @@ public class Server {
 						switch (message.getInstruction()) {
 						case 3:
 							ui.print("User for queue received from: Client", 0);
-							System.out.println(message.getPayload());
 							String newtoqueue = (String) message.getPayload();
 							addQueue(newtoqueue);
 							if(ms.queueSize() == 0) {
@@ -303,7 +302,6 @@ public class Server {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getFastPunch(name);
-					System.out.println("name");
 					oos.writeObject(new Message(hsList, Message.SERVER_SEND_PLAYERSCORES_FASTPUNCH));
 					oos.reset();
 					oos.flush();
