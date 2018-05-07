@@ -100,16 +100,16 @@ public class ServerUI extends JPanel {
 
 		case "removeHS":
 			remove(cmd);
-			server.setSend(Server.highscore);
+			server.setSend(Server.HIGHSCORE);
 			break;
 
 		case "addHS":
 			add(cmd);
-			server.setSend(Server.highscore);
+			server.setSend(Server.HIGHSCORE);
 			break;
 
 		case "sendHS":
-			server.setSend(Server.highscore);
+			server.setSend(Server.HIGHSCORE);
 
 			break;
 
@@ -119,21 +119,21 @@ public class ServerUI extends JPanel {
 
 		case "addQ":
 			addQ(cmd);
-			server.setSend(Server.enable);
-			server.setSend(Server.Queue);
+			server.setSend(Server.ENABLE);
+			server.setSend(Server.QUEUE);
 			break;
 
 		case "sendQ":
-			server.setSend(Server.Queue);
+			server.setSend(Server.QUEUE);
 			print("Sending queue", 0);
 			break;
 
 		case "removeQ":
 			removeQ(cmd);
 			if(server.ms.queueSize() == 0) {
-				server.setSend(Server.disable);
+				server.setSend(Server.DISABLE);
 			}
-			server.setSend(Server.Queue);
+			server.setSend(Server.QUEUE);
 			break;
 
 		case "delay":
@@ -143,9 +143,9 @@ public class ServerUI extends JPanel {
 		case "clearQ":
 			clearQ();
 			if(server.ms.queueSize() == 0) {
-				server.setSend(Server.disable);
+				server.setSend(Server.DISABLE);
 			}
-			server.setSend(Server.Queue);
+			server.setSend(Server.QUEUE);
 			break;
 
 		case "kek":
@@ -156,15 +156,15 @@ public class ServerUI extends JPanel {
 
 		case "clearHS":
 			clearHS();
-			server.setSend(Server.highscore);
+			server.setSend(Server.HIGHSCORE);
 			break;
 
 		case "isEnable":
-			server.setSend(Server.enable);
+			server.setSend(Server.ENABLE);
 			break;
 
 		case "isDisable":
-			server.setSend(Server.disable);
+			server.setSend(Server.DISABLE);
 			break;
 
 		case "help":

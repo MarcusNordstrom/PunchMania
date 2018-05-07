@@ -226,6 +226,7 @@ public class Server {
 				while (connected) {
 					try {
 						Message message = (Message) ois.readObject();
+						System.out.println(message.getInstruction());
 						switch (message.getInstruction()) {
 						case 3:
 							ui.print("User for queue received from: Client", 0);
@@ -242,12 +243,14 @@ public class Server {
 							ui.print("User requested hs", 0);
 							String name = (String) message.getPayload();
 							sendNameScore(name);
+							break;
 
 						case 7: 
 							ui.print("User requested hs", 0); 
 							HighScoreList hslNameScore = (HighScoreList) message.getPayload(); 
 							sendXYZ(hslNameScore.getUser(0).getUser(), hslNameScore.getUser(0).getScore()); 
-
+							break;
+							
 						case 9:
 							ui.print("Game mode chosen", 0);
 							String mode = (String)message.getPayload();
@@ -258,12 +261,14 @@ public class Server {
 							} else {
 								System.err.println("Error, no mode equals: " + mode);
 							}
-
-						case 10:
+							break;	
+						case 11:
 							ui.print("FastPunchScore requested", 0);
 							String nameFastPunch = (String) message.getPayload();
 							sendNameScoreFastPunch(nameFastPunch);
+							break;
 						} 
+						
 
 					} catch (IOException | ClassNotFoundException e) {
 						try {
@@ -285,10 +290,7 @@ public class Server {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getUserScore(name);
-					System.out.println(hsList.getUser(0).getUser()); 
-					System.out.println(hsList.getUser(0).getScore()); 
-					System.out.println("name");
-					oos.writeObject(new Message(hsList, Message.PLAYERSCORES));
+					oos.writeObject(new Message(hsList, Message.SERVER_SEND_PLAYERSCORES_HARDPUNCH));
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
@@ -301,7 +303,7 @@ public class Server {
 					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getFastPunch(name);
 					System.out.println("name");
-					oos.writeObject(new Message(hsList, Message.PLAYERSCORES_FASTPUNCH));
+					oos.writeObject(new Message(hsList, Message.SERVER_SEND_PLAYERSCORES_FASTPUNCH));
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
@@ -316,7 +318,7 @@ public class Server {
 					if(ms.queueSize() == 0) {
 						setSend(DISABLE);
 					}
-					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST));
+					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST_HARDPUNCH));
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
@@ -367,7 +369,7 @@ public class Server {
 
 			public void sendXYZ(String name, int score) { 
 				try { 
-					oos.writeObject(new Message(ms.getXYZ(name, score), Message.HSDETAILS)); 
+					oos.writeObject(new Message(ms.getXYZ(name, score), Message.SERVER_SEND_HSDETAILS)); 
 					oos.reset(); 
 					oos.flush(); 
 				} catch (IOException e) { 
