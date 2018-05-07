@@ -27,6 +27,7 @@ public class Server {
 	public static final int SEND_QUEUE = 8;
 	public static final int SEND_HARDPUNCH_HIGHSCORE = 7;
 	public static final int SEND_FASTPUNCH_HIGHSCORE = 9;
+	
 	public static final String FASTPUNCH_MODE = "HARD";
 	public static final String HARDPUNCH_MODE = "FAST";
 	
