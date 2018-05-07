@@ -47,6 +47,7 @@ public class QueueListActivity extends AppCompatActivity {
 
         } else {
             copiedQueueList.clear();
+            copiedQueueList.add("Queue  is empty!");
 
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, copiedQueueList);
             mListView.setAdapter(adapter);
