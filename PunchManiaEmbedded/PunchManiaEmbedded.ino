@@ -12,6 +12,9 @@ int port = 12345;                     //Port for server
 IPAddress ip(192, 168, 1, 101);       //This device
 //Sensitivity
 int hitValue = 200;
+boolean enable;
+boolean finished = false;
+
 
 //CONFIG
 //LEDS
@@ -25,8 +28,12 @@ EthernetClient client;
 ADXL345 adxl = ADXL345();
 //Boolean for hit detect and enable
 boolean hit_detected = false;
-
+//start time for fastpunch game mode
 unsigned long startTime = 0;
+//amount of hits in fastpunch
+int hitCount = 0;
+//countdown for fastpunch
+int countdown;
 
 //Counter for the cycles
 int counter = 0;
@@ -48,6 +55,9 @@ void connect() {
   int status = 100;
   if (status = client.connect(server, port)) {
     Serial.println("connected");
+    client.print("");
+    client.flush();
+    
     if (enable) {
       setLed(1);
     } else {
@@ -62,42 +72,42 @@ void connect() {
   Serial.println("Status: ");
   Serial.println(status);
 }
-
+//set leds to a preset
 void setLed(int led) {
   switch (led) {
     case 1:
-      Serial.println("LED Green");
+      //Serial.println("LED Green");
       digitalWrite(green, HIGH);
       digitalWrite(yellow, LOW);
       digitalWrite(red, LOW);
       break;
     case 2:
-      Serial.println("LED Yellow");
+      //Serial.println("LED Yellow");
       digitalWrite(green, LOW);
       digitalWrite(yellow, HIGH);
       digitalWrite(red, LOW);
       break;
     case 3:
-      Serial.println("LED Red");
+      //Serial.println("LED Red");
       digitalWrite(green, LOW);
       digitalWrite(yellow, LOW);
       digitalWrite(red, HIGH);
       break;
     case 4:
-      Serial.println("LED All");
+      //Serial.println("LED All");
       digitalWrite(green, HIGH);
       digitalWrite(yellow, HIGH);
       digitalWrite(red, HIGH);
       break;
     case 5:
-      Serial.println("LED NONE");
+      //Serial.println("LED NONE");
       digitalWrite(green, LOW);
       digitalWrite(yellow, LOW);
       digitalWrite(red, LOW);
       break;
   }
 }
-
+//flash all LEDs
 void highScoreBlink() {
   for (int i = 0; i < 10; i++) {
     digitalWrite(green, HIGH);
@@ -138,53 +148,79 @@ void setup() {
   Serial.println(Ethernet.localIP());
   connect();
 }
-int current_state = 0;
-int next_state = 0;
-void loop() {
-  // axis variables
-  int x, y, z;
-  adxl.readAccel(&x, &y, &z); //Reads the accelerometer values and stores them in the axis variables
-  switch (current_state) {
-    case 0: //defualt aka calibration
-      setLed(3);
-      calibrationCounter++;
-      calibrate();
-    case 1: //HardPunch
-      doHardPunch();
-      break;
-    case 2: //FastPunch
-      doFastPunch();
-      break;
-  }
-  if (client.available()) {
-    byte recived = client.read();
-    Serial.print("RECIVED: ");
-    Serial.println(recived);
-    switch (recived) {
-      //1 is HardPunch
+
+
+  int next_state = 0;
+  int state = 0;
+  int x;
+  int y;
+  int z;  
+//main programloop
+void loop(){
+  Serial.println("Entered loop");
+  calibrate();
+  while(true){
+    adxl.readAccel(&x,&y,&z);
+    if(client.available()){
+      byte recived = client.read();
+      Serial.println("Client sent message");
+      switch(recived){  
+        
+        //1 enable 2 disable 3 new hs 4 Fast 5 Hard
+        
+        //hardpunch
+        case 5:
+          Serial.println("Entering Hardpunch");
+          next_state = 1;
+          enable = true;
+          break;  
+        //fastpunch
+        case 4:
+          Serial.println("Entering Fastpunch");
+          next_state = 2;
+          enable = true;
+          break;  
+        //calibrate
+        case 2: case 1:
+          next_state = 0;
+          enable = false;
+          break;
+        //highscore
+        case 3:
+          highScoreBlink();
+          next_state = 0;
+          enable = false;
+          break;
+      }
+    }
+    switch(state){
       case 1:
-        next_state = 1;
-        setLed(1);
+      
+        doHardPunch();
+        if(finished){
+          next_state = 0;
+          finished = false;
+        }
         break;
-      //2 is Calibration/Disable
       case 2:
-        next_state = 0;
-        setLed(2);
+        
+        doFastPunch();
+        if(finished){
+          next_state = 0;
+          finished = false;
+        }
         break;
-      //3 is highscore then disable
-      case 3:
-        highScoreBlink();
-        next_state = 0;
-        break;
-      //4 is FastPunch
-      case 4:
-        next_state = 2;
+      case 0:
+        calibrate();
         break;
     }
+    state = next_state;
   }
-  current_state = next_state;
 }
+
+
 void calibrate(){
+    
     calibrationCounter++;
     switch (calibrationCounter) {
           case 50:
@@ -231,7 +267,6 @@ void calibrate(){
   x -= calibrationXOffset;
   y -= calibrationYOffset;
   z -= calibrationZOffset;
-  break;
 }
 
 void doHardPunch(){
@@ -259,28 +294,28 @@ void doHardPunch(){
       hit_detected = false;
       Serial.println(client.print(storage));
       client.flush();
+      Serial.println("Data sent");
       //client.write(buff, 2000);
       Serial.println(storage);
+      setLed(2);
+      finished = true;
       storage = "";
-      next_state(0);
+      next_state = 0;
     }
   }
 }
+
 void doFastPunch(){
   if(startTime == 0){
     startTime = millis();
   }
   unsigned long currentTime = millis();
-  hitValue = 100;
-  int timer = 30;
-  int hitCount = 0;
-  int countdown = 3;
+
   int hitRegX, hitRegY, hitRegZ;
-  if(currentTime - startTime <= 30000){
-    if(countdown > 0){
-      setLed(2);
+  if(currentTime - startTime <= 8000){
+    if(currentTime - startTime <= 3000){
       setLed(5);
-      countdown--;
+      setLed(2);
     }else {
       setLed(1);
       if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue)&&!hit_detected ) {
@@ -289,18 +324,26 @@ void doFastPunch(){
         hitRegY = y;
         hitRegZ = z;
         Serial.println("h:");
-        quickCalibrate();
       }
       if(hit_detected){
-        hitCount++;
         
-        if(abs(x) < abs(hitRegX) || abs(y) < abs(hitRegY) || abs(z) < abs(hitRegZ)){
+        
+        if(x * hitRegX < 0 || y * hitRegY < 0 || z * hitRegZ < 0){
           hit_detected = false;
+          hitCount++;
         }
       }
-      timer--;
     }
   }else{
-    
+    byte send = (byte)hitCount;
+    Serial.println(client.print(send));
+    client.flush();
+    Serial.println(send);
+    finished = true;
+    hitCount = 0;
+    startTime = 0;
+    next_state = 0;
+    send = 0;
+    setLed(2);
   }
 }
