@@ -97,9 +97,9 @@ function getHSList($name) {
 	} else {
 		echo '<div class="col-lg hs"><h2>HighScore</h2>';
 		echo '<button class="btn" onclick="';
-		echo "$('.fasths').css('display', 'table');$('.hardhs').css('display', 'none');$('.hs h2').text('FastPunch');";
+		echo "$('#hsF').css('display', 'block');$('#hs').css('display', 'none');$('.hs h2').text('FastPunch');";
 		echo '">Fast</button><button class="btn" onclick="';
-		echo "$('.fasths').css('display', 'none');$('.hardhs').css('display', 'table');$('.hs h2').text('HardPunch');";
+		echo "$('#hsF').css('display', 'none');$('#hs').css('display', 'block');$('.hs h2').text('HardPunch');";
 		echo '">Hard</button>';
 		echo '<div id="hs"></div>
 		<script type="text/javascript">
@@ -122,9 +122,9 @@ function getHSList($name) {
 			var xmlhttp = new XMLHttpRequest();
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
-					var tbodyPosition = $("#hsf tbody").scrollTop();
+					var tbodyPosition = $("#hsF tbody").scrollTop();
 					document.getElementById("hsF").innerHTML = this.responseText;
-					$("#hsf tbody").scrollTop(tbodyPosition);
+					$("#hsF tbody").scrollTop(tbodyPosition);
 				}
 			};
 			xmlhttp.open("GET", "https://ddwap.mah.se/ah7115/PunchMania/main.php?js=hsFast&user='.$name.'", true);
@@ -133,7 +133,7 @@ function getHSList($name) {
 		</script>';
 		echo '</div>';
 	}
-	
+
 }
 function getInfo($info){
 	switch ($info) {
@@ -173,7 +173,7 @@ function getInfo($info){
 				$_SESSION["uname"] = $result["Uname"];
 				redirect("index.php");
 			} else {
-				redirect("index.php?site=login&error=1");		
+				redirect("index.php?site=login&error=1");
 			}
 		}
 		break;
@@ -267,8 +267,18 @@ function getInfo($info){
 		$queryhs->bindParam(':name1', $user);
 		$queryhs->execute();
 		$queryhs = $queryhs->fetch();
-		if(isset($queryhs["Score"])) {
-			echo '<p>Best score: '. $queryhs["Score"] .'</p>';
+		$queryhsf = $GLOBALS["conn"]->prepare("SELECT * FROM `fastpunch` WHERE `Name` = :name AND `Score` = (SELECT MAX(Score) FROM `fastpunch` WHERE Name = :name1)");
+		$queryhsf->bindParam(':name', $user);
+		$queryhsf->bindParam(':name1', $user);
+		$queryhsf->execute();
+		$queryhsf = $queryhsf->fetch();
+		if(isset($queryhs["Score"]) || isset($queryhsf["Score"])) {
+			if (isset($queryhs["Score"])) {
+				echo '<p id="Hp">Best HardPunch: '. $queryhs["Score"] .'</p>';
+			}
+			if (isset($queryhsf["Score"])) {
+				echo '<p id="Fp">Best FastPunch: '. $queryhs["Score"] .'</p>';
+			}
 		} else {
 			echo "<p>Best score: No score</p>";
 		}

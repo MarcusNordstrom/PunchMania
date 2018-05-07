@@ -14,6 +14,9 @@ a {
 h1, h2, h3, p, td, label {
 	color: var(--main-text-color) !important;
 }
+h2 {
+	font-size: 1.9em !important;
+}
 .pageScroll h2 {
 	cursor: pointer;
 }
@@ -42,7 +45,6 @@ h1, h2, h3, p, td, label {
 	margin-top: 3vh;
 }
 .info button {
-	width: 75vw;
 	color: var(--main-highlight-color);
 	margin: 2vh;
 	background-color: var(--main-text-color);
@@ -79,13 +81,13 @@ h1, h2, h3, p, td, label {
 .list table {
 	margin-right: auto;
 	margin-left: auto;
-
 }
 .list tbody {
 	display: block;
 	width: inherit;
 	overflow-y: auto;
 	overflow-x: hidden;
+	-moz-appearance: menuimage;
 }
 .hs tbody {
 	height: 44vh;
@@ -100,15 +102,12 @@ h1, h2, h3, p, td, label {
 #hsF {
 	display: none;
 }
-::-webkit-scrollbar { 
-	display: none; 
+::-webkit-scrollbar {
+	display: none;
 }
 .pageScroll {
 	z-index: 100 !important;
 	display: none;
-}
-.pageScroll button {
-
 }
 @media screen and (max-width: 1024px) {
 	.header {
@@ -131,12 +130,28 @@ h1, h2, h3, p, td, label {
 	}
 	.info img {
 		display: block;
+		z-index: -1;
+		margin: 0;
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+		opacity: 0.5;
+    filter: alpha(opacity=50);
 	}
 	.pageScroll {
-		position: fixed;
 		display: block;
+	}
+	.uparrow {
+		position: fixed;
 		top: 80%;
-		left: 50%;
-		right: 50%;
+		left: 90%;
+		z-index: 100 !important;
+	}
+	.downarrow {
+		position: fixed;
+		top: 90%;
+		left: 90%;
+		z-index: 100 !important;
 	}
 }
