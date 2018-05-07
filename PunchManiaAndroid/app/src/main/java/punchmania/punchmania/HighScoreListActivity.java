@@ -53,7 +53,7 @@ public class HighScoreListActivity extends AppCompatActivity {
                         Log.i("Received y:", HighScoreDetails.get(1).toString());
                         Log.i("Received z:", HighScoreDetails.get(2).toString());
                         printed = true;
-                        Intent intent = new Intent(HighScoreListActivity.this, GLES20Activity.class);
+                        Intent intent = new Intent(HighScoreListActivity.this, OpenGLES20Activity.class);
                         startActivity(intent);
                     }
                 }

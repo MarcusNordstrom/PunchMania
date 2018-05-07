@@ -44,6 +44,8 @@ public class SearchActivity extends AppCompatActivity {
 
                 PlayerHighScoreHard.add(MainActivity.getListPlayerHard().getUser(i).getUser() + "   " + MainActivity.getListPlayerHard().getUser(i).getScore() + "\n");
             }
+
+
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
 
             searchListViewHard.setAdapter(adapter);
