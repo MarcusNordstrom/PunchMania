@@ -174,6 +174,7 @@ function getInfo($info){
 			$result = $query->fetch();
 			if (password_verify($_POST["pw"], $result["PW"])) {
 				$_SESSION["uname"] = $result["Uname"];
+        login($result["Uname"]);
 				redirect("index.php");
 			} else {
 				redirect("index.php?site=login&error=1");
@@ -181,6 +182,8 @@ function getInfo($info){
 		}
 		break;
 		case "logout":
+    setcookie("uuid", "", time() - 3600);
+    unset ($_SESSION['uname']);
 		session_destroy();
 		redirect("index.php");
 		break;
@@ -226,6 +229,7 @@ function getInfo($info){
 			$ins->bindParam(':hash', $hashpw);
 			$ins->execute();
 			$_SESSION["uname"] = $_POST["uname"];
+      login($_POST["uname"]);
 			redirect("index.php");
 		}
 		break;
@@ -327,15 +331,46 @@ function getQueue($queue) {
 function tableStart() {
 	echo "<table><tbody>";
 }
-
 function tableEnd() {
 	echo '</tbody></table>';
 }
-
 function redirect($extra) {
 	$host  = $_SERVER['HTTP_HOST'];
 	$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 	header("Location: https://$host$uri/$extra");
+}
+function generateUUID($length = 25){
+  $char = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $charlength = strlen($char);
+  $randstr = '';
+  for ($i = 0; $i < $length; $i++) {
+    $randstr .= $char[rand(0, $charlength - 1)];
+  }
+  return $randstr;
+}
+function login($uname) {
+  $uuid = generateUUID();
+  $ins = $GLOBALS["conn"]->prepare("INSERT INTO `loggedin`(`Uname`, `UUID`) VALUES (:uname, :uuid)");
+  $ins->bindParam(":uname", $uname);
+  $ins->bindParam(":uuid", $uuid);
+  $ins->execute();
+  setcookie("uuid", $uuid);
+}
+function loggedIn() {
+  if (isset($_SESSION["uname"])) {
+    return true;
+  } else if (isset($_COOKIE["uuid"])) {
+    setSession($_COOKIE["uuid"]);
+    return true;
+  }
+  return false;
+}
+function setSession($uuid) {
+  $sel = $GLOBALS["conn"]->prepare("SELECT * FROM `loggedin` WHERE `UUID` = :uuid");
+  $sel->bindParam(":uuid", $uuid);
+  $sel->execute();
+  $sel = $sel->fetchAll();
+  $_SESSION["uname"] = $sel["Uname"];
 }
 if (isset($_GET["js"])) {
 	switch ($_GET["js"]) {
@@ -411,7 +446,7 @@ if (isset($_GET["js"])) {
 		tableEnd();
 		break;
 		case "info":
-		if (isset($_SESSION["uname"])) {
+		if (loggedIn()) {
 			echo '<h3>Welcome '.$_SESSION["uname"].'</h3>';
 			getQplace();
 			echo '<a href="index.php?site=logout"><button class="btn">Logout</button></a>';
