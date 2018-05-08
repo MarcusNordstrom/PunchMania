@@ -44,6 +44,7 @@ function templateBody($info, $highscore, $queue) {
 	<div class="row info">
 	<div class="col-lg info">
 	<h2 class="title"><a href="index.php">PunchMania</a></h2>';
+	echo '<img src="images/logo512.png" class="bgImg">';
 	getInfo($info);
 	echo '</div>
 	</div>
@@ -61,6 +62,7 @@ function getHSList($name) {
 		echo '">Fast</button><button class="btn" onclick="';
 		echo "$('#hsF').css('display', 'none');$('#hs').css('display', 'block');$('.hs .hsh2').text('HardPunch');";
 		echo '">Hard</button>';
+		echo '<img src="images/hs512.png" class="bgImg">';
 		echo '<div id="hs"></div>
 		<script type="text/javascript">
 		setInterval(function(){
@@ -101,6 +103,7 @@ function getHSList($name) {
 		echo '">Fast</button><button class="btn" onclick="';
 		echo "$('#hsF').css('display', 'none');$('#hs').css('display', 'block');$('.hs .hsh2').text('HardPunch');";
 		echo '">Hard</button>';
+		echo '<img src="images/hs512.png" class="bgImg">';
 		echo '<div id="hs"></div>
 		<script type="text/javascript">
 		setInterval(function(){
@@ -302,6 +305,7 @@ function getQueue($queue) {
 	if ($queue == null) {
 		echo '<div class="col-lg q">';
 		echo '<h2 class="title"><a href="index.php">PunchMania</a></h2>';
+		echo '<img src="images/q512.png" class="bgImg">';
 		echo '<div id="q"></div>
 		<script type="text/javascript">
 		setInterval(function(){
@@ -415,7 +419,6 @@ if (isset($_GET["js"])) {
 			echo '<a href="index.php?site=login"><button class="btn">Login</button></a>
 			<a href="index.php?site=register"><button class="btn">Register</button></a>';
 		}
-		echo '<img src="images/logo512.png">';
 		break;
 		case 'line':
 		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
