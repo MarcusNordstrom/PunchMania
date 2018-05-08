@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.13";
+    private String ip = "192.168.1.20";
     private int port = 12346;
     public static boolean connected = false;
     private DataReader dataReader = new DataReader();
@@ -81,11 +81,6 @@ public class MainActivity extends AppCompatActivity {
                     send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
                     send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
-                    try {
-                        wait(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
                     startActivity(intent);

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#505050"
+    android:background="@drawable/hs2"
     tools:context=".SearchActivity"
     tools:layout_editor_absoluteY="81dp">
 
@@ -12,6 +12,7 @@
         android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/press_start_2p"
         android:text="USERNAME"
         android:textAllCaps="false"
@@ -65,7 +66,6 @@
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:background="#505050"
         app:layout_constraintBottom_toTopOf="@+id/twFastPunch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

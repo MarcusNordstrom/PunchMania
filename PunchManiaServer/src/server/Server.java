@@ -18,8 +18,6 @@ import common.Queue;
 import server.Server.Client.ClientHandler;
 
 public class Server {
-	public static final int ENABLE = 1;
-	public static final int DISABLE = 2;
 	public static final int IS_HIGHSCORE = 3;
 	public static final int QUEUE = 4;
 	public static final int HIGHSCORE = 5;
@@ -27,10 +25,10 @@ public class Server {
 	public static final int SEND_QUEUE = 8;
 	public static final int SEND_HARDPUNCH_HIGHSCORE = 7;
 	public static final int SEND_FASTPUNCH_HIGHSCORE = 9;
-	
-	public static final String FASTPUNCH_MODE = "HARD";
-	public static final String HARDPUNCH_MODE = "FAST";
-	
+
+	public static final String FASTPUNCH_MODE = "FAST";
+	public static final String HARDPUNCH_MODE = "HARD";
+
 
 	private Calculator cal = new Calculator(this);
 	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
@@ -63,8 +61,8 @@ public class Server {
 		start();
 	}
 
-	public boolean isSendByte(byte send) {
-		return is.sendByte(send);
+	public void isSendByte(byte send) {
+		is.sendByte(send);
 	}
 
 	TimerTask task = new TimerTask() {
@@ -74,23 +72,12 @@ public class Server {
 				sendQueue();
 				sendHardPunchHighscore();
 				sendFastPunchHighscore();
-				if(ms.queueSize() == 0) {
-					setSend(DISABLE);
-				}else {
-					setSend(ENABLE);
-				}
 			}
 		}
 	};
 
 	public void setSend(int i) {
 		switch(i) {
-		case 1:
-			isSendByte((byte)1);
-			break;
-		case 2:
-			isSendByte((byte)2);
-			break;
 		case 3:
 			isSendByte((byte)3);
 			break;
@@ -130,14 +117,8 @@ public class Server {
 	}
 
 	public void setScore(int score, String x, String y, String z) {
-		if(ms.queueSize() == 0) {
-			setSend(DISABLE);
-		}
-		else {
-			setSend(ENABLE);
-			newHs(score);
-			ms.setMySql(ms.popQueue(), score, x, y, z);
-		}
+		newHs(score);
+		ms.setMySql(ms.popQueue(), score, x, y, z);
 		client.clientMethods(SEND_HARDPUNCH_HIGHSCORE);
 	}
 
@@ -148,7 +129,6 @@ public class Server {
 	}
 
 	public void addQueue(String name) {
-		setSend(ENABLE);
 		queue.add(name);
 		ms.toQueue(name);
 	}
@@ -233,9 +213,6 @@ public class Server {
 							ui.print("User for queue received from: Client", 0);
 							String newtoqueue = (String) message.getPayload();
 							addQueue(newtoqueue);
-							if(ms.queueSize() == 0) {
-								setSend(DISABLE);
-							}
 							broadcastQueue();
 							break;
 
@@ -250,14 +227,16 @@ public class Server {
 							HighScoreList hslNameScore = (HighScoreList) message.getPayload(); 
 							sendXYZ(hslNameScore.getUser(0).getUser(), hslNameScore.getUser(0).getScore()); 
 							break;
-							
+
 						case 9:
 							ui.print("Game mode chosen", 0);
 							String mode = (String)message.getPayload();
 							if(mode.equals(FASTPUNCH_MODE)) {
 								isSendByte((byte)4);
+								System.out.println("FASTPUNCH");
 							} else if(mode.equals(HARDPUNCH_MODE)) {
 								isSendByte((byte)5);
+								System.out.println("HARDPUNCH");
 							} else {
 								System.err.println("Error, no mode equals: " + mode);
 							}
@@ -268,7 +247,7 @@ public class Server {
 							sendNameScoreFastPunch(nameFastPunch);
 							break;
 						} 
-						
+
 
 					} catch (IOException | ClassNotFoundException e) {
 						try {
@@ -314,9 +293,6 @@ public class Server {
 				try {
 					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getAllScore();
-					if(ms.queueSize() == 0) {
-						setSend(DISABLE);
-					}
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST_HARDPUNCH));
 					oos.reset();
 					oos.flush();
@@ -329,9 +305,6 @@ public class Server {
 				try {
 					ui.print("Sending FastPunchHighscore list to client", 0);
 					hsList = ms.getAllScoreFastPunch();
-					if(ms.queueSize() == 0) {
-						setSend(DISABLE);
-					}
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST_FASTPUNCH));
 					oos.reset();
 					oos.flush();
@@ -370,7 +343,7 @@ public class Server {
 				try { 
 					oos.writeObject(new Message(ms.getXYZ(name, score), Message.SERVER_SEND_HSDETAILS)); 
 					oos.reset(); 
-					oos.flush(); 
+					oos.flush();
 				} catch (IOException e) { 
 					e.printStackTrace(); 
 				} 
@@ -404,6 +377,10 @@ public class Server {
 		private DataOutputStream dos;
 		private DataInputStream dis;
 		private ISHandler ish;
+		private String mode = "";
+		private String hard = "HARD";
+		private String fast = "FAST";
+		private boolean listening;
 
 		public IS(ServerSocket serverSocketIs) {
 			new ConnectionIs().start();
@@ -418,6 +395,14 @@ public class Server {
 			if (dos != null) {
 				try {
 					dos.writeByte(send);
+					dos.flush();
+					if(send == 5) {
+						mode = hard;
+						listening = true;
+					}else if (send == 4){
+						mode = fast;
+						listening = true;
+					}
 					return true;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -428,14 +413,11 @@ public class Server {
 		}
 
 		public class ISHandler implements Runnable {
-
 			public ISHandler(Socket socket) {
 				try {
 					dis = new DataInputStream(socket.getInputStream());
 					dos = new DataOutputStream(socket.getOutputStream());
-					if(ms.queueSize() == 0) {
-						setSend(DISABLE);
-					}
+
 
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -443,20 +425,47 @@ public class Server {
 			}
 
 			public void run() {
+				System.out.println("run started");
 				boolean connected = true;
 				while (connected) {
-					byte[] string = new byte[1000];
 					try {
-						dis.readFully(string);
-						String str = new String(string);
-						int score = cal.calculateScore(str);
-						ui.print("New score: " + score, 0);
-					} catch (IOException e) {
-						connected = false;
+						Thread.sleep(10);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					if(mode.equals("HARD")) {
+						while(listening) {
+							byte[] string = new byte[900];
+							try {
+								dis.readFully(string);
+								String str = new String(string);
+								int values = cal.calculateScore(str);
+								ui.print("New score: " + values, 0);
+								listening = false;
+							} catch (IOException e) {
+								connected = false;
+							}
+						}
+					} else if(mode.equals("FAST")) {
+						while(listening) {
+							System.out.println("fast");
+							byte[] hit = new byte[2];
+							try {
+								dis.readFully(hit);
+								String str = new String(hit);
+								System.out.println(str);
+								int i = Integer.parseInt(str);
+								ms.setFastPunch(ms.popQueue(), i);
+								listening = false;
+							} catch (IOException e) {
+								connected = false;
+							}
+						}
 					}
 				}
 			}
 		}
+
 
 		private class ConnectionIs extends Thread {
 

@@ -119,7 +119,6 @@ public class ServerUI extends JPanel {
 
 		case "addQ":
 			addQ(cmd);
-			server.setSend(Server.ENABLE);
 			server.setSend(Server.QUEUE);
 			break;
 
@@ -131,7 +130,6 @@ public class ServerUI extends JPanel {
 		case "removeQ":
 			removeQ(cmd);
 			if(server.ms.queueSize() == 0) {
-				server.setSend(Server.DISABLE);
 			}
 			server.setSend(Server.QUEUE);
 			break;
@@ -143,7 +141,6 @@ public class ServerUI extends JPanel {
 		case "clearQ":
 			clearQ();
 			if(server.ms.queueSize() == 0) {
-				server.setSend(Server.DISABLE);
 			}
 			server.setSend(Server.QUEUE);
 			break;
@@ -159,15 +156,19 @@ public class ServerUI extends JPanel {
 			server.setSend(Server.HIGHSCORE);
 			break;
 
-		case "isEnable":
-			server.setSend(Server.ENABLE);
+		case "hard":
+			server.isSendByte((byte)5);
+			print("Hardpunchmode to IS", 0);
 			break;
 
-		case "isDisable":
-			server.setSend(Server.DISABLE);
+		case "fast":
+			server.isSendByte((byte)4);
+			print("Fastpunchmode to IS", 0);
 			break;
 
 		case "help":
+			print("fast/hard",0);
+			print("- sends byte to IS to chose game mode", 0);
 			print("print [string]", 0);
 			print("clearQ", 0);
 			print("- clears Q, deletes all users in Q", 0);
@@ -206,7 +207,7 @@ public class ServerUI extends JPanel {
 		}
 
 	}
-	
+
 	public void clearQ() {
 		server.ms.DeleteQueueList();
 	}
