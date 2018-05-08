@@ -413,8 +413,10 @@ public class Server {
 		}
 
 		public class ISHandler implements Runnable {
+			private Socket socket;
 			public ISHandler(Socket socket) {
 				try {
+					this.socket = socket;
 					dis = new DataInputStream(socket.getInputStream());
 					dos = new DataOutputStream(socket.getOutputStream());
 
@@ -427,6 +429,11 @@ public class Server {
 			public void run() {
 				System.out.println("run started");
 				boolean connected = true;
+				try {
+					dis = new DataInputStream(socket.getInputStream());
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
 				while (connected) {
 					try {
 						Thread.sleep(10);
