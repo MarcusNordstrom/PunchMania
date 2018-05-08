@@ -117,9 +117,9 @@ public class Server {
 	}
 
 	public void setScore(int score, String x, String y, String z) {
-			newHs(score);
-			ms.setMySql(ms.popQueue(), score, x, y, z);
-			client.clientMethods(SEND_HARDPUNCH_HIGHSCORE);
+		newHs(score);
+		ms.setMySql(ms.popQueue(), score, x, y, z);
+		client.clientMethods(SEND_HARDPUNCH_HIGHSCORE);
 	}
 
 	public void broadcastQueue() {
@@ -380,6 +380,7 @@ public class Server {
 		private String mode = "";
 		private String hard = "HARD";
 		private String fast = "FAST";
+		private boolean listening;
 
 		public IS(ServerSocket serverSocketIs) {
 			new ConnectionIs().start();
@@ -397,8 +398,10 @@ public class Server {
 					dos.flush();
 					if(send == 5) {
 						mode = hard;
+						listening = true;
 					}else if (send == 4){
 						mode = fast;
+						listening = true;
 					}
 					return true;
 				} catch (IOException e) {
@@ -414,7 +417,7 @@ public class Server {
 				try {
 					dis = new DataInputStream(socket.getInputStream());
 					dos = new DataOutputStream(socket.getOutputStream());
-					
+
 
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -431,28 +434,32 @@ public class Server {
 						e1.printStackTrace();
 					}
 					if(mode.equals("HARD")) {
-						System.out.println("hard");
-						byte[] string = new byte[1000];
-						try {
-							dis.readFully(string);
-							String str = new String(string);
-							int score = cal.calculateScore(str);
-							ui.print("New score: " + score, 0);
-						} catch (IOException e) {
-							connected = false;
+						while(listening) {
+							byte[] string = new byte[900];
+							try {
+								dis.readFully(string);
+								String str = new String(string);
+								int values = cal.calculateScore(str);
+								ui.print("New score: " + values, 0);
+								listening = false;
+							} catch (IOException e) {
+								connected = false;
+							}
 						}
-						
 					} else if(mode.equals("FAST")) {
-						System.out.println("fast");
-
-						byte[] string = new byte[1];
-						try {
-							dis.readFully(string);
-							System.out.println("fast done");
-							String str = new String(string);
-							System.out.println(str);
-						} catch (IOException e) {
-							connected = false;
+						while(listening) {
+							System.out.println("fast");
+							byte[] hit = new byte[2];
+							try {
+								dis.readFully(hit);
+								String str = new String(hit);
+								System.out.println(str);
+								int i = Integer.parseInt(str);
+								ms.setFastPunch(ms.popQueue(), i);
+								listening = false;
+							} catch (IOException e) {
+								connected = false;
+							}
 						}
 					}
 				}

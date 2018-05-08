@@ -292,11 +292,15 @@ void doHardPunch(){
     } else {
       counter = 0;
       hit_detected = false;
-      Serial.println(client.print(storage));
+      
+      byte ret[storage.length()];
+      storage.getBytes(ret, storage.length());
+      client.write(ret, 900);
       client.flush();
       Serial.println("Data sent");
       //client.write(buff, 2000);
       Serial.println(storage);
+      Serial.println(sizeof(ret));
       setLed(2);
       finished = true;
       storage = "";
@@ -326,8 +330,6 @@ void doFastPunch(){
         Serial.println("h:");
       }
       if(hit_detected){
-        
-        
         if(x * hitRegX < 0 || y * hitRegY < 0 || z * hitRegZ < 0){
           hit_detected = false;
           hitCount++;
@@ -335,15 +337,15 @@ void doFastPunch(){
       }
     }
   }else{
-    byte send = (byte)hitCount;
-    Serial.println(client.print(send));
+    
+    Serial.println(sizeof(hitCount));
+    client.print(hitCount);
+    Serial.println(hitCount);
     client.flush();
-    Serial.println(send);
     finished = true;
     hitCount = 0;
     startTime = 0;
     next_state = 0;
-    send = 0;
     setLed(2);
   }
 }
