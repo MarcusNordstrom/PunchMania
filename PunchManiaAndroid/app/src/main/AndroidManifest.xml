@@ -37,22 +37,23 @@
         </activity>
         <activity
             android:name=".QueueListActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".HighScoreListActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SearchActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".HighScoreDetails"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".HighScoreFast"
-            android:screenOrientation="portrait"/>
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HighScoreFast"
+            android:screenOrientation="portrait" />
         <activity android:name=".SelectMode" />
         <activity android:name=".OpenGLES20Activity" />
 
