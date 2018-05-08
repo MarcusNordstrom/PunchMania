@@ -266,7 +266,7 @@ function getQplace() {
 		} else {
 			echo '<button class="btn" onclick="';
 			echo "var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'https://ddwap.mah.se/ah7115/PunchMania/main.php?js=line', true);xmlhttp.send();";
-			echo '">Put me in line</button>';
+			echo '">Put me<br> in line</button>';
 		}
 	}
 }
@@ -341,8 +341,8 @@ if (isset($_GET["js"])) {
 	switch ($_GET["js"]) {
 		case "hs":
 		if (isset($_GET["user"])) {
-			$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist WHERE Name LIKE :name ORDER BY Score DESC LIMIT 100");
-			$name = $_GET["user"] . "%";
+			$query = $GLOBALS["conn"]->prepare("SELECT * FROM hslist WHERE Name = :name ORDER BY Score DESC LIMIT 100");
+			$name = $_GET["user"];
 			$query->bindParam(':name',  $name);
 			$query->execute();
 			$query = $query->fetchAll();
@@ -370,8 +370,8 @@ if (isset($_GET["js"])) {
 		break;
 		case "hsFast":
 		if (isset($_GET["user"])) {
-			$query = $GLOBALS["conn"]->prepare("SELECT * FROM fastpunch WHERE Name LIKE :name ORDER BY Score DESC LIMIT 100");
-			$name = $_GET["user"] . "%";
+			$query = $GLOBALS["conn"]->prepare("SELECT * FROM fastpunch WHERE Name = :name ORDER BY Score DESC LIMIT 100");
+			$name = $_GET["user"];
 			$query->bindParam(':name',  $name);
 			$query->execute();
 			$query = $query->fetchAll();
