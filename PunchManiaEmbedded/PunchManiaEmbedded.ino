@@ -12,7 +12,6 @@ int port = 12345;                     //Port for server
 IPAddress ip(192, 168, 1, 101);       //This device
 //Sensitivity
 int hitValue = 200;
-boolean enable;
 boolean finished = false;
 
 
@@ -57,12 +56,6 @@ void connect() {
     Serial.println("connected");
     client.print("");
     client.flush();
-    
-    if (enable) {
-      setLed(1);
-    } else {
-      setLed(2);
-    }
   } else {
     Serial.println("connection failed");
     setLed(3);
@@ -119,11 +112,6 @@ void highScoreBlink() {
     digitalWrite(red, LOW);
     delay(250);
   }
-  if (enable) {
-    setLed(1);
-  } else {
-    setLed(2);
-  }
 }
 
 void setup() {
@@ -161,7 +149,7 @@ void loop(){
   calibrate();
   while(true){
     adxl.readAccel(&x,&y,&z);
-    if(client.available()){
+    if(client.available() && !finished){
       byte recived = client.read();
       Serial.println("Client sent message");
       switch(recived){  
@@ -172,24 +160,20 @@ void loop(){
         case 5:
           Serial.println("Entering Hardpunch");
           next_state = 1;
-          enable = true;
           break;  
         //fastpunch
         case 4:
           Serial.println("Entering Fastpunch");
           next_state = 2;
-          enable = true;
           break;  
         //calibrate
         case 2: case 1:
           next_state = 0;
-          enable = false;
           break;
         //highscore
         case 3:
           highScoreBlink();
           next_state = 0;
-          enable = false;
           break;
       }
     }
@@ -270,7 +254,9 @@ void calibrate(){
 }
 
 void doHardPunch(){
+  calibrate();
   setLed(1);
+
   hitValue = 200;
   if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {
     setLed(2);
@@ -292,7 +278,8 @@ void doHardPunch(){
     } else {
       counter = 0;
       hit_detected = false;
-      
+      hitCount = 0;
+      startTime = 0;
       byte ret[storage.length()];
       storage.getBytes(ret, storage.length());
       client.write(ret, 900);
@@ -309,41 +296,45 @@ void doHardPunch(){
   }
 }
 
+int hitRegX, hitRegY, hitRegZ;
 void doFastPunch(){
+  adxl.readAccel(&x,&y,&z);
+  hitValue = 100;
   if(startTime == 0){
     startTime = millis();
   }
   unsigned long currentTime = millis();
 
-  int hitRegX, hitRegY, hitRegZ;
-  if(currentTime - startTime <= 8000){
+
+  if(currentTime - startTime <= 16000){
     if(currentTime - startTime <= 3000){
-      setLed(5);
       setLed(2);
     }else {
       setLed(1);
-      if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue)&&!hit_detected ) {
+      if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) && !hit_detected ){
         hit_detected = true;
         hitRegX = x;
         hitRegY = y;
         hitRegZ = z;
-        Serial.println("h:");
+        
       }
       if(hit_detected){
         if(x * hitRegX < 0 || y * hitRegY < 0 || z * hitRegZ < 0){
           hit_detected = false;
           hitCount++;
+          Serial.println("f:");
         }
       }
     }
   }else{
-    
+    storage = "";
     Serial.println(sizeof(hitCount));
     client.print(hitCount);
     Serial.println(hitCount);
     client.flush();
     finished = true;
     hitCount = 0;
+    
     startTime = 0;
     next_state = 0;
     setLed(2);
