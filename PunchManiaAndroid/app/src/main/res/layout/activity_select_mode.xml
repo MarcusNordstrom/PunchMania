@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#505050"
+
+
     tools:context=".SelectMode">
 
 
@@ -26,7 +28,7 @@
 
     <TextView
         android:id="@+id/txtPunchMania"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="27dp"
         android:layout_marginStart="27dp"
