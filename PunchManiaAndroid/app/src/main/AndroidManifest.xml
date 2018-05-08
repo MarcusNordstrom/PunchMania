@@ -10,9 +10,10 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
+
     <supports-gl-texture android:name="GL_OES_compressed_ETC1_RGB8_texture" />
     <supports-gl-texture android:name="GL_OES_compressed_paletted_texture" />
-    
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/punching"
@@ -52,8 +53,18 @@
             android:parentActivityName=".MainActivity" />
         <activity android:name=".HighScoreFast"
             android:screenOrientation="portrait"/>
-        <activity android:name=".SelectMode"></activity>
-        <activity android:name=".OpenGLES20Activity"></activity>
+        <activity android:name=".SelectMode" />
+        <activity android:name=".OpenGLES20Activity" />
+
+        <receiver android:name=".Widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
     </application>
 
 </manifest>

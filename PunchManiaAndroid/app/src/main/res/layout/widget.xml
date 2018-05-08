@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#09C"
+    android:padding="@dimen/widget_margin">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@android:color/black">
+
+        <android.support.design.widget.TabItem
+            android:id="@+id/QueueTab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Queue" />
+
+        <android.support.design.widget.TabItem
+            android:id="@+id/HSHardItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Highscores Hard punch" />
+
+        <android.support.design.widget.TabItem
+            android:id="@+id/HSFastItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Highscores fast punch" />
+    </android.support.design.widget.TabLayout>
+
+    <ListView
+        android:id="@+id/widgetList"
+        android:layout_width="match_parent"
+        android:layout_height="463dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tabLayout" />
+</RelativeLayout>
