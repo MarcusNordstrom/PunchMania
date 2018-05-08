@@ -21,10 +21,10 @@ public class Widget extends AppWidgetProvider {
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
-        setContentView(R.layout.highscorelist_layout);
+//        setContentView(R.layout.highscorelist_layout);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
-        listView = (ListView) findViewById(R.id.highScoreListView);
+//        listView = (ListView) findViewById(R.id.highScoreListView);
 
 
     }
