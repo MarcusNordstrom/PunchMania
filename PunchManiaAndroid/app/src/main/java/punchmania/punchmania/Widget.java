@@ -15,15 +15,16 @@ public class Widget extends AppWidgetProvider {
 
     private ListView listView;
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                         int appWidgetId) {
 
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
-
+        setContentView(R.layout.highscorelist_layout);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+        listView = (ListView) findViewById(R.id.highScoreListView);
 
 
     }
@@ -39,7 +40,6 @@ public class Widget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
-        //listView = (ListView) findViewById(R.id.widgetList);
     }
 
     @Override
