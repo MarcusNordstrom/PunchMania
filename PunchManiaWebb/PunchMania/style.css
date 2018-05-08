@@ -36,7 +36,7 @@ h2 {
 #info {
 	height: 15vh;
 }
-.info .title {
+.info .title, .hs .title, .q .title {
 	color: var(--main-highlight-color) !important;
 	line-height: 10vh;
 	display: none;
@@ -49,7 +49,7 @@ h2 {
 	margin: 2vh;
 	background-color: var(--main-text-color);
 }
-.info img {
+.bgImg {
 	width: 90vmin;
 	height: 90vmin;
 	margin: auto;
@@ -116,24 +116,42 @@ h2 {
 	.info {
 		height: 100vh;
 	}
-	.info .title {
+	.info .title, .hs .title, .q .title {
 		display: block;
 	}
 	.hs, .q {
 		height: 100vh;
 	}
 	.list tbody {
-		height: 75vh;
+		height: 70vh;
 	}
 	.info input {
 		width: 75vw;
 	}
-	.info img {
+	.bgImg {
 		display: block;
 		z-index: -1;
 		margin: 0;
-    position: absolute;
+	}
+	.info .bgImg {
+		position: absolute;
     top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+		opacity: 0.5;
+    filter: alpha(opacity=50);
+	}
+	.hs .bgImg {
+		position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+		opacity: 0.2;
+    filter: alpha(opacity=20);
+	}
+	.q .bgImg {
+		position: absolute;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 		opacity: 0.5;

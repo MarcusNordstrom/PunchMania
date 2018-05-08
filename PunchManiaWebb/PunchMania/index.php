@@ -22,6 +22,7 @@ require 'main.php';
   <link rel="apple-touch-icon" href="images/logo168.png" sizes="168x168" />
   <link rel="apple-touch-icon" href="images/logo96.png" sizes="96x06" />
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="#0A0A0A">
   <meta name="apple-mobile-web-app-title" content="PunchMania">
   <meta name="msapplication-TileImage" content="images/logo192.png">
