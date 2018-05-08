@@ -1,10 +1,14 @@
 package punchmania.punchmania;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+
+
 
 /**
  * Renders a 3D Cube using OpenGL ES 2.0.
@@ -33,14 +37,14 @@ public class Cube {
      * Vertex colors.
      */
     private static final float COLORS[] = {
-            0.0f, 1.0f, 1.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            0.0f, 1.0f, 1.0f, 1.0f,
+            0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.0f, 0.0f, 1.0f,
     };
 
 
@@ -97,6 +101,8 @@ public class Cube {
     private final int mPositionHandle;
     private final int mColorHandle;
     private final int mMVPMatrixHandle;
+    public float[] mModelMatrix;
+
 
     public Cube() {
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(VERTICES.length * 4);
@@ -125,6 +131,9 @@ public class Cube {
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         mColorHandle = GLES20.glGetAttribLocation(mProgram, "vColor");
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+        mModelMatrix = new float[16];
+
+        Matrix.setIdentityM(mModelMatrix,0);
     }
 
     /**
