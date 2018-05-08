@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#505050"
+    android:background="@drawable/log1"
+
+
     tools:context=".SelectMode">
 
 
@@ -14,70 +16,49 @@
         android:layout_height="43dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="31dp"
+        android:layout_marginTop="76dp"
         android:fontFamily="@font/press_start_2p"
         android:text="SELECT GAME MODE"
         android:textAlignment="center"
         android:textColor="@android:color/holo_red_dark"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagePunch" />
-
-    <TextView
-        android:id="@+id/txtPunchMania"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="27dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="68dp"
-        android:fontFamily="@font/press_start_2p"
-        android:text="PUNCH MANIA"
-        android:textAlignment="center"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="30sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imagePunch"
-        android:layout_width="139dp"
-        android:layout_height="118dp"
-        android:layout_marginEnd="122dp"
-        android:layout_marginStart="123dp"
-        android:layout_marginTop="27dp"
-        android:src="@drawable/punching"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPunchMania" />
-
     <Button
         android:id="@+id/btnHardPunch"
-        android:layout_width="246dp"
-        android:layout_height="75dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="69dp"
         android:layout_marginStart="69dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="500dp"
         android:background="#676767"
         android:fontFamily="@font/press_start_2p"
         android:text="HARD PUNCH"
         android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/btnFastPunch"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtSelectMode" />
 
     <Button
         android:id="@+id/btnFastPunch"
-        android:layout_width="246dp"
-        android:layout_height="75dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="69dp"
         android:layout_marginEnd="69dp"
         android:layout_marginStart="69dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="8dp"
         android:background="#676767"
         android:fontFamily="@font/press_start_2p"
         android:text="FAST PUNCH"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnHardPunch" />
 </android.support.constraint.ConstraintLayout>
