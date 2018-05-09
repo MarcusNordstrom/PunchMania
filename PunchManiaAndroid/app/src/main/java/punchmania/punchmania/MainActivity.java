@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         return listHard;
     }
 
-    public static ArrayList getHighScoreDetails() {
+    public static ArrayList<ArrayList<Integer>> getHighScoreDetails() {
         return highScoreDetails;
     }
 

@@ -36,21 +36,21 @@ public class OpenGLES20Activity extends Activity {
         setContentView(mGLSurfaceView);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-
-        switch(event.getAction()){
-            case MotionEvent.ACTION_MOVE:
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
-                renderer.setAngle(renderer.getAngle()+((dx+dy)*TOUCH_SCALE_FACTOR));
-        }
-        mPreviousY = y;
-        mPreviousX = x;
-        return true;
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        float x = event.getX();
+//        float y = event.getY();
+//
+//        switch(event.getAction()){
+//            case MotionEvent.ACTION_MOVE:
+//                float dx = x - mPreviousX;
+//                float dy = y - mPreviousY;
+//                renderer.setAngle(renderer.getAngle()+((dx+dy)*TOUCH_SCALE_FACTOR));
+//        }
+//        mPreviousY = y;
+//        mPreviousX = x;
+//        return true;
+//    }
 
     protected void onResume(){
         super.onResume();

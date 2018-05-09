@@ -1,10 +1,10 @@
 package punchmania.punchmania;
 
-import android.nfc.Tag;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -31,36 +31,43 @@ public class PunchRenderer implements GLSurfaceView.Renderer {
     private final float[] mMVPMatrix;
     private final float[] mProjectionMatrix;
     private final float[] mViewMatrix;
-    private final float[] mRotationMatrix;
-    private final float[] mFinalMVPMatrix;
-    private final float[] mTranslationMatrix;
-    private Cube mCube;
-    private long mLastUpdateMillis;
-    private Random random;
-
     public volatile float angle;
     public volatile float tempX = 0;
     public volatile float tempY = 0;
     public volatile float tempZ = 0;
+    public int currentXIndex = 0, currentYIndex = 0, currentZIndex = 0;
+    private Cube mCube;
+    private long mLastUpdateMillis;
+    private Random random;
+    private float time = 0;
+    private ArrayList<ArrayList<Integer>> arrList;
+    private ArrayList<Integer> x, y, z;
 
-    public int currentPosIndex = 0;
-
+    long timeSinceStart;
 
 
     public PunchRenderer() {
         mMVPMatrix = new float[16];
         mProjectionMatrix = new float[16];
         mViewMatrix = new float[16];
-        mRotationMatrix = new float[16];
-        mFinalMVPMatrix = new float[16];
-        mTranslationMatrix = new float[16];
-        fetchArrayList();
-
         random = new Random();
+
+
+        arrList = MainActivity.getHighScoreDetails();
+        x = arrList.get(0);
+        y = arrList.get(1);
+        z = arrList.get(2);
+
+        Log.i("X Length", "" + x.size());
+        Log.i("Y Length", "" + y.size());
+        Log.i("Z Length", "" + z.size());
+
+        timeSinceStart = System.nanoTime();
 
         // Set the fixed camera position (View matrix).
         Matrix.setLookAtM(mViewMatrix, 0, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
     }
+
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
@@ -77,68 +84,57 @@ public class PunchRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glViewport(0, 0, width, height);
         // This projection matrix is applied to object coordinates in the onDrawFrame() method.
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1.0f, 1.0f, 3.0f, 7.0f);
+        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1.0f, 1.0f, 0.01f, 1000.0f);
     }
 
     public void onDrawFrame(GL10 unused) {
-//        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-//
-//        Matrix.setLookAtM(mViewMatrix,0,0,0,-3,0f,0f,0f,0f,1.0f,0.0f);
-//
-//        Matrix.multiplyMM(mMVPMatrix,0,mProjectionMatrix,0,mViewMatrix,0);
-//        Matrix.translateM(mCube.mModelMatrix,0,0.5f,0,0);
-//        Matrix.rotateM(mCube.mModelMatrix,0,-45f,0,0,-1.0f);
-//
-//        Matrix.multiplyMM(mMVPMatrix,0,mCube.mModelMatrix,0,mMVPMatrix,0);
-//        mCube.draw(mMVPMatrix);
-
-//        Matrix.setLookAtM(mViewMatrix,0,0,0,-6,0f,0f,0f,0f,1.0f,0.0f);
-//        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-//        Matrix.translateM(mTranslationMatrix,0,tempX,tempY,tempZ);
-//        Matrix.multiplyMM(mMVPMatrix,0,mTranslationMatrix,0,mMVPMatrix,0);
-//        // Draw cube.
-//        mCube.draw(mMVPMatrix);
 
         float[] scratch = new float[16];
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 6f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mCube.mModelMatrix, 0);
+        moveCube();
         mCube.draw(scratch);
 
     }
 
-    public volatile float mAngle;
+    public void moveCube() {
 
-    public ArrayList<ArrayList<Integer>> fetchArrayList(){
-        return MainActivity.getHighScoreDetails();
-    }
+        long time = System.nanoTime();
+        int delta_time = (int)((time - timeSinceStart)/1000000);
+        timeSinceStart = time;
 
-    public float getAngle(){
-        return mAngle;
-    }
-    public void setAngle(float angle){
-        mAngle = angle;
-    }
-
-    public static int loadShader(int type, String shaderCode) {
-
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
-
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-
-        return shader;
-    }
-    public static void checkGlError(String glOperation) {
-        int error;
-        while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-            Log.e("TAG", glOperation + ": glError " + error);
-            throw new RuntimeException(glOperation + ": glError " + error);
+        float currentX, currentY, currentZ;
+        if (currentXIndex == x.size() && currentYIndex == y.size() && currentZIndex == z.size()) {
+            currentXIndex = 0;
+            currentYIndex = 0;
+            currentZIndex = 0;
         }
-    }
+        if (currentXIndex < x.size()-1) {
+            tempX = (float) x.get(currentXIndex);
+            currentXIndex++;
+            currentX = tempX + (float)x.get(currentXIndex)*delta_time;
+        }else{
+            currentX = 0;
+        }
+        if (currentYIndex < y.size()-1) {
+            tempY = (float) y.get(currentYIndex);
+            currentYIndex++;
+            currentY = tempY + (float)y.get(currentYIndex)*delta_time;
+        }else{
+            currentY = 0;
+        }
+        if (currentZIndex < z.size()-1) {
+            tempZ = (float) z.get(currentZIndex);
+            currentZIndex++;
+            currentZ = tempZ + (float)z.get(currentZIndex)*delta_time;
+        }else{
+            currentZ = 0;
+        }
+        Matrix.setIdentityM(mCube.mModelMatrix, 0);
+        Matrix.translateM(mCube.mModelMatrix, 0, currentX/10000, currentY/10000, currentZ/10000);
 
+
+
+    }
 }

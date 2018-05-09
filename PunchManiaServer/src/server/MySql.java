@@ -280,6 +280,9 @@ public class MySql{
 		String x = "";
 		String y = "";
 		String z = "";
+		X = new ArrayList<Integer>();
+		Y = new ArrayList<Integer>();
+		Z = new ArrayList<Integer>();
 		XYZ = new ArrayList<ArrayList<Integer>>();
 		try {
 			PreparedStatement stmtx = myConn.prepareStatement("SELECT * FROM hslist WHERE Name=? AND Score =?");
@@ -322,6 +325,18 @@ public class MySql{
 		XYZ.add(X);
 		XYZ.add(Y);
 		XYZ.add(Z);
+		
+		System.out.println(X.toString());
+		System.out.println(Y.toString());
+		System.out.println(Z.toString());
+		
+		System.out.println(X.size());
+		System.out.println(Y.size());
+		System.out.println(Z.size());
+		
+		System.out.println(name + Score);
+		
+		
 		return XYZ;
 	}
 
