@@ -17,7 +17,7 @@ h1, h2, h3, p, td, label {
 h2 {
 	font-size: 1.9em !important;
 }
-.pageScroll h2 {
+.pageScroll h1 {
 	cursor: pointer;
 }
 .header {
@@ -142,6 +142,7 @@ h2 {
     filter: alpha(opacity=50);
 	}
 	.hs .bgImg {
+		width: auto;
 		position: absolute;
     top: 50%;
     left: 50%;
