@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Socket socket = new Socket();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.22";
+    private String ip = "83.248.13.179";
     private int port = 12346;
     public static boolean connected = false;
     private DataReader dataReader = new DataReader();
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         return listHard;
     }
 
-    public static ArrayList getHighScoreDetails() {
+    public static ArrayList<ArrayList<Integer>> getHighScoreDetails() {
         return highScoreDetails;
     }
 
