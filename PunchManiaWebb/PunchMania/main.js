@@ -78,9 +78,70 @@ function up() {
   freeze();
 }
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(function(reg) {}).catch(function(err) {
-      console.log("SW error: ", err)
-    });
+//This is the "Offline page" service worker
+
+//Add this below content to your HTML page, or add the js file to your page at the very top to register sercie worker
+if (navigator.serviceWorker.controller) {
+  console.log('active service worker found, no need to register')
+} else {
+  //Register the ServiceWorker
+  navigator.serviceWorker.register('sw_offline.js', {
+    scope: './'
+  }).then(function(reg) {
+    console.log('sw_offline.js has been registered for scope:' + reg.scope);
+  });
 }
+
+if (localStorage !== "undefined") {
+  if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
+    localStorage.setItem('uuid', getCookie('uuid'));
+    console.log("UUID pushed to localStorage");
+  } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
+    setCookie('uuid', localStorage.getItem('uuid'), 365);
+    console.log("UUID restored from localStorage");
+  }
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+// let deferredPrompt;
+// window.addEventListener('beforeinstallprompt', (e) => {
+//   // Prevent Chrome 67 and earlier from automatically showing the prompt
+//   e.preventDefault();
+//   // Stash the event so it can be triggered later.
+//   deferredPrompt = e;
+// });
+// document.addEventListener('click', (e) => {
+//   // Show the prompt
+//   deferredPrompt.prompt();
+//   // Wait for the user to respond to the prompt
+//   deferredPrompt.userChoice
+//     .then((choiceResult) => {
+//       if (choiceResult.outcome === 'accepted') {
+//         console.log('User accepted the A2HS prompt');
+//       } else {
+//         console.log('User dismissed the A2HS prompt');
+//       }
+//       deferredPrompt = null;
+//     });
+// });

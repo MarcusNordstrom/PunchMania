@@ -44,7 +44,7 @@ function templateBody($info, $highscore, $queue) {
 	<div class="row info">
 	<div class="col-lg info">
 	<h2 class="title"><a href="index.php">PunchMania</a></h2>';
-	echo '<img src="images/logo512.png" class="bgImg">';
+	echo '<img src="images/logo512.png" class="bgImg" alt="Boxingglove">';
 	getInfo($info);
 	echo '</div>
 	</div>
@@ -62,7 +62,7 @@ function getHSList($name) {
 		echo '">Fast</button><button class="btn" onclick="';
 		echo "$('#hsF').css('display', 'none');$('#hs').css('display', 'block');$('.hs .hsh2').text('HardPunch');";
 		echo '">Hard</button>';
-		echo '<img src="images/hs512.png" class="bgImg">';
+		echo '<img src="images/hs512.png" class="bgImg" alt="Trophy">';
 		echo '<div id="hs"></div>
 		<script type="text/javascript">
 		setInterval(function(){
@@ -103,7 +103,7 @@ function getHSList($name) {
 		echo '">Fast</button><button class="btn" onclick="';
 		echo "$('#hsF').css('display', 'none');$('#hs').css('display', 'block');$('.hs .hsh2').text('HardPunch');";
 		echo '">Hard</button>';
-		echo '<img src="images/hs512.png" class="bgImg">';
+		echo '<img src="images/hs512.png" class="bgImg" alt="Trophy">';
 		echo '<div id="hs"></div>
 		<script type="text/javascript">
 		setInterval(function(){
@@ -309,7 +309,7 @@ function getQueue($queue) {
 	if ($queue == null) {
 		echo '<div class="col-lg q">';
 		echo '<h2 class="title"><a href="index.php">PunchMania</a></h2>';
-		echo '<img src="images/q512.png" class="bgImg">';
+		echo '<img src="images/q512.png" class="bgImg" alt="Clock">';
 		echo '<div id="q"></div>
 		<script type="text/javascript">
 		setInterval(function(){
@@ -366,11 +366,12 @@ function loggedIn() {
   return false;
 }
 function setSession($uuid) {
-  $sel = $GLOBALS["conn"]->prepare("SELECT * FROM `loggedin` WHERE `UUID` = :uuid");
+  $sel = $GLOBALS["conn"]->prepare("SELECT `Uname` AS name FROM `loggedin` WHERE `UUID` = :uuid");
   $sel->bindParam(":uuid", $uuid);
   $sel->execute();
-  $sel = $sel->fetchAll();
-  $_SESSION["uname"] = $sel["Uname"];
+  $fetch = $sel->fetch();
+	var_dump($fetch);
+  $_SESSION["uname"] = $fetch["name"];
 }
 if (isset($_GET["js"])) {
 	switch ($_GET["js"]) {
