@@ -44,14 +44,9 @@ public class HighScoreListActivity extends AppCompatActivity {
                 Log.i("HighScoreList: ", "Requesting details for " + userToFetch.getUser(0).getUser());
                 MainActivity.staticSend(userToFetch, 7);
                 Toast.makeText(HighScoreListActivity.this, MainActivity.getHighScoresHard().getUser(position).getUser(), Toast.LENGTH_LONG).show();
-                ArrayList HighScoreDetails;
                 boolean printed = false;
                 while (!printed) {
                     if (MainActivity.getHighScoreDetails() != null && MainActivity.getHighScoreDetails().size() != 0) {
-                        HighScoreDetails = MainActivity.getHighScoreDetails();
-                        Log.i("Received x:", HighScoreDetails.get(0).toString());
-                        Log.i("Received y:", HighScoreDetails.get(1).toString());
-                        Log.i("Received z:", HighScoreDetails.get(2).toString());
                         printed = true;
                         Intent intent = new Intent(HighScoreListActivity.this, OpenGLES20Activity.class);
                         startActivity(intent);
@@ -91,7 +86,6 @@ public class HighScoreListActivity extends AppCompatActivity {
                                     populateListView();
                                 }
                             });
-
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
