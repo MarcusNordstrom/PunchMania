@@ -147,8 +147,13 @@ public class MainActivity extends AppCompatActivity {
         btnPunch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SelectMode.class);
-                startActivity(intent);
+                String password = enterNameEditText.getText().toString();
+                if(password.equals("1337")) {
+                    enterNameEditText.setText("");
+                    Intent intent = new Intent(MainActivity.this, SelectMode.class);
+                    startActivity(intent);
+                }
+
             }
         });
     }
