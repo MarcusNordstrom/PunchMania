@@ -440,22 +440,22 @@ public class Server {
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
-					if(mode.equals("HARD")) {
-						while(listening) {
+					
+					while(listening) {
+						if(mode.equals("HARD")) {
 							byte[] string = new byte[900];
 							try {
 								dis.readFully(string);
 								String str = new String(string);
+								System.out.println(str);
 								int values = cal.calculateScore(str);
 								ui.print("New score: " + values, 0);
 								listening = false;
 							} catch (IOException e) {
 								connected = false;
 							}
-						}
-					} else if(mode.equals("FAST")) {
-						while(listening) {
-							System.out.println("fast");
+
+						} else if(mode.equals("FAST")) {
 							byte[] hit = new byte[2];
 							try {
 								dis.readFully(hit);

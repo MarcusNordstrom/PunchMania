@@ -7,7 +7,7 @@
 
 //USERCONFIG
 //Ethernet
-IPAddress server(192, 168, 1, 20);    //Ip address for server
+IPAddress server(192,168,1,20);    //Ip address for server
 int port = 12345;                     //Port for server
 IPAddress ip(192, 168, 1, 101);       //This device
 //Sensitivity
@@ -31,6 +31,7 @@ boolean hit_detected = false;
 unsigned long startTime = 0;
 //amount of hits in fastpunch
 int hitCount = 0;
+int hit_detected_counter = 0;
 //countdown for fastpunch
 int countdown;
 
@@ -299,7 +300,7 @@ void doHardPunch(){
 int hitRegX, hitRegY, hitRegZ;
 void doFastPunch(){
   adxl.readAccel(&x,&y,&z);
-  hitValue = 100;
+  hitValue = 150;
   if(startTime == 0){
     startTime = millis();
   }
@@ -319,10 +320,16 @@ void doFastPunch(){
         
       }
       if(hit_detected){
+        if(hit_detected_counter < 20){
+          hit_detected_counter++;
+        }else{
         if(x * hitRegX < 0 || y * hitRegY < 0 || z * hitRegZ < 0){
+          hit_detected_counter = 0;
           hit_detected = false;
+          currentTime = currentTime - 100;
           hitCount++;
-          Serial.println("f:");
+          Serial.println(hitCount);
+          }
         }
       }
     }
