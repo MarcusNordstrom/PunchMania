@@ -370,7 +370,6 @@ function setSession($uuid) {
   $sel->bindParam(":uuid", $uuid);
   $sel->execute();
   $fetch = $sel->fetch();
-	var_dump($fetch);
   $_SESSION["uname"] = $fetch["name"];
 }
 if (isset($_GET["js"])) {
