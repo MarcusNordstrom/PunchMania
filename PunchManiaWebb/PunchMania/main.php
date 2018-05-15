@@ -151,6 +151,7 @@ function getInfo($info){
 					var state = this.responseText;
 					if(previousState != state) {
 						document.getElementById("info").innerHTML = state;
+						recentColor();
 					}
 				}
 			};
@@ -191,24 +192,6 @@ function getInfo($info){
     unset ($_SESSION['uname']);
 		session_destroy();
 		redirect("index.php?");
-		break;
-		case "line":
-		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
-		$query->bindParam(':name', $_SESSION["uname"]);
-		$query->execute();
-		$query = $query->fetch();
-		if($query["num"] == 0) {
-			$ins = $GLOBALS["conn"]->prepare("INSERT INTO queue (Name) VALUES (:name)");
-			$ins->bindParam(':name', $_SESSION["uname"]);
-			$ins->execute();
-			redirect("index.php?");
-			die();
-		} else {
-			$del = $GLOBALS["conn"]->prepare("DELETE FROM `queue` WHERE `Name` = :name");
-			$del->bindParam(':name', $_SESSION["uname"]);
-			$del->execute();
-			redirect("index.php?");
-		}
 		break;
 		case "register":
 		if (isset($_GET["error"])) {
@@ -262,6 +245,29 @@ function getInfo($info){
 		break;
 	}
 }
+function getLastPunch() {
+	$query = $GLOBALS["conn"]->prepare("SELECT fastpunch.Name, fastpunch.Score, fastpunch.Time AS ti, 'fp' FROM fastpunch UNION SELECT hslist.Name, hslist.Score, hslist.Time as ti, 'hp' FROM hslist ORDER by ti DESC LIMIT 1");
+	$query->execute();
+	$query = $query->fetch();
+	if ($query["fp"] == "fp") {
+		echo "<p class='recent' id='recentText'>" .$query["Name"] . " hit " . $query["Score"] . " in FastPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+		echo "<p class='hidden' id='recent'>". $query["ti"] ."</p>";
+	} elseif ($query["fp"] == "hp") {
+		echo "<p class='recent'>" .$query["Name"] . " hit " . $query["Score"] . " in HardPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+		echo "<p class='hidden' id='recent'>". $query["ti"] ."</p>";
+	}
+}
+function getLastPunchTime($time) {
+	$LastPunchTime = strtotime($time);
+	$CurrentTime = time();
+	$diffTime = $CurrentTime - $LastPunchTime;
+	$hour = floor($diffTime/3600);
+	$diffTime %= 3600;
+	$minute = floor($diffTime/60);
+	$second = intval($diffTime%60);
+	return $hour . ":" . $minute . ":" . $second;
+}
+
 function getQplace() {
 	if (isset($_SESSION["uname"])) {
 		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
@@ -454,13 +460,14 @@ if (isset($_GET["js"])) {
 		break;
 		case "info":
 		if (loggedIn()) {
-			echo '<h3>Welcome '.$_SESSION["uname"].'</h3>';
+			echo '<h3>Welcome <a href="index.php?site=user&user='.$_SESSION["uname"].'">'.$_SESSION["uname"].'</a></h3>';
 			getQplace();
 			echo '<a href="index.php?site=logout"><button class="btn">Logout</button></a>';
 		} else {
 			echo '<a href="index.php?site=login"><button class="btn">Login</button></a>
 			<a href="index.php?site=register"><button class="btn">Register</button></a>';
 		}
+		getLastPunch();
 		break;
 		case 'line':
 		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
