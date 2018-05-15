@@ -1,5 +1,17 @@
 function init() {
   $('.uparrow').hide();
+  if (localStorage !== "undefined") {
+    if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
+      localStorage.setItem('uuid', getCookie('uuid'));
+      console.log("UUID pushed to localStorage");
+    } else if (getCookie('uuid') == "NaN" && localStorage.getItem('uuid') != null) {
+      localStorage.removeItem('uuid');
+      console.log("UUID cleared from localStorage")
+    } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
+      setCookie('uuid', localStorage.getItem('uuid'), 365);
+      console.log("UUID restored from localStorage");
+    }
+  }
 }
 
 $('.uparrow').click(up());
@@ -92,19 +104,6 @@ if (navigator.serviceWorker.controller) {
   });
 }
 
-if (localStorage !== "undefined") {
-  if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
-    localStorage.setItem('uuid', getCookie('uuid'));
-    console.log("UUID pushed to localStorage");
-  } else if (getCookie('uuid') == "NaN" && localStorage.getItem('uuid') != null) {
-    localStorage.removeItem('uuid');
-    console.log("UUID cleared from localStorage")
-  } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
-    setCookie('uuid', localStorage.getItem('uuid'), 365);
-    console.log("UUID restored from localStorage");
-  }
-}
-
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
@@ -127,7 +126,6 @@ function setCookie(cname, cvalue, exdays) {
     var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-
 function recentColor() {
     var text = $('#recent').text();
     if (text != "") {
