@@ -67,6 +67,7 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColorLink="#505050"
+
         app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
     <TextView
@@ -80,7 +81,8 @@
         android:textColor="@android:color/holo_red_dark"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/punchMania"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/punchMania"
@@ -93,7 +95,8 @@
         android:textColor="@android:color/holo_red_dark"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/btnPunch"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnViewHSFast"

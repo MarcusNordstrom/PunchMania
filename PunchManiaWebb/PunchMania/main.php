@@ -151,6 +151,7 @@ function getInfo($info){
 					var state = this.responseText;
 					if(previousState != state) {
 						document.getElementById("info").innerHTML = state;
+						recentColor();
 					}
 				}
 			};
@@ -160,6 +161,9 @@ function getInfo($info){
 		</script>';
 		break;
 		case "login":
+		if (isset($_GET["error"])) {
+			echo "<p>Wrong username or password, try again</p>";
+		}
 		echo '<form action="index.php?site=login" method="POST">
 		<label>Username:</label><br>
 		<input type="text" name="uname" pattern=".{3,15}" required><br>
@@ -175,39 +179,23 @@ function getInfo($info){
 			if (password_verify($_POST["pw"], $result["PW"])) {
 				$_SESSION["uname"] = $result["Uname"];
         login($result["Uname"]);
-				redirect("index.php");
+				redirect("index.php?");
 			} else {
 				redirect("index.php?site=login&error=1");
 			}
 		}
 		break;
 		case "logout":
-    setcookie("uuid", "", time() - 3600);
+    if (isset($_COOKIE["uuid"])) {
+    	$_COOKIE["uuid"] = "NaN";
+    }
     unset ($_SESSION['uname']);
 		session_destroy();
-		redirect("index.php");
-		break;
-		case "line":
-		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
-		$query->bindParam(':name', $_SESSION["uname"]);
-		$query->execute();
-		$query = $query->fetch();
-		if($query["num"] == 0) {
-			$ins = $GLOBALS["conn"]->prepare("INSERT INTO queue (Name) VALUES (:name)");
-			$ins->bindParam(':name', $_SESSION["uname"]);
-			$ins->execute();
-			redirect("index.php");
-			die();
-		} else {
-			$del = $GLOBALS["conn"]->prepare("DELETE FROM `queue` WHERE `Name` = :name");
-			$del->bindParam(':name', $_SESSION["uname"]);
-			$del->execute();
-			redirect("index.php");
-		}
+		redirect("index.php?");
 		break;
 		case "register":
 		if (isset($_GET["error"])) {
-			echo "<p>Användarnamnet finns!</p>";
+			echo "<p>Username already exists!</p>";
 		}
 		echo '<form action="index.php?site=register" method="POST">
 		<label>Username:</label><br>
@@ -221,7 +209,7 @@ function getInfo($info){
 			$query->bindParam(':uname', $_POST["uname"]);
 			$query->execute();
 			$checkuname = $query->fetch();
-			if (!empty($checkuname["Uname"])) {
+			if ($checkuname != false) {
 				redirect("index.php?site=register&error=1");
 			}
 			$ins = $GLOBALS["conn"]->prepare("INSERT INTO user (Uname, PW) VALUES (:uname, :hash)");
@@ -230,7 +218,7 @@ function getInfo($info){
 			$ins->execute();
 			$_SESSION["uname"] = $_POST["uname"];
       login($_POST["uname"]);
-			redirect("index.php");
+			redirect("index.php?");
 		}
 		break;
 		case "user":
@@ -257,6 +245,29 @@ function getInfo($info){
 		break;
 	}
 }
+function getLastPunch() {
+	$query = $GLOBALS["conn"]->prepare("SELECT fastpunch.Name, fastpunch.Score, fastpunch.Time AS ti, 'fp' FROM fastpunch UNION SELECT hslist.Name, hslist.Score, hslist.Time as ti, 'hp' FROM hslist ORDER by ti DESC LIMIT 1");
+	$query->execute();
+	$query = $query->fetch();
+	if ($query["fp"] == "fp") {
+		echo "<p class='recent' id='recentText'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in FastPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+		echo "<p class='hidden' id='recent'>". $query["ti"] ."</p>";
+	} elseif ($query["fp"] == "hp") {
+		echo "<p class='recent' id='recentText'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in HardPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+		echo "<p class='hidden' id='recent'>". $query["ti"] ."</p>";
+	}
+}
+function getLastPunchTime($time) {
+	$LastPunchTime = strtotime($time);
+	$CurrentTime = time();
+	$diffTime = $CurrentTime - $LastPunchTime;
+	$hour = floor($diffTime/3600);
+	$diffTime %= 3600;
+	$minute = floor($diffTime/60);
+	$second = intval($diffTime%60);
+	return $hour . ":" . $minute . ":" . $second;
+}
+
 function getQplace() {
 	if (isset($_SESSION["uname"])) {
 		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
@@ -337,7 +348,9 @@ function tableEnd() {
 function redirect($extra) {
 	$host  = $_SERVER['HTTP_HOST'];
 	$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+	$extra .= "&token=" . generateUUID(6);
 	header("Location: https://$host$uri/$extra");
+	exit();
 }
 function generateUUID($length = 25){
   $char = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -370,7 +383,6 @@ function setSession($uuid) {
   $sel->bindParam(":uuid", $uuid);
   $sel->execute();
   $fetch = $sel->fetch();
-	var_dump($fetch);
   $_SESSION["uname"] = $fetch["name"];
 }
 if (isset($_GET["js"])) {
@@ -448,13 +460,14 @@ if (isset($_GET["js"])) {
 		break;
 		case "info":
 		if (loggedIn()) {
-			echo '<h3>Welcome '.$_SESSION["uname"].'</h3>';
+			echo '<h3>Welcome <a href="index.php?site=user&user='.$_SESSION["uname"].'">'.$_SESSION["uname"].'</a></h3>';
 			getQplace();
 			echo '<a href="index.php?site=logout"><button class="btn">Logout</button></a>';
 		} else {
 			echo '<a href="index.php?site=login"><button class="btn">Login</button></a>
 			<a href="index.php?site=register"><button class="btn">Register</button></a>';
 		}
+		getLastPunch();
 		break;
 		case 'line':
 		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");

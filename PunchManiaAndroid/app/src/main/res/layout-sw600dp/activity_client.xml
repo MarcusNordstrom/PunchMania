@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:background="#404040"
     tools:context=".client"
     tools:layout_editor_absoluteY="81dp">
@@ -86,7 +87,8 @@
         android:textColor="@android:color/holo_red_dark"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/punchMania"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/punchMania"
@@ -99,7 +101,8 @@
         android:textColor="@android:color/holo_red_dark"
         android:textSize="45sp"
         app:layout_constraintBottom_toTopOf="@+id/btnPunch"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnViewHSFast"

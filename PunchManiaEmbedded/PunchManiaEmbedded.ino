@@ -55,8 +55,6 @@ void connect() {
   int status = 100;
   if (status = client.connect(server, port)) {
     Serial.println("connected");
-    client.print("");
-    client.flush();
   } else {
     Serial.println("connection failed");
     setLed(3);
@@ -148,7 +146,7 @@ void setup() {
 void loop(){
   Serial.println("Entered loop");
   calibrate();
-  while(true){
+  while(client.connected()){
     adxl.readAccel(&x,&y,&z);
     if(client.available() && !finished){
       byte recived = client.read();
@@ -175,6 +173,7 @@ void loop(){
         case 3:
           highScoreBlink();
           next_state = 0;
+          setLed(2);
           break;
       }
     }
@@ -201,6 +200,7 @@ void loop(){
     }
     state = next_state;
   }
+  connect();
 }
 
 
