@@ -182,7 +182,9 @@ function getInfo($info){
 		}
 		break;
 		case "logout":
-    setcookie("uuid", "", time() - 3600);
+    if (isset($_COOKIE["uuid"])) {
+    	$_COOKIE["uuid"] = "NaN";
+    }
     unset ($_SESSION['uname']);
 		session_destroy();
 		redirect("index.php");

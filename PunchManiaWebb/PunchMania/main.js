@@ -96,6 +96,9 @@ if (localStorage !== "undefined") {
   if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
     localStorage.setItem('uuid', getCookie('uuid'));
     console.log("UUID pushed to localStorage");
+  } else if (getCookie('uuid') == "NaN" && localStorage.getItem('uuid') != null) {
+    localStorage.removeItem('uuid');
+    console.log("UUID cleared from localStorage")
   } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
     setCookie('uuid', localStorage.getItem('uuid'), 365);
     console.log("UUID restored from localStorage");
