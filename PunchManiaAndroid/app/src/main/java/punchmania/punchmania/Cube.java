@@ -6,8 +6,6 @@ import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-
 
 
 /**
@@ -133,7 +131,7 @@ public class Cube {
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
         mModelMatrix = new float[16];
 
-        Matrix.setIdentityM(mModelMatrix,0);
+        Matrix.setIdentityM(mModelMatrix, 0);
     }
 
     /**

@@ -1,7 +1,7 @@
 package punchmania.punchmania;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -30,7 +30,7 @@ public class HighScoreFast extends AppCompatActivity {
         for (int i = 0; i < MainActivity.getHighScoresFast().size(); i++) {
             convertedHighScoreList.add(i + 1 + ":   " + MainActivity.getHighScoresFast().getUser(i).getUser() + "    " + MainActivity.getHighScoresFast().getUser(i).getScore());
         }
-        if(!convertedHighScoreListOld.toString().equals(convertedHighScoreList.toString())) {
+        if (!convertedHighScoreListOld.toString().equals(convertedHighScoreList.toString())) {
             convertedHighScoreListOld = convertedHighScoreList;
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, convertedHighScoreList);
             listViewFast.setAdapter(adapter);

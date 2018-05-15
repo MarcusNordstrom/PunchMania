@@ -13,14 +13,6 @@ import android.util.Log;
 public class LocationTester extends Activity {
     public String ProviderName;
     LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    LocationProvider provider = lm.getProvider("gps");
-
-    @SuppressLint("MissingPermission")
-    public void getLocation() {
-        getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates("gps", 6000, 1, locationListener);
-    }
-
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -45,4 +37,11 @@ public class LocationTester extends Activity {
 
         }
     };
+    LocationProvider provider = lm.getProvider("gps");
+
+    @SuppressLint("MissingPermission")
+    public void getLocation() {
+        getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        lm.requestLocationUpdates("gps", 6000, 1, locationListener);
+    }
 }
