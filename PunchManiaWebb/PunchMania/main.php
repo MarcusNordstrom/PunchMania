@@ -160,6 +160,9 @@ function getInfo($info){
 		</script>';
 		break;
 		case "login":
+		if (isset($_GET["error"])) {
+			echo "<p>Wrong username or password, try again</p>";
+		}
 		echo '<form action="index.php?site=login" method="POST">
 		<label>Username:</label><br>
 		<input type="text" name="uname" pattern=".{3,15}" required><br>
@@ -175,7 +178,7 @@ function getInfo($info){
 			if (password_verify($_POST["pw"], $result["PW"])) {
 				$_SESSION["uname"] = $result["Uname"];
         login($result["Uname"]);
-				redirect("index.php");
+				redirect("index.php?");
 			} else {
 				redirect("index.php?site=login&error=1");
 			}
@@ -187,7 +190,7 @@ function getInfo($info){
     }
     unset ($_SESSION['uname']);
 		session_destroy();
-		redirect("index.php");
+		redirect("index.php?");
 		break;
 		case "line":
 		$query = $GLOBALS["conn"]->prepare("SELECT count(*) as num FROM queue WHERE ID < ( SELECT ID FROM queue WHERE Name = :name )+1");
@@ -198,18 +201,18 @@ function getInfo($info){
 			$ins = $GLOBALS["conn"]->prepare("INSERT INTO queue (Name) VALUES (:name)");
 			$ins->bindParam(':name', $_SESSION["uname"]);
 			$ins->execute();
-			redirect("index.php");
+			redirect("index.php?");
 			die();
 		} else {
 			$del = $GLOBALS["conn"]->prepare("DELETE FROM `queue` WHERE `Name` = :name");
 			$del->bindParam(':name', $_SESSION["uname"]);
 			$del->execute();
-			redirect("index.php");
+			redirect("index.php?");
 		}
 		break;
 		case "register":
 		if (isset($_GET["error"])) {
-			echo "<p>Användarnamnet finns!</p>";
+			echo "<p>Username already exists!</p>";
 		}
 		echo '<form action="index.php?site=register" method="POST">
 		<label>Username:</label><br>
@@ -223,7 +226,7 @@ function getInfo($info){
 			$query->bindParam(':uname', $_POST["uname"]);
 			$query->execute();
 			$checkuname = $query->fetch();
-			if (!empty($checkuname["Uname"])) {
+			if ($checkuname != false) {
 				redirect("index.php?site=register&error=1");
 			}
 			$ins = $GLOBALS["conn"]->prepare("INSERT INTO user (Uname, PW) VALUES (:uname, :hash)");
@@ -232,7 +235,7 @@ function getInfo($info){
 			$ins->execute();
 			$_SESSION["uname"] = $_POST["uname"];
       login($_POST["uname"]);
-			redirect("index.php");
+			redirect("index.php?");
 		}
 		break;
 		case "user":
@@ -339,7 +342,9 @@ function tableEnd() {
 function redirect($extra) {
 	$host  = $_SERVER['HTTP_HOST'];
 	$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+	$extra .= "&token=" . generateUUID(6);
 	header("Location: https://$host$uri/$extra");
+	exit();
 }
 function generateUUID($length = 25){
   $char = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
