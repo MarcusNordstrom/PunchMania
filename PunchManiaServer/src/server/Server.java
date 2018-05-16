@@ -84,10 +84,10 @@ public class Server {
 		case 4:
 			client.clientMethods(SEND_QUEUE);
 			break;
-		case 5:
+		case 7:
 			client.clientMethods(SEND_HARDPUNCH_HIGHSCORE);
 			break;
-		case 6:
+		case 9:
 			client.clientMethods(SEND_FASTPUNCH_HIGHSCORE);
 		}
 	}
@@ -102,11 +102,11 @@ public class Server {
 	}
 
 	public void sendHardPunchHighscore() {
-		setSend(HIGHSCORE);
+		setSend(SEND_HARDPUNCH_HIGHSCORE);
 	}
 
 	public void sendFastPunchHighscore() {
-		setSend(SEND_HARDPUNCH_HIGHSCORE);
+		setSend(SEND_FASTPUNCH_HIGHSCORE);
 	}
 
 	public void newHs(int score) {
@@ -210,26 +210,26 @@ public class Server {
 						System.out.println(message.getInstruction());
 						switch (message.getInstruction()) {
 						case 3:
-							ui.print("User for queue received from: Client", 0);
+							ui.print("new user to queue : " + message.getPayload(), 0);
 							String newtoqueue = (String) message.getPayload();
 							addQueue(newtoqueue);
 							broadcastQueue();
 							break;
 
 						case 5:
-							ui.print("User requested hs case 5", 0);
+							ui.print("HardPunchScore requested for :" + message.getPayload(), 0);
 							String name = (String) message.getPayload();
 							sendNameScore(name);
 							break;
 
 						case 7: 
-							ui.print("User requested hs case 7", 0); 
+							ui.print("User requested XYZ values", 0); 
 							HighScoreList hslNameScore = (HighScoreList) message.getPayload(); 
 							sendXYZ(hslNameScore.getUser(0).getUser(), hslNameScore.getUser(0).getScore()); 
 							break;
 
 						case 9:
-							ui.print("Game mode chosen", 0);
+							ui.print("Game mode chosen :" + message.getPayload(), 0);
 							String mode = (String)message.getPayload();
 							if(mode.equals(FASTPUNCH_MODE)) {
 								isSendByte((byte)4);
@@ -242,7 +242,7 @@ public class Server {
 							}
 							break;	
 						case 11:
-							ui.print("FastPunchScore requested", 0);
+							ui.print("FastPunchScore requested for :" + message.getPayload(), 0);
 							String nameFastPunch = (String) message.getPayload();
 							sendNameScoreFastPunch(nameFastPunch);
 							break;
@@ -258,7 +258,7 @@ public class Server {
 							System.out.println("Stream close");
 						}
 						connected = false;
-						ui.print("Client disconnected", 0);
+						ui.print("CLIENT DISCONNECTED", 0);
 						clientList.remove(this);
 						this.interrupt();
 					}
@@ -267,7 +267,6 @@ public class Server {
 
 			public void sendNameScore(String name) {
 				try {
-					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getUserScore(name);
 					oos.writeObject(new Message(hsList, Message.SERVER_SEND_PLAYERSCORES_HARDPUNCH));
 					oos.reset();
@@ -279,7 +278,6 @@ public class Server {
 
 			public void sendNameScoreFastPunch(String name) {
 				try {
-					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getFastPunch(name);
 					oos.writeObject(new Message(hsList, Message.SERVER_SEND_PLAYERSCORES_FASTPUNCH));
 					oos.reset();
@@ -291,7 +289,6 @@ public class Server {
 
 			public void sendHardPunchHighscore() {
 				try {
-					ui.print("Sending Highscore list to client", 0);
 					hsList = ms.getAllScore();
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST_HARDPUNCH));
 					oos.reset();
@@ -303,7 +300,6 @@ public class Server {
 
 			public void sendFastPunchHighScore() {
 				try {
-					ui.print("Sending FastPunchHighscore list to client", 0);
 					hsList = ms.getAllScoreFastPunch();
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST_FASTPUNCH));
 					oos.reset();
@@ -315,7 +311,6 @@ public class Server {
 
 			public void sendQueue() {
 				try {
-					ui.print("Sending queue to client", 0);
 					queue = ms.getQueue();
 					oos.writeObject(new Message(queue, Message.NEW_QUEUE));
 					oos.reset();
@@ -328,7 +323,6 @@ public class Server {
 
 			public void topHighscore() {
 				try {
-					ui.print("NEW HIGHSCORE!", 0);
 					String name = ms.getTop1Name();
 					oos.writeObject(new Message(name, Message.NEW_HS));
 					System.out.println("TOP USER SENT");
@@ -356,7 +350,6 @@ public class Server {
 			 * with socket recived as parameter. clienthandler run method is started.
 			 */
 			public void run() {
-
 				while (true) {
 					try {
 						ui.print("Client-port open on: " + socket.getLocalPort(), 0);
@@ -372,7 +365,7 @@ public class Server {
 
 	}
 
-	public class IS {
+	public class IS extends Thread{
 
 		private DataOutputStream dos;
 		private DataInputStream dis;
@@ -381,24 +374,22 @@ public class Server {
 		private String hard = "HARD";
 		private String fast = "FAST";
 		private boolean listening;
-		private Socket isSocket;
+		private Socket isSocket; 
 
 		public IS(ServerSocket serverSocketIs) {
 			new ConnectionIs().start();
 		}
 		
-		public void reconnect() {
-			new ConnectionIs().start();
-		}
-
+		public void reconnect() { 
+			new ConnectionIs().start(); 
+		} 
 		public void newHandler(Socket socket) {
-			isSocket = socket;
+			isSocket = socket; 
 			ish = new ISHandler(socket);
 			ish.run();
 		}
 
 		public boolean sendByte(byte send) {
-			
 			if (dos != null) {
 				try {
 					dos = new DataOutputStream(isSocket.getOutputStream());
@@ -413,17 +404,6 @@ public class Server {
 					}
 					return true;
 				} catch (IOException e) {
-					try {
-						this.finalize();
-					} catch (Throwable e1) {
-						e1.printStackTrace();
-					}
-					e.printStackTrace();
-					try {
-						dos.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
 					reconnect();
 					return false;
 				}
@@ -433,16 +413,25 @@ public class Server {
 
 		public class ISHandler implements Runnable {
 			private Socket socket;
+			private Timer timer1 = new Timer();
+
 			public ISHandler(Socket socket) {
 				try {
 					this.socket = socket;
 					dis = new DataInputStream(socket.getInputStream());
 					dos = new DataOutputStream(socket.getOutputStream());
-
-
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+			TimerTask task1 = new TimerTask() {
+				public void run() {
+					sendByte((byte)1);
+				}
+			};
+			
+			public void start1() {
+				timer1.scheduleAtFixedRate(task1, 0, 300);
 			}
 
 			public void run() {
@@ -450,45 +439,63 @@ public class Server {
 				boolean connected = true;
 				try {
 					dis = new DataInputStream(socket.getInputStream());
+					
 				} catch (IOException e2) {
 					e2.printStackTrace();
 				}
+				start1();
 				while (connected) {
 					try {
 						Thread.sleep(10);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
-					
-					while(listening) {
-						if(mode.equals("HARD")) {
-							byte[] string = new byte[900];
-							try {
-								dis.readFully(string);
-								String str = new String(string);
-								System.out.println(str);
-								int values = cal.calculateScore(str);
-								ui.print("New score: " + values, 0);
-								listening = false;
-							} catch (IOException e) {
-								e.printStackTrace();
-								System.err.println("Test 1");
-								connected = false;
-								reconnect();
-							}
 
-						} else if(mode.equals("FAST")) {
-							byte[] hit = new byte[2];
+					while(listening) {
+						timer1.cancel();
+						if(mode.equals("HARD")) {
+							int size = 0;
 							try {
-								dis.readFully(hit);
-								String str = new String(hit);
-								System.out.println(str);
-								int i = Integer.parseInt(str);
-								ms.setFastPunch(ms.popQueue(), i);
-								listening = false;
-							} catch (IOException e) {
-								connected = false;
-								reconnect();
+								size = dis.available();
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+							if(size > 0) {
+
+								byte[]string = new byte[size];
+								try {
+									dis.readFully(string);
+									String str = new String(string);
+									System.out.println(str);
+									int values = cal.calculateScore(str);
+									ui.print("New score: " + values, 0);
+									listening = false;
+								} catch (IOException e) {
+									reconnect(); 
+									connected = false;
+								}
+							}
+						} else if(mode.equals("FAST")) {
+							timer1.cancel();
+							int size = 0;
+							try {
+								size = dis.available();
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+							if(size > 0) {
+								byte[] hit = new byte[size];
+								try {
+									dis.readFully(hit);
+									String str = new String(hit);
+									System.out.println(str);
+									int i = Integer.parseInt(str);
+									ms.setFastPunch(ms.popQueue(), i);
+									listening = false;
+								} catch (IOException e) {
+									reconnect(); 
+									connected = false;
+								}
 							}
 						}
 					}
@@ -505,10 +512,9 @@ public class Server {
 			 */
 			public void run() {
 				ui.print("", 0);
-				ui.print("IS-port open on: " + serverSocketIs.getLocalPort(), 0);
 				while (true) {
 					try {
-						
+						ui.print("IS-port open on: " + serverSocketIs.getLocalPort(), 0);
 						Socket socketIs = serverSocketIs.accept();
 						ui.print("Embedded connected", 0);
 						newHandler(socketIs);
@@ -532,7 +538,7 @@ public class Server {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Server server = new Server(12345, 12346, serverui);
+		Server server = new Server(12345, 9192, serverui);
 	}
 
 }

@@ -30,7 +30,7 @@ public class HighScoreFast extends AppCompatActivity {
     }
 
     /**
-     * Creates an array list and coipies the content from the receiving list from server.
+     * Creates an array list and copies the content from the receiving list from server.
      * This array list is placed in a list adapter and shown in UI (activity_highscore_fast).
      */
     private void populateListView() {

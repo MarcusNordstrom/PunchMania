@@ -10,6 +10,7 @@ body {
 a {
 	color: inherit !important;
 	text-decoration: inherit !important;
+	cursor: pointer;
 }
 h1, h2, h3, td, label {
 	color: var(--main-text-color) !important;
@@ -20,11 +21,25 @@ p {
 h2 {
 	font-size: 1.9em !important;
 }
+button {
+	color: var(--main-highlight-color);
+	background-color: var(--main-text-color);
+	cursor: pointer;
+}
 .pageScroll h1 {
 	cursor: pointer;
 }
 .hidden {
 	display: none !important;
+}
+.modal {
+	background-color: var(--main-bg-color);
+}
+.modal p {
+	color: white;
+}
+#tos {
+	color: lightgray !important;
 }
 .header {
 	display: flex;
@@ -34,6 +49,9 @@ h2 {
 .header .title{
 	color: var(--main-highlight-color) !important;
 	line-height: 10vh;
+}
+.header .title a {
+	cursor: url("https://ddwap.mah.se/ah7115/punchmania/images/logo48.png") 0 0, auto;
 }
 .info {
 	text-align: center;
@@ -47,6 +65,9 @@ h2 {
 	line-height: 10vh;
 	display: none;
 }
+.info .title a, .hs .title a, .q .title a {
+	cursor: url("https://ddwap.mah.se/ah7115/punchmania/images/logo48.png") 0 0, auto;
+}
 .info h3 {
 	word-break: break-word;
 }
@@ -54,9 +75,7 @@ h2 {
 	margin-bottom: 2vh;
 }
 .info button {
-	color: var(--main-highlight-color);
 	margin: 2vh;
-	background-color: var(--main-text-color);
 }
 .bgImg {
 	width: 90vmin;
@@ -64,7 +83,7 @@ h2 {
 	margin: auto;
 	display: none;
 }
-.info input {
+.info input[type="text"], .info input[type="password"], .info input[type="submit"] {
 	width: 50vw;
 	color: red;
 	margin-bottom: 2vh;
@@ -75,11 +94,9 @@ h2 {
 	text-align: center;
 }
 .hs button {
-	color: var(--main-highlight-color);
 	margin-left: 1vw;
 	margin-right: 1vw;
 	margin-bottom: 1vh;
-	background-color: var(--main-text-color);
 }
 .list {
 	margin-top: 3vh;
@@ -134,7 +151,7 @@ h2 {
 	.list tbody {
 		height: 70vh;
 	}
-	.info input {
+	.info input[type="text"], .info input[type="password"], .info input[type="submit"] {
 		width: 75vw;
 	}
 	.bgImg {
