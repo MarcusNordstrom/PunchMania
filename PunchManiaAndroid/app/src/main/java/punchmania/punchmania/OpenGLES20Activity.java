@@ -5,31 +5,29 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.os.Bundle;
-import android.view.MotionEvent;
 
 public class OpenGLES20Activity extends Activity {
+    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     private GLSurfaceView mGLSurfaceView;
     private PunchRenderer renderer;
-    private final float TOUCH_SCALE_FACTOR = 180.0f/320;
     private float mPreviousX, mPreviousY;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         renderer = new PunchRenderer();
         mGLSurfaceView = new GLSurfaceView(this);
 
-        final ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
 
 
-        if(supportsEs2){
+        if (supportsEs2) {
             mGLSurfaceView.setEGLContextClientVersion(2);
             mGLSurfaceView.setRenderer(renderer);
-        }
-        else{
+        } else {
             return;
         }
 
@@ -52,11 +50,12 @@ public class OpenGLES20Activity extends Activity {
 //        return true;
 //    }
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         mGLSurfaceView.onResume();
     }
-    protected void onPause(){
+
+    protected void onPause() {
         super.onPause();
         mGLSurfaceView.onPause();
     }

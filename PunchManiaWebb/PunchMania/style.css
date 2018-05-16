@@ -11,14 +11,20 @@ a {
 	color: inherit !important;
 	text-decoration: inherit !important;
 }
-h1, h2, h3, p, td, label {
+h1, h2, h3, td, label {
 	color: var(--main-text-color) !important;
+}
+p {
+	color: var(--main-text-color);
 }
 h2 {
 	font-size: 1.9em !important;
 }
 .pageScroll h1 {
 	cursor: pointer;
+}
+.hidden {
+	display: none !important;
 }
 .header {
 	display: flex;
@@ -40,6 +46,9 @@ h2 {
 	color: var(--main-highlight-color) !important;
 	line-height: 10vh;
 	display: none;
+}
+.info h3 {
+	word-break: break-word;
 }
 .info .name {
 	margin-bottom: 2vh;

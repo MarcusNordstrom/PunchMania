@@ -35,15 +35,26 @@ public class PunchRenderer implements GLSurfaceView.Renderer {
     public volatile float tempX = 0;
     public volatile float tempY = 0;
     public volatile float tempZ = 0;
+
+    private float traveledX;
+    private float traveledY;
+    private float velocityX = 0;
+    private float velocityY = 0;
+    private float angleX;
+    private float angleY;
+    private float radius = 1.3f; // Radius of the punching bag, could also be arbitrary as long as it moves like we want it to
+    private float circumference = 2f * (float) Math.PI * radius;
+    private float time = 0.01f; // If we can't determine the exact time, we can just modify this until we get the result we want
+    private int rotationIndex = 0;
+
     public int currentXIndex = 0, currentYIndex = 0, currentZIndex = 0;
+    long timeSinceStart;
     private Cube mCube;
     private long mLastUpdateMillis;
     private Random random;
-    private float time = 0;
+    // private float time = 0;
     private ArrayList<ArrayList<Integer>> arrList;
     private ArrayList<Integer> x, y, z;
-
-    long timeSinceStart;
 
 
     public PunchRenderer() {
@@ -93,15 +104,32 @@ public class PunchRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mCube.mModelMatrix, 0);
-        moveCube();
+        rotateCube();
         mCube.draw(scratch);
 
+    }
+
+    public void rotateCube() {
+        if (rotationIndex < x.size() && rotationIndex < y.size()) {
+            velocityX += x.get(rotationIndex) * time;
+            traveledX = velocityX * time;
+            angleX = (traveledX / circumference) * 360f;
+
+            velocityY += y.get(rotationIndex) * time;
+            traveledY = velocityY * time;
+            angleY = (traveledY / circumference) * 360f; // Neither radians nor degrees, what is this even?
+
+            Matrix.rotateM(mCube.mModelMatrix, 0, angleX, 1f, 0f, 0f); // Rotate in x-axis
+            Matrix.rotateM(mCube.mModelMatrix, 0, angleY, 0f, 1f, 0f); // Rotate in y-axis
+
+            rotationIndex++;
+        }
     }
 
     public void moveCube() {
 
         long time = System.nanoTime();
-        int delta_time = (int)((time - timeSinceStart)/1000000);
+        int delta_time = (int) ((time - timeSinceStart) / 1000000);
         timeSinceStart = time;
 
         float currentX, currentY, currentZ;
@@ -110,31 +138,29 @@ public class PunchRenderer implements GLSurfaceView.Renderer {
             currentYIndex = 0;
             currentZIndex = 0;
         }
-        if (currentXIndex < x.size()-1) {
+        if (currentXIndex < x.size() - 1) {
             tempX = (float) x.get(currentXIndex);
             currentXIndex++;
-            currentX = tempX + (float)x.get(currentXIndex)*delta_time;
-        }else{
+            currentX = tempX + (float) x.get(currentXIndex) * delta_time;
+        } else {
             currentX = 0;
         }
-        if (currentYIndex < y.size()-1) {
+        if (currentYIndex < y.size() - 1) {
             tempY = (float) y.get(currentYIndex);
             currentYIndex++;
-            currentY = tempY + (float)y.get(currentYIndex)*delta_time;
-        }else{
+            currentY = tempY + (float) y.get(currentYIndex) * delta_time;
+        } else {
             currentY = 0;
         }
-        if (currentZIndex < z.size()-1) {
+        if (currentZIndex < z.size() - 1) {
             tempZ = (float) z.get(currentZIndex);
             currentZIndex++;
-            currentZ = tempZ + (float)z.get(currentZIndex)*delta_time;
-        }else{
+            currentZ = tempZ + (float) z.get(currentZIndex) * delta_time;
+        } else {
             currentZ = 0;
         }
         Matrix.setIdentityM(mCube.mModelMatrix, 0);
-        Matrix.translateM(mCube.mModelMatrix, 0, currentX/10000, currentY/10000, currentZ/10000);
-
-
+        Matrix.translateM(mCube.mModelMatrix, 0, currentX / 10000, currentY / 10000, currentZ / 10000);
 
     }
 }

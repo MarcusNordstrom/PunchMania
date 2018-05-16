@@ -38,7 +38,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void populateListViewHard() {
         ArrayList<String> PlayerHighScoreHard = new ArrayList<>();
-        if(MainActivity.getListPlayerHard().size() > 0) {
+        if (MainActivity.getListPlayerHard().size() > 0) {
             for (int i = 0; i < MainActivity.getListPlayerHard().size(); i++) {
                 Log.i(TAG, MainActivity.getListPlayerHard().getUser(i).getScore() + "");
 
@@ -59,12 +59,12 @@ public class SearchActivity extends AppCompatActivity {
 
         }
 
-        }
+    }
 
 
     private void populateListViewFast() {
         ArrayList<String> PlayerHighScoreFast = new ArrayList<>();
-        if(MainActivity.getListPlayerFast().size() > 0) {
+        if (MainActivity.getListPlayerFast().size() > 0) {
             for (int i = 0; i < MainActivity.getListPlayerFast().size(); i++) {
                 Log.i(TAG, MainActivity.getListPlayerFast().getUser(i).getScore() + "");
 
@@ -88,26 +88,26 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-                try {
-                    synchronized (this) {
-                        wait(1000);
-                        if (!isInterrupted())
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    populateListViewHard();
-                                    populateListViewFast();
-                                }
-                            });
+            try {
+                synchronized (this) {
+                    wait(1000);
+                    if (!isInterrupted())
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                populateListViewHard();
+                                populateListViewFast();
+                            }
+                        });
 
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-
     }
+
+}
 
 
 

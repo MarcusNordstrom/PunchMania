@@ -1,9 +1,11 @@
 package punchmania.punchmania;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class SelectMode extends AppCompatActivity {
 
@@ -23,6 +25,8 @@ public class SelectMode extends AppCompatActivity {
         btnHardPunch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 main.staticSend("HARD", GAMEMODE);    // staticSend eller send?
+                String message = "HARDPUNCH ACTIVATED";
+                Toast.makeText(SelectMode.this,  message , Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -30,7 +34,8 @@ public class SelectMode extends AppCompatActivity {
         btnFastPunch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 main.staticSend("FAST", GAMEMODE);
-
+                String message = "FASTPUNCH ACTIVATED";
+                Toast.makeText(SelectMode.this,  message , Toast.LENGTH_SHORT).show();
             }
         });
     }

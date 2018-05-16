@@ -13,7 +13,6 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -24,26 +23,6 @@ import common.Message;
 import common.Queue;
 
 public class MainActivity extends AppCompatActivity {
-    EditText enterNameEditText;
-    Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast, btnPunch;
-
-    private static Queue queue = new Queue();
-    private static HighScoreList listHard = new HighScoreList();
-    private static HighScoreList listPlayerHard = new HighScoreList();
-    private static HighScoreList listFast = new HighScoreList();
-    private static HighScoreList listPlayerFast = new HighScoreList();
-
-    private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
-    private Socket socket = new Socket();
-    private static ObjectOutputStream oos;
-    private static ObjectInputStream ois;
-    private String ip = "192.168.1.20";
-    private int port = 12346;
-    public static boolean connected = false;
-    private DataReader dataReader = new DataReader();
-    private static boolean dataReaderRunning = false;
-    private static long requestedHit = Long.MAX_VALUE;
-
     public static final int NEW_QUEUE = 1;
     public static final int SERVER_SEND_PLAYERSCORES_HARDPUNCH = 6;
     public static final int SERVER_SEND_PLAYERSCORES_FASTPUNCH = 12;
@@ -52,10 +31,56 @@ public class MainActivity extends AppCompatActivity {
     public static final int NEW_HIGHSCORELIST_FASTPUNCH = 10;
     public static final int CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH = 5;
     public static final int CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH = 11;
+    public static boolean connected = false;
+    private static Queue queue = new Queue();
+    private static HighScoreList listHard = new HighScoreList();
+    private static HighScoreList listPlayerHard = new HighScoreList();
+    private static HighScoreList listFast = new HighScoreList();
+    private static HighScoreList listPlayerFast = new HighScoreList();
+    private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
+    private static ObjectOutputStream oos;
+    private static ObjectInputStream ois;
+    private String ip = "10.2.20.204";
+    private int port = 9192;
+    private DataReader dataReader = new DataReader();
+    private static boolean dataReaderRunning = false;
+    private static long requestedHit = Long.MAX_VALUE;
 
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
+    }
+
+    EditText enterNameEditText;
+    Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast, btnPunch;
+    private Socket socket = new Socket();
+
+    public static Queue getQueue() {
+        return queue;
+    }
+
+    public static HighScoreList getHighScoresHard() {
+        return listHard;
+    }
+
+    public static ArrayList<ArrayList<Integer>> getHighScoreDetails() {
+        return highScoreDetails;
+    }
+
+    public static HighScoreList getListPlayerHard() {
+        return listPlayerHard;
+    }
+
+    public static HighScoreList getListPlayerFast() {
+        return listPlayerFast;
+    }
+
+    public static HighScoreList getHighScoresFast() {
+        return listFast;
+    }
+
+    public synchronized static void staticSend(Object arg1, int arg2) {
+        StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
     }
 
     @Override
@@ -148,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String password = enterNameEditText.getText().toString();
-                if(password.equals("1337")) {
+                if (password.equals("1337")) {
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SelectMode.class);
                     startActivity(intent);
@@ -162,37 +187,9 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static Queue getQueue() {
-        return queue;
-    }
-
-    public static HighScoreList getHighScoresHard() {
-        return listHard;
-    }
-
-    public static ArrayList<ArrayList<Integer>> getHighScoreDetails() {
-        return highScoreDetails;
-    }
-
-    public static HighScoreList getListPlayerHard() {
-        return listPlayerHard;
-    }
-
-    public static HighScoreList getListPlayerFast() {
-        return listPlayerFast;
-    }
-
-    public static HighScoreList getHighScoresFast() {
-        return listFast;
-    }
-
     public synchronized void send(Object arg1, int arg2) {
         DataSender dataSender = new DataSender(arg1, arg2);
         Log.i("instruktion", "skickar arg" + arg2);
-    }
-
-    public synchronized static void staticSend(Object arg1, int arg2) {
-        StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
     }
 
     public static class StaticDataSender extends Thread {
@@ -251,6 +248,10 @@ public class MainActivity extends AppCompatActivity {
 
     private class DataReader extends Thread {
 
+        public DataReader() {
+            Log.i(this.getName(), "DataReader initiated");
+        }
+
         public boolean retry() {
             while (!connected) {
                 System.err.print("Reconnecting in ");
@@ -282,10 +283,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(this.getName(), "404: Server not found :(");
                 return false;
             }
-        }
-
-        public DataReader() {
-            Log.i(this.getName(), "DataReader initiated");
         }
 
         public void run() {

@@ -275,7 +275,7 @@ public class ServerUI extends JPanel {
 		}
 	}
 
-	public void print(String text, int i) {
+	public synchronized void print(String text, int i) {
 		taCmdArea.setText(taCmdArea.getText() + text.substring(i) + "\n");
 	}
 

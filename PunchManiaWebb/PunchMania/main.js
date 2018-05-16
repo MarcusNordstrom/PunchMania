@@ -1,5 +1,17 @@
 function init() {
   $('.uparrow').hide();
+  if (localStorage !== "undefined") {
+    if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
+      localStorage.setItem('uuid', getCookie('uuid'));
+      console.log("UUID pushed to localStorage");
+    } else if (getCookie('uuid') == "NaN" && localStorage.getItem('uuid') != null) {
+      localStorage.removeItem('uuid');
+      console.log("UUID cleared from localStorage")
+    } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
+      setCookie('uuid', localStorage.getItem('uuid'), 365);
+      console.log("UUID restored from localStorage");
+    }
+  }
 }
 
 $('.uparrow').click(up());
@@ -92,16 +104,6 @@ if (navigator.serviceWorker.controller) {
   });
 }
 
-if (localStorage !== "undefined") {
-  if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
-    localStorage.setItem('uuid', getCookie('uuid'));
-    console.log("UUID pushed to localStorage");
-  } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
-    setCookie('uuid', localStorage.getItem('uuid'), 365);
-    console.log("UUID restored from localStorage");
-  }
-}
-
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
@@ -124,24 +126,19 @@ function setCookie(cname, cvalue, exdays) {
     var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-// let deferredPrompt;
-// window.addEventListener('beforeinstallprompt', (e) => {
-//   // Prevent Chrome 67 and earlier from automatically showing the prompt
-//   e.preventDefault();
-//   // Stash the event so it can be triggered later.
-//   deferredPrompt = e;
-// });
-// document.addEventListener('click', (e) => {
-//   // Show the prompt
-//   deferredPrompt.prompt();
-//   // Wait for the user to respond to the prompt
-//   deferredPrompt.userChoice
-//     .then((choiceResult) => {
-//       if (choiceResult.outcome === 'accepted') {
-//         console.log('User accepted the A2HS prompt');
-//       } else {
-//         console.log('User dismissed the A2HS prompt');
-//       }
-//       deferredPrompt = null;
-//     });
-// });
+function recentColor() {
+    var text = $('#recent').text();
+    if (text != "") {
+      var CurrentDate = Date.now()/1000.0;
+      var PunchDate = Date.parse(text)/1000.0;
+      var DateDiff = CurrentDate - PunchDate;
+      if(DateDiff < 60) {
+        var red = parseInt(DateDiff*4.25);
+        red = 255 - red;
+        if (red < 63) {
+          red = 63;
+        }
+        $('#recentText').css("color", "rgb("+ red +", 63, 63)");
+      }
+    }
+}
