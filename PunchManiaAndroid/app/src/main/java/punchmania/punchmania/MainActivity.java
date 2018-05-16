@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private static ObjectInputStream ois;
     private String ip = "192.168.1.20";
     private int port = 12346;
-    public static boolean connected = false;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
     private static long requestedHit = Long.MAX_VALUE;
@@ -55,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
     Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast, btnPunch;
     private Socket socket = new Socket();
-    private String ip = "83.248.13.179";
-    private int port = 12346;
-    private DataReader dataReader = new DataReader();
 
     public static Queue getQueue() {
         return queue;
