@@ -71,12 +71,16 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns highscore list receiving from input stream.
-     * @return highscore list HardPunch
+     * @return listHard
      */
     public static HighScoreList getHighScoresHard() {
         return listHard;
     }
 
+    /**
+     *
+     * @return
+     */
     public static ArrayList<ArrayList<Integer>> getHighScoreDetails() {
         return highScoreDetails;
     }
@@ -103,15 +107,6 @@ public class MainActivity extends AppCompatActivity {
      */
     public static HighScoreList getHighScoresFast() {
         return listFast;
-    }
-
-    /**
-     * petar eller anna skriver denne hehehe
-     * @param arg1
-     * @param arg2
-     */
-    public synchronized static void staticSend(Object arg1, int arg2) {
-        StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
     }
 
     /**
@@ -180,8 +175,9 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         /**
-         * This method starts antoher activity when Queue button is pushed.
+         * This method starts another activity when Queue button is pushed.
          */
         btnViewQueue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -189,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         /**
          * This method starts another activity when Highscore Hard button is pushed.
          */
@@ -198,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         /**
          * This method starts another activity when Highscore Fast button is pushed.
          */
@@ -208,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         /**
          * This method starts another activity when a password is entered in the text field and if you press the PunchMania icon.
          */
@@ -233,15 +232,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * anna petar skriv hehe
-     * @param arg1
-     * @param arg2
+     * Method is used when object should be send to server via the subclass DataSender.
+     * @param arg1 object we want to send
+     * @param arg2 instruction what kind of object we are sending
      */
     public synchronized void send(Object arg1, int arg2) {
         DataSender dataSender = new DataSender(arg1, arg2);
         Log.i("instruktion", "skickar arg" + arg2);
     }
 
+    /**
+     * Method is used when object should be send to server via the subclass StaticDataSender.
+     * @param arg1 object we want to send
+     * @param arg2 instruction what kind of object we are sending
+     */
+    public synchronized static void staticSend(Object arg1, int arg2) {
+        StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
+    }
+
+    /**
+     * Subclass sending a message containing an object and instruction to server.
+     */
     public static class StaticDataSender extends Thread {
         private Object send;
         private int instruction;
@@ -269,6 +280,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Subclass sending a message containing an object and instruction to server.
+     */
     public class DataSender extends Thread {
         private Object send;
         private int instruction;
@@ -296,11 +310,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Subclass receiving messages containing an object and instruction from server.
+     */
     private class DataReader extends Thread {
 
         public DataReader() {
             Log.i(this.getName(), "DataReader initiated");
         }
+
 
         public boolean retry() {
             while (!connected) {
