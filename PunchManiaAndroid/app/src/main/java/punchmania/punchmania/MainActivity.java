@@ -81,23 +81,43 @@ public class MainActivity extends AppCompatActivity {
         return highScoreDetails;
     }
 
+    /**
+     * Method returns the player list for the game mode Hardpunch
+     * @return listPlayerHard
+     */
     public static HighScoreList getListPlayerHard() {
         return listPlayerHard;
     }
 
+    /**
+     * method returns the player list for the game mode Fastpunch
+     * @return listPlayerFast
+     */
     public static HighScoreList getListPlayerFast() {
         return listPlayerFast;
     }
 
+    /**
+     * Method returns highscore list for the game mode FastPunch
+     * @return Highscore list FastPunch
+     */
     public static HighScoreList getHighScoresFast() {
         return listFast;
     }
 
+    /**
+     * petar eller anna skriver denne hehehe
+     * @param arg1
+     * @param arg2
+     */
     public synchronized static void staticSend(Object arg1, int arg2) {
         StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
     }
 
-    @Override
+    /**
+     * This method searches in the activity_client layout where all the widgets are defined.
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
@@ -111,9 +131,10 @@ public class MainActivity extends AppCompatActivity {
         btnPunch = (Button) findViewById(R.id.btnPunch);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
 
-
+        /**
+         * This method make sure that when the search button is pushed it start another activity.
+         */
         btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
 
@@ -130,9 +151,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        /**
+         * This method starts another activity with the enter key, just like when you press the Search button.
+         */
         enterNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     switch (keyCode) {
@@ -158,23 +180,27 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        /**
+         * This method starts antoher activity when Queue button is pushed.
+         */
         btnViewQueue.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, QueueListActivity.class);
                 startActivity(intent);
             }
         });
-
+        /**
+         * This method starts another activity when Highscore Hard button is pushed.
+         */
         btnViewHighScore.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, HighScoreListActivity.class);
                 startActivity(intent);
             }
         });
-
+        /**
+         * This method starts another activity when Highscore Fast button is pushed.
+         */
         btnViewHighScoreFast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,9 +208,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        /**
+         * This method starts another activity when a password is entered in the text field and if you press the PunchMania icon.
+         */
         btnPunch.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 String password = enterNameEditText.getText().toString();
                 if (password.equals("1337")) {
@@ -197,10 +224,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method displays a popup message given in the String message.
+     * @param message
+     */
     public void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * anna petar skriv hehe
+     * @param arg1
+     * @param arg2
+     */
     public synchronized void send(Object arg1, int arg2) {
         DataSender dataSender = new DataSender(arg1, arg2);
         Log.i("instruktion", "skickar arg" + arg2);
