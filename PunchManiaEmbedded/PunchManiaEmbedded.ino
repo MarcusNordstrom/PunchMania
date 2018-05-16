@@ -300,7 +300,7 @@ void doHardPunch(){
 int hitRegX, hitRegY, hitRegZ;
 void doFastPunch(){
   adxl.readAccel(&x,&y,&z);
-  hitValue = 150;
+  hitValue = 200;
   if(startTime == 0){
     startTime = millis();
   }

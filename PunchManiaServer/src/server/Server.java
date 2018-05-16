@@ -381,27 +381,19 @@ public class Server {
 		private String hard = "HARD";
 		private String fast = "FAST";
 		private boolean listening;
-		private Socket isSocket;
 
 		public IS(ServerSocket serverSocketIs) {
 			new ConnectionIs().start();
 		}
-		
-		public void reconnect() {
-			new ConnectionIs().start();
-		}
 
 		public void newHandler(Socket socket) {
-			isSocket = socket;
 			ish = new ISHandler(socket);
 			ish.run();
 		}
 
 		public boolean sendByte(byte send) {
-			
 			if (dos != null) {
 				try {
-					dos = new DataOutputStream(isSocket.getOutputStream());
 					dos.writeByte(send);
 					dos.flush();
 					if(send == 5) {
@@ -413,18 +405,7 @@ public class Server {
 					}
 					return true;
 				} catch (IOException e) {
-					try {
-						this.finalize();
-					} catch (Throwable e1) {
-						e1.printStackTrace();
-					}
 					e.printStackTrace();
-					try {
-						dos.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-					reconnect();
 					return false;
 				}
 			}
@@ -462,17 +443,9 @@ public class Server {
 						if(mode.equals("HARD")) {
 							int size = 0;
 							try {
-								dis.readFully(string);
-								String str = new String(string);
-								System.out.println(str);
-								int values = cal.calculateScore(str);
-								ui.print("New score: " + values, 0);
-								listening = false;
-							} catch (IOException e) {
-								e.printStackTrace();
-								System.err.println("Test 1");
-								connected = false;
-								reconnect();
+								size = dis.available();
+							} catch (IOException e1) {
+								e1.printStackTrace();
 							}
 							if(size > 0) {
 
@@ -491,15 +464,9 @@ public class Server {
 						} else if(mode.equals("FAST")) {
 							int size = 0;
 							try {
-								dis.readFully(hit);
-								String str = new String(hit);
-								System.out.println(str);
-								int i = Integer.parseInt(str);
-								ms.setFastPunch(ms.popQueue(), i);
-								listening = false;
-							} catch (IOException e) {
-								connected = false;
-								reconnect();
+								size = dis.available();
+							} catch (IOException e1) {
+								e1.printStackTrace();
 							}
 							if(size > 0) {
 								byte[] hit = new byte[size];
@@ -529,10 +496,9 @@ public class Server {
 			 */
 			public void run() {
 				ui.print("", 0);
-				ui.print("IS-port open on: " + serverSocketIs.getLocalPort(), 0);
 				while (true) {
 					try {
-						
+						ui.print("IS-port open on: " + serverSocketIs.getLocalPort(), 0);
 						Socket socketIs = serverSocketIs.accept();
 						ui.print("Embedded connected", 0);
 						newHandler(socketIs);
