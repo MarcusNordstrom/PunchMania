@@ -84,10 +84,10 @@ public class Server {
 		case 4:
 			client.clientMethods(SEND_QUEUE);
 			break;
-		case 5:
+		case 7:
 			client.clientMethods(SEND_HARDPUNCH_HIGHSCORE);
 			break;
-		case 6:
+		case 9:
 			client.clientMethods(SEND_FASTPUNCH_HIGHSCORE);
 		}
 	}
@@ -102,11 +102,11 @@ public class Server {
 	}
 
 	public void sendHardPunchHighscore() {
-		setSend(HIGHSCORE);
+		setSend(SEND_HARDPUNCH_HIGHSCORE);
 	}
 
 	public void sendFastPunchHighscore() {
-		setSend(SEND_HARDPUNCH_HIGHSCORE);
+		setSend(SEND_FASTPUNCH_HIGHSCORE);
 	}
 
 	public void newHs(int score) {
@@ -381,12 +381,17 @@ public class Server {
 		private String hard = "HARD";
 		private String fast = "FAST";
 		private boolean listening;
+	    private Socket isSocket; 
 
 		public IS(ServerSocket serverSocketIs) {
 			new ConnectionIs().start();
 		}
-
+		
+		 public void reconnect() { 
+		      new ConnectionIs().start(); 
+		    } 
 		public void newHandler(Socket socket) {
+			isSocket = socket; 
 			ish = new ISHandler(socket);
 			ish.run();
 		}
@@ -394,6 +399,7 @@ public class Server {
 		public boolean sendByte(byte send) {
 			if (dos != null) {
 				try {
+					dos = new DataOutputStream(isSocket.getOutputStream());
 					dos.writeByte(send);
 					dos.flush();
 					if(send == 5) {
@@ -405,7 +411,7 @@ public class Server {
 					}
 					return true;
 				} catch (IOException e) {
-					e.printStackTrace();
+					reconnect();
 					return false;
 				}
 			}
@@ -458,6 +464,7 @@ public class Server {
 									ui.print("New score: " + values, 0);
 									listening = false;
 								} catch (IOException e) {
+									reconnect(); 
 									connected = false;
 								}
 							}
@@ -478,6 +485,7 @@ public class Server {
 									ms.setFastPunch(ms.popQueue(), i);
 									listening = false;
 								} catch (IOException e) {
+									reconnect(); 
 									connected = false;
 								}
 							}
