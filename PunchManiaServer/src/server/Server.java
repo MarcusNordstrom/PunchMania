@@ -419,8 +419,6 @@ public class Server {
 					this.socket = socket;
 					dis = new DataInputStream(socket.getInputStream());
 					dos = new DataOutputStream(socket.getOutputStream());
-
-
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -440,32 +438,49 @@ public class Server {
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
-					
+
 					while(listening) {
 						if(mode.equals("HARD")) {
-							byte[] string = new byte[900];
+							int size = 0;
 							try {
-								dis.readFully(string);
-								String str = new String(string);
-								System.out.println(str);
-								int values = cal.calculateScore(str);
-								ui.print("New score: " + values, 0);
-								listening = false;
-							} catch (IOException e) {
-								connected = false;
+								size = dis.available();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
 							}
+							if(size > 0) {
 
+								byte[]string = new byte[size];
+								try {
+									dis.readFully(string);
+									String str = new String(string);
+									System.out.println(str);
+									int values = cal.calculateScore(str);
+									ui.print("New score: " + values, 0);
+									listening = false;
+								} catch (IOException e) {
+									connected = false;
+								}
+							}
 						} else if(mode.equals("FAST")) {
-							byte[] hit = new byte[2];
+							int size = 0;
 							try {
-								dis.readFully(hit);
-								String str = new String(hit);
-								System.out.println(str);
-								int i = Integer.parseInt(str);
-								ms.setFastPunch(ms.popQueue(), i);
-								listening = false;
-							} catch (IOException e) {
-								connected = false;
+								size = dis.available();
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+							if(size > 0) {
+								byte[] hit = new byte[size];
+								try {
+									dis.readFully(hit);
+									String str = new String(hit);
+									System.out.println(str);
+									int i = Integer.parseInt(str);
+									ms.setFastPunch(ms.popQueue(), i);
+									listening = false;
+								} catch (IOException e) {
+									connected = false;
+								}
 							}
 						}
 					}
@@ -508,7 +523,7 @@ public class Server {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Server server = new Server(12345, 12346, serverui);
+		Server server = new Server(12345, 9192, serverui);
 	}
 
 }
