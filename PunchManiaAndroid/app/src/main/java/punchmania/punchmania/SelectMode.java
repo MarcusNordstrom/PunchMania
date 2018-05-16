@@ -32,9 +32,12 @@ public class SelectMode extends AppCompatActivity {
         if (MainActivity.getQueue().size() == 0) {
             btnFastPunch.setEnabled(false);
             btnHardPunch.setEnabled(false);
+
         } else {
             btnFastPunch.setEnabled(true);
             btnHardPunch.setEnabled(true);
+            String message = "Queue is empty";
+            Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
 
             btnHardPunch.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
