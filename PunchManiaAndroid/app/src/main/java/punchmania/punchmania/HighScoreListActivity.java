@@ -15,15 +15,21 @@ import java.util.ArrayList;
 
 import common.HighScoreList;
 
+/**
+ * Class is receiving the HardPunch highscorelist from server.
+ */
 public class HighScoreListActivity extends AppCompatActivity {
 
     private static final String TAG = "HighScoreListActivity";
-
     private ListView listView;
     private updater updater = new updater();
     private long clickedItemId;
     private ArrayList<String> convertedHighScoreListOld = new ArrayList<>();
 
+    /**
+     * Main method starts the other methods.
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.highscorelist_layout);
@@ -58,6 +64,10 @@ public class HighScoreListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Creates an array list and coipies the content from the receiving list from server.
+     * This array list is placed in a list adapter and shown in UI (highscorelist_layout).
+     */
     private void populateListView() {
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
         //create the list adapter and set the adapter to the HighScore ArrayList
@@ -72,6 +82,9 @@ public class HighScoreListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Inner class running the method populateListView() every second to se if the list should be updated in UI.
+     */
     public class updater extends Thread {
         @Override
         public void run() {

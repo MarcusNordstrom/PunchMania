@@ -5,9 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 
+/**
+ * Class is receiving the FastPunch highscorelist from server.
+ */
 public class HighScoreFast extends AppCompatActivity {
 
     private static final String TAG = "HighScore FastMode";
@@ -15,7 +17,10 @@ public class HighScoreFast extends AppCompatActivity {
     private updater updater = new updater();
     private ArrayList<String> convertedHighScoreListOld = new ArrayList<>();
 
-    @Override
+    /**
+     * Main method starts the other methods.
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore_fast);
@@ -24,8 +29,11 @@ public class HighScoreFast extends AppCompatActivity {
         updater.start();
     }
 
+    /**
+     * Creates an array list and coipies the content from the receiving list from server.
+     * This array list is placed in a list adapter and shown in UI (activity_highscore_fast).
+     */
     private void populateListView() {
-        //create the list adapter and set the adapter to the HighScore ArrayList
         ArrayList<String> convertedHighScoreList = new ArrayList<>();
         for (int i = 0; i < MainActivity.getHighScoresFast().size(); i++) {
             convertedHighScoreList.add(i + 1 + ":   " + MainActivity.getHighScoresFast().getUser(i).getUser() + "    " + MainActivity.getHighScoresFast().getUser(i).getScore());
@@ -37,6 +45,9 @@ public class HighScoreFast extends AppCompatActivity {
         }
     }
 
+    /**
+     * Inner class running the method populateListView() every second to se if the list should be updated in UI.
+     */
     public class updater extends Thread {
         @Override
         public void run() {
@@ -46,12 +57,10 @@ public class HighScoreFast extends AppCompatActivity {
                         wait(1000);
                         if (!isInterrupted())
                             runOnUiThread(new Runnable() {
-                                @Override
                                 public void run() {
                                     populateListView();
                                 }
                             });
-
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
