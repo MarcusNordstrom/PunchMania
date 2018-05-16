@@ -1,17 +1,5 @@
 function init() {
   $('.uparrow').hide();
-  if (localStorage !== "undefined") {
-    if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
-      localStorage.setItem('uuid', getCookie('uuid'));
-      console.log("UUID pushed to localStorage");
-    } else if (getCookie('uuid') == "NaN" && localStorage.getItem('uuid') != null) {
-      localStorage.removeItem('uuid');
-      console.log("UUID cleared from localStorage")
-    } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
-      setCookie('uuid', localStorage.getItem('uuid'), 365);
-      console.log("UUID restored from localStorage");
-    }
-  }
 }
 
 $('.uparrow').click(up());
@@ -90,13 +78,9 @@ function up() {
   freeze();
 }
 
-//This is the "Offline page" service worker
-
-//Add this below content to your HTML page, or add the js file to your page at the very top to register sercie worker
 if (navigator.serviceWorker.controller) {
   console.log('active service worker found, no need to register')
 } else {
-  //Register the ServiceWorker
   navigator.serviceWorker.register('sw_offline.js', {
     scope: './'
   }).then(function(reg) {
@@ -126,6 +110,20 @@ function setCookie(cname, cvalue, exdays) {
     var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
+
+if (localStorage !== "undefined") {
+  if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
+    localStorage.setItem('uuid', getCookie('uuid'));
+    console.log("UUID pushed to localStorage");
+  } else if (getCookie('uuid') == "NaN" && localStorage.getItem('uuid') != null) {
+    localStorage.removeItem('uuid');
+    console.log("UUID cleared from localStorage")
+  } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
+    setCookie('uuid', localStorage.getItem('uuid'), 365);
+    console.log("UUID restored from localStorage");
+  }
+}
+
 function recentColor() {
     var text = $('#recent').text();
     if (text != "") {
