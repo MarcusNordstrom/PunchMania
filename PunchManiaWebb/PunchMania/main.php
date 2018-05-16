@@ -195,15 +195,36 @@ function getInfo($info){
 		break;
 		case "register":
 		if (isset($_GET["error"])) {
-			echo "<p>Username already exists!</p>";
+			switch ($_GET["error"]) {
+				case "1":
+					echo "<p>Username already exists!</p>";
+					break;
+				case "2":
+					echo "<p>You have to accept our terms of service</p>";
+					break;
+				default:
+					// code...
+					break;
+			}
 		}
 		echo '<form action="index.php?site=register" method="POST">
 		<label>Username:</label><br>
 		<input type="text" name="uname" pattern=".{3,15}" required autocomplete="punchmania username"><br>
 		<label>Password:</label><br>
-		<input type="password" name="pw" required autocomplete="punchmania password"><br><br>
-		<input type="submit" value="Register" class="btn"></form>';
+		<input type="password" name="pw" required autocomplete="punchmania password"><br>
+		<p><input type="checkbox" name="tos"/> I agree to the <a data-toggle="modal" data-target="#tos-modal" id="tos">terms of service</a></p>
+		<input type="submit" value="Register" class="btn"></form>
+		<div class="modal fade" id="tos-modal">
+    <div class="modal-dialog modal-dialog-centered">
+		<div class="modal-body">
+			 <p>Group1, the creators of PunchMania&trade; <br> Does not take responsability for obscene and inapropiate usernames and reserves the right to remove any account from our platform.</p>
+			 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+		 </div>
+		</div></div>';
 		if (isset($_POST["uname"]) && isset($_POST["pw"])) {
+			if (!isset($_POST["tos"])) {
+				redirect("index.php?site=register&error=2");
+			}
 			$hashpw = password_hash($_POST["pw"], PASSWORD_DEFAULT);
 			$query = $GLOBALS["conn"]->prepare("SELECT Uname FROM user WHERE Uname=:uname");			//check if user exists
 			$query->bindParam(':uname', $_POST["uname"]);
