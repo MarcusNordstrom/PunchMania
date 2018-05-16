@@ -10,12 +10,14 @@ import android.widget.Toast;
 public class SelectMode extends AppCompatActivity {
 
     public static final int GAMEMODE = 9;
-
     private Button btnHardPunch, btnFastPunch;
     private updater updater = new updater();
     private MainActivity main;
 
-
+    /**
+     * This main method searches in the activity_select_mode layout where all the widgets are defined.
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_mode);
@@ -26,8 +28,11 @@ public class SelectMode extends AppCompatActivity {
         updater.start();
 
     }
-        private void setButtons() {
 
+    /**
+     * This method reassures if the queue list is empty the buttons for choosing game mode is disabled
+     */
+    private void setButtons() {
 
         if (MainActivity.getQueue().size() == 0) {
             btnFastPunch.setEnabled(false);
@@ -38,7 +43,9 @@ public class SelectMode extends AppCompatActivity {
             btnHardPunch.setEnabled(true);
             String message = "Queue is empty";
             Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
-
+            /**
+             * When the Hard mode is pressed it sends a object to the server via StaticDataSender. A popup message is also shown when pressed.
+             */
             btnHardPunch.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     main.staticSend("HARD", GAMEMODE);    // staticSend eller send?
@@ -46,7 +53,9 @@ public class SelectMode extends AppCompatActivity {
                     Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
                 }
             });
-
+            /**
+            * When the Fast mode is pressed it sends a object to the server via StaticDataSender. A popup message is also shown when pressed.
+            */
             btnFastPunch.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     main.staticSend("FAST", GAMEMODE);
@@ -56,7 +65,9 @@ public class SelectMode extends AppCompatActivity {
             });
         }
     }
-
+    /**
+     * Inner class running the method setButtons() every second to se if the list should be updated in UI.
+     */
     public class updater extends Thread {
         @Override
         public void run() {
