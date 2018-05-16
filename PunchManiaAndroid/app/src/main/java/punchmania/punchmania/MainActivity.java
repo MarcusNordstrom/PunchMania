@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.20";
-    private int port = 12346;
+    private String ip = "195.178.248.9";
+    private int port = 9192;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
     private static long requestedHit = Long.MAX_VALUE;
