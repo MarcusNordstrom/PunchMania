@@ -71,33 +71,48 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns highscore list receiving from input stream.
-     * @return highscore list HardPunch
+     * @return listHard
      */
     public static HighScoreList getHighScoresHard() {
         return listHard;
     }
 
+    /**
+     *
+     * @return
+     */
     public static ArrayList<ArrayList<Integer>> getHighScoreDetails() {
         return highScoreDetails;
     }
 
+    /**
+     * Method returns the player list for the game mode Hardpunch
+     * @return listPlayerHard
+     */
     public static HighScoreList getListPlayerHard() {
         return listPlayerHard;
     }
 
+    /**
+     * method returns the player list for the game mode Fastpunch
+     * @return listPlayerFast
+     */
     public static HighScoreList getListPlayerFast() {
         return listPlayerFast;
     }
 
+    /**
+     * Method returns highscore list for the game mode FastPunch
+     * @return Highscore list FastPunch
+     */
     public static HighScoreList getHighScoresFast() {
         return listFast;
     }
 
-    public synchronized static void staticSend(Object arg1, int arg2) {
-        StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
-    }
-
-    @Override
+    /**
+     * This method searches in the activity_client layout where all the widgets are defined.
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
@@ -111,9 +126,10 @@ public class MainActivity extends AppCompatActivity {
         btnPunch = (Button) findViewById(R.id.btnPunch);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
 
-
+        /**
+         * This method make sure that when the search button is pushed it start another activity.
+         */
         btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 String newEntry = enterNameEditText.getText().toString();
 
@@ -130,9 +146,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        /**
+         * This method starts another activity with the enter key, just like when you press the Search button.
+         */
         enterNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     switch (keyCode) {
@@ -159,22 +176,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * This method starts another activity when Queue button is pushed.
+         */
         btnViewQueue.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, QueueListActivity.class);
                 startActivity(intent);
             }
         });
 
+        /**
+         * This method starts another activity when Highscore Hard button is pushed.
+         */
         btnViewHighScore.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, HighScoreListActivity.class);
                 startActivity(intent);
             }
         });
 
+        /**
+         * This method starts another activity when Highscore Fast button is pushed.
+         */
         btnViewHighScoreFast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,8 +207,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * This method starts another activity when a password is entered in the text field and if you press the PunchMania icon.
+         */
         btnPunch.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
                 String password = enterNameEditText.getText().toString();
                 if (password.equals("1337")) {
@@ -197,15 +223,36 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method displays a popup message given in the String message.
+     * @param message
+     */
     public void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Method is used when object should be send to server via the subclass DataSender.
+     * @param arg1 object we want to send
+     * @param arg2 instruction what kind of object we are sending
+     */
     public synchronized void send(Object arg1, int arg2) {
         DataSender dataSender = new DataSender(arg1, arg2);
         Log.i("instruktion", "skickar arg" + arg2);
     }
 
+    /**
+     * Method is used when object should be send to server via the subclass StaticDataSender.
+     * @param arg1 object we want to send
+     * @param arg2 instruction what kind of object we are sending
+     */
+    public synchronized static void staticSend(Object arg1, int arg2) {
+        StaticDataSender dataSender = new StaticDataSender(arg1, arg2);
+    }
+
+    /**
+     * Subclass sending a message containing an object and instruction to server.
+     */
     public static class StaticDataSender extends Thread {
         private Object send;
         private int instruction;
@@ -233,6 +280,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Subclass sending a message containing an object and instruction to server.
+     */
     public class DataSender extends Thread {
         private Object send;
         private int instruction;
@@ -260,11 +310,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Subclass receiving messages containing an object and instruction from server.
+     */
     private class DataReader extends Thread {
 
         public DataReader() {
             Log.i(this.getName(), "DataReader initiated");
         }
+
 
         public boolean retry() {
             while (!connected) {
