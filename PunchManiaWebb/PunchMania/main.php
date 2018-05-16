@@ -165,9 +165,9 @@ function getInfo($info){
 			echo "<p>Wrong username or password, try again</p>";
 		}
 		echo '<form action="index.php?site=login" method="POST">
-		<label>Username:</label><br>
+		<label><abbr title="3-15 characters">Username</abbr>:</label><br>
 		<input type="text" name="uname" pattern=".{3,15}" required autocomplete="punchmania username"><br>
-		<label>Password:</label><br>
+		<label><abbr title="3-15 characters">Password</abbr>:</label><br>
 		<input type="password" name="pw" required autocomplete="punchmania password"><br><br>
 		<input type="submit" value="Login" class="btn">
 		</form>';
@@ -208,9 +208,9 @@ function getInfo($info){
 			}
 		}
 		echo '<form action="index.php?site=register" method="POST">
-		<label>Username:</label><br>
+		<label><abbr title="3-15 characters">Username</abbr>:</label><br>
 		<input type="text" name="uname" pattern=".{3,15}" required autocomplete="punchmania username"><br>
-		<label>Password:</label><br>
+		<label><abbr title="3-15 characters">Password</abbr>:</label><br>
 		<input type="password" name="pw" required autocomplete="punchmania password"><br>
 		<p><input type="checkbox" name="tos"/> I agree to the <a data-toggle="modal" data-target="#tos-modal" id="tos">terms of service</a></p>
 		<input type="submit" value="Register" class="btn"></form>
