@@ -23,7 +23,7 @@ public class Client extends Thread {
 	private Message message;
 
 	public String ip = "";
-	public static int port = 12346;
+	public static int port = 9192;
 
 	private HighScoreList hsl;
 	private Queue queue;
