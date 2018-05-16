@@ -22,6 +22,12 @@ import common.HighScoreList;
 import common.Message;
 import common.Queue;
 
+/**
+ * Connecting client to server via port and ip-address.
+ * Sending and receiving objects from server using output- and input streams.
+ * Starts other classes and activities.
+ */
+
 public class MainActivity extends AppCompatActivity {
     public static final int NEW_QUEUE = 1;
     public static final int SERVER_SEND_PLAYERSCORES_HARDPUNCH = 6;
@@ -40,9 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.20";
-    private int port = 12346;
-    public static boolean connected = false;
+    private String ip = "10.2.20.204";
+    private int port = 9192;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
     private static long requestedHit = Long.MAX_VALUE;
@@ -55,14 +60,19 @@ public class MainActivity extends AppCompatActivity {
     EditText enterNameEditText;
     Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast, btnPunch;
     private Socket socket = new Socket();
-    private String ip = "83.248.13.179";
-    private int port = 12346;
-    private DataReader dataReader = new DataReader();
 
+    /**
+     * Method returns the queue receiving from input stream.
+     * @return queue
+     */
     public static Queue getQueue() {
         return queue;
     }
 
+    /**
+     * Method returns highscore list receiving from input stream.
+     * @return highscore list HardPunch
+     */
     public static HighScoreList getHighScoresHard() {
         return listHard;
     }
