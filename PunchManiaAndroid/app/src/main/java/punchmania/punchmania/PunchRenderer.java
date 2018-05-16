@@ -1,166 +1,145 @@
 package punchmania.punchmania;
 
-import android.opengl.GLES20;
+import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.util.Log;
+import android.view.MotionEvent;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class PunchRenderer implements GLSurfaceView.Renderer {
-
-    /**
-     * Rotation increment per frame.
-     */
-    private static final float CUBE_ROTATION_INCREMENT = 0.6f;
-
-    /**
-     * The refresh rate, in frames per second.
-     */
-    private static final int REFRESH_RATE_FPS = 60;
-
-    /**
-     * The duration, in milliseconds, of one frame.
-     */
-    private static final float FRAME_TIME_MILLIS = TimeUnit.SECONDS.toMillis(1) / REFRESH_RATE_FPS;
-    private final float[] mMVPMatrix;
-    private final float[] mProjectionMatrix;
-    private final float[] mViewMatrix;
-    public volatile float angle;
-    public volatile float tempX = 0;
-    public volatile float tempY = 0;
-    public volatile float tempZ = 0;
-
-    private float traveledX;
-    private float traveledY;
-    private float velocityX = 0;
-    private float velocityY = 0;
-    private float angleX;
-    private float angleY;
-    private float radius = 1.3f; // Radius of the punching bag, could also be arbitrary as long as it moves like we want it to
-    private float circumference = 2f * (float) Math.PI * radius;
-    private float time = 0.01f; // If we can't determine the exact time, we can just modify this until we get the result we want
-    private int rotationIndex = 0;
-
-    public int currentXIndex = 0, currentYIndex = 0, currentZIndex = 0;
-    long timeSinceStart;
-    private Cube mCube;
-    private long mLastUpdateMillis;
-    private Random random;
-    // private float time = 0;
+class PunchRenderer implements GLSurfaceView.Renderer {
+    private final float TOUCH_SCALE_FACTOR = 0.6f;
+    public float mAngleX = 0.0f;
+    public float mAngleY = 0.0f;
+    public float mAngleZ = 0.0f;
+    private Context mContext;
+    private FloatBuffer mVertexBuffer = null;
+    private ShortBuffer mTriangleBorderIndicesBuffer = null;
+    private int mNumOfTriangleBorderIndices = 0;
     private ArrayList<ArrayList<Integer>> arrList;
     private ArrayList<Integer> x, y, z;
+    private float mPreviousX;
+    private float mPreviousY;
 
-
-    public PunchRenderer() {
-        mMVPMatrix = new float[16];
-        mProjectionMatrix = new float[16];
-        mViewMatrix = new float[16];
-        random = new Random();
-
-
+    public PunchRenderer(Context context) {
         arrList = MainActivity.getHighScoreDetails();
         x = arrList.get(0);
         y = arrList.get(1);
         z = arrList.get(2);
-
-        Log.i("X Length", "" + x.size());
-        Log.i("Y Length", "" + y.size());
-        Log.i("Z Length", "" + z.size());
-
-        timeSinceStart = System.nanoTime();
-
-        // Set the fixed camera position (View matrix).
-        Matrix.setLookAtM(mViewMatrix, 0, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        mContext = context;
     }
 
-    @Override
-    public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-        // Set the background frame color
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        GLES20.glClearDepthf(1.0f);
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
-        mCube = new Cube();
+    public void onDrawFrame(GL10 gl) {
+
+
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+        gl.glLoadIdentity();
+
+        gl.glTranslatef(0.0f, 0.0f, -3.0f);
+        gl.glRotatef(mAngleX, 1, 0, 0);
+        gl.glRotatef(mAngleY, 0, 1, 0);
+        gl.glRotatef(mAngleZ, 0, 0, 1);
+
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
+
+        // Set line color to green     gl.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+
+        // Draw all lines
+        gl.glDrawElements(GL10.GL_LINE_STRIP, mNumOfTriangleBorderIndices,
+                GL10.GL_UNSIGNED_SHORT, mTriangleBorderIndicesBuffer);
     }
 
-    @Override
-    public void onSurfaceChanged(GL10 unused, int width, int height) {
-        float ratio = (float) width / height;
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+        gl.glEnable(GL10.GL_DEPTH_TEST);
 
-        GLES20.glViewport(0, 0, width, height);
-        // This projection matrix is applied to object coordinates in the onDrawFrame() method.
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1.0f, 1.0f, 0.01f, 1000.0f);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+
+        // Get all the buffers ready
+        setAllBuffers();
     }
 
-    public void onDrawFrame(GL10 unused) {
-
-        float[] scratch = new float[16];
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mCube.mModelMatrix, 0);
-        rotateCube();
-        mCube.draw(scratch);
-
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        gl.glViewport(0, 0, width, height);
+        float aspect = (float) width / height;
+        gl.glMatrixMode(GL10.GL_PROJECTION);
+        gl.glLoadIdentity();
+        gl.glFrustumf(-aspect, aspect, -1.0f, 1.0f, 1.0f, 10.0f);
     }
 
-    public void rotateCube() {
-        if (rotationIndex < x.size() && rotationIndex < y.size()) {
-            velocityX += x.get(rotationIndex) * time;
-            traveledX = velocityX * time;
-            angleX = (traveledX / circumference) * 360f;
-
-            velocityY += y.get(rotationIndex) * time;
-            traveledY = velocityY * time;
-            angleY = (traveledY / circumference) * 360f; // Neither radians nor degrees, what is this even?
-
-            Matrix.rotateM(mCube.mModelMatrix, 0, angleX, 1f, 0f, 0f); // Rotate in x-axis
-            Matrix.rotateM(mCube.mModelMatrix, 0, angleY, 0f, 1f, 0f); // Rotate in y-axis
-
-            rotationIndex++;
-        }
-    }
-
-    public void moveCube() {
-
-        long time = System.nanoTime();
-        int delta_time = (int) ((time - timeSinceStart) / 1000000);
-        timeSinceStart = time;
-
-        float currentX, currentY, currentZ;
-        if (currentXIndex == x.size() && currentYIndex == y.size() && currentZIndex == z.size()) {
-            currentXIndex = 0;
-            currentYIndex = 0;
-            currentZIndex = 0;
-        }
-        if (currentXIndex < x.size() - 1) {
-            tempX = (float) x.get(currentXIndex);
-            currentXIndex++;
-            currentX = tempX + (float) x.get(currentXIndex) * delta_time;
+    private void setAllBuffers() {
+        // Set vertex buffer
+        int arraySize = 0;
+        if (x.size() < y.size() && x.size() < z.size()) {
+            arraySize = x.size();
+        } else if (y.size() < x.size() && y.size() < z.size()) {
+            arraySize = y.size();
         } else {
-            currentX = 0;
+            arraySize = z.size();
         }
-        if (currentYIndex < y.size() - 1) {
-            tempY = (float) y.get(currentYIndex);
-            currentYIndex++;
-            currentY = tempY + (float) y.get(currentYIndex) * delta_time;
-        } else {
-            currentY = 0;
-        }
-        if (currentZIndex < z.size() - 1) {
-            tempZ = (float) z.get(currentZIndex);
-            currentZIndex++;
-            currentZ = tempZ + (float) z.get(currentZIndex) * delta_time;
-        } else {
-            currentZ = 0;
-        }
-        Matrix.setIdentityM(mCube.mModelMatrix, 0);
-        Matrix.translateM(mCube.mModelMatrix, 0, currentX / 10000, currentY / 10000, currentZ / 10000);
+        float vertexlist[] = new float[arraySize * 3];
+        fillVertexArray(vertexlist);
+        ByteBuffer vbb = ByteBuffer.allocateDirect(vertexlist.length * 4);
+        vbb.order(ByteOrder.nativeOrder());
+        mVertexBuffer = vbb.asFloatBuffer();
+        mVertexBuffer.put(vertexlist);
+        mVertexBuffer.position(0);
 
+        // Set triangle border buffer with vertex indices
+        short trigborderindexlist[] = {
+                4, 0, 4, 1, 4, 2, 4, 3, 0, 1, 1, 3, 3, 2, 2, 0, 0, 3
+        };
+        mNumOfTriangleBorderIndices = trigborderindexlist.length;
+        ByteBuffer tbibb = ByteBuffer.allocateDirect(trigborderindexlist.length * 2);
+        tbibb.order(ByteOrder.nativeOrder());
+        mTriangleBorderIndicesBuffer = tbibb.asShortBuffer();
+        mTriangleBorderIndicesBuffer.put(trigborderindexlist);
+        mTriangleBorderIndicesBuffer.position(0);
     }
+
+    public boolean onTouchEvent(MotionEvent e) {
+        float x = e.getX();
+        float y = e.getY();
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                float dx = x - mPreviousX;
+                float dy = y - mPreviousY;
+                mAngleY = (mAngleY + (int) (dx * TOUCH_SCALE_FACTOR) + 360) % 360;
+                mAngleX = (mAngleX + (int) (dy * TOUCH_SCALE_FACTOR) + 360) % 360;
+                break;
+        }
+        mPreviousX = x;
+        mPreviousY = y;
+        return true;
+    }
+
+    public void fillVertexArray(float[] floatArray) {
+        float dx = 0, dy = 0, dz = 0;
+        int index = 0;
+        for (int i = 0; i < (floatArray.length / 3); i++) {
+            index = 1 + (i * 3);
+            dx += (float) x.get(i);
+            dy += (float) y.get(i);
+            dz += (float) z.get(i);
+            floatArray[index - 1] = dx / 1000;
+            floatArray[index] = dy / 1000;
+            floatArray[index + 1] = dz / 1000;
+        }
+        String print = "\n";
+        for (int i = 0; i < floatArray.length; i += 3) {
+            print += floatArray[i] + " " + floatArray[i + 1] + " " + floatArray[i + 2] + "\n";
+        }
+        Log.i("Array", print);
+    }
+
 }
+
