@@ -22,22 +22,29 @@ public class SelectMode extends AppCompatActivity {
         btnHardPunch = (Button) findViewById(R.id.btnHardPunch);
         btnFastPunch = (Button) findViewById(R.id.btnFastPunch);
 
-        btnHardPunch.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                main.staticSend("HARD", GAMEMODE);    // staticSend eller send?
-                String message = "HARDPUNCH ACTIVATED";
-                Toast.makeText(SelectMode.this,  message , Toast.LENGTH_SHORT).show();
+        if (MainActivity.getQueue().size() == 0) {
+            btnFastPunch.setEnabled(false);
+            btnHardPunch.setEnabled(false);
+        } else {
+            btnFastPunch.setEnabled(true);
+            btnHardPunch.setEnabled(true);
 
-            }
-        });
+            btnHardPunch.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    main.staticSend("HARD", GAMEMODE);    // staticSend eller send?
+                    String message = "HARDPUNCH ACTIVATED";
+                    Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
+                }
+            });
 
-        btnFastPunch.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                main.staticSend("FAST", GAMEMODE);
-                String message = "FASTPUNCH ACTIVATED";
-                Toast.makeText(SelectMode.this,  message , Toast.LENGTH_SHORT).show();
-            }
-        });
+            btnFastPunch.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    main.staticSend("FAST", GAMEMODE);
+                    String message = "FASTPUNCH ACTIVATED";
+                    Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
 

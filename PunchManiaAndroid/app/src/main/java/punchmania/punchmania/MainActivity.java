@@ -22,6 +22,12 @@ import common.HighScoreList;
 import common.Message;
 import common.Queue;
 
+/**
+ * Connecting client to server via port and ip-address.
+ * Sending and receiving objects from server using output- and input streams.
+ * Starts other classes and activities.
+ */
+
 public class MainActivity extends AppCompatActivity {
     public static final int NEW_QUEUE = 1;
     public static final int SERVER_SEND_PLAYERSCORES_HARDPUNCH = 6;
@@ -55,10 +61,18 @@ public class MainActivity extends AppCompatActivity {
     Button btnSearch, btnViewQueue, btnViewHighScore, btnViewHighScoreFast, btnPunch;
     private Socket socket = new Socket();
 
+    /**
+     * Method returns the queue receiving from input stream.
+     * @return queue
+     */
     public static Queue getQueue() {
         return queue;
     }
 
+    /**
+     * Method returns highscore list receiving from input stream.
+     * @return highscore list HardPunch
+     */
     public static HighScoreList getHighScoresHard() {
         return listHard;
     }
