@@ -20,6 +20,10 @@ p {
 h2 {
 	font-size: 1.9em !important;
 }
+button {
+	color: var(--main-highlight-color);
+	background-color: var(--main-text-color);
+}
 .pageScroll h1 {
 	cursor: pointer;
 }
@@ -54,9 +58,7 @@ h2 {
 	margin-bottom: 2vh;
 }
 .info button {
-	color: var(--main-highlight-color);
 	margin: 2vh;
-	background-color: var(--main-text-color);
 }
 .bgImg {
 	width: 90vmin;
@@ -75,11 +77,9 @@ h2 {
 	text-align: center;
 }
 .hs button {
-	color: var(--main-highlight-color);
 	margin-left: 1vw;
 	margin-right: 1vw;
 	margin-bottom: 1vh;
-	background-color: var(--main-text-color);
 }
 .list {
 	margin-top: 3vh;

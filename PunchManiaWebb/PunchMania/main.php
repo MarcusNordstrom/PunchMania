@@ -166,10 +166,10 @@ function getInfo($info){
 		}
 		echo '<form action="index.php?site=login" method="POST">
 		<label>Username:</label><br>
-		<input type="text" name="uname" pattern=".{3,15}" required><br>
+		<input type="text" name="uname" pattern=".{3,15}" required autocomplete="punchmania username"><br>
 		<label>Password:</label><br>
-		<input type="password" name="pw" required><br><br>
-		<input type="submit" value="Logga in" class="btn">
+		<input type="password" name="pw" required autocomplete="punchmania password"><br><br>
+		<input type="submit" value="Login" class="btn">
 		</form>';
 		if (isset($_POST["uname"]) && isset($_POST["pw"])) {
 			$query = $GLOBALS["conn"]->prepare("SELECT * FROM user WHERE Uname=:uname");
@@ -199,10 +199,10 @@ function getInfo($info){
 		}
 		echo '<form action="index.php?site=register" method="POST">
 		<label>Username:</label><br>
-		<input type="text" name="uname" pattern=".{3,15}" required><br>
+		<input type="text" name="uname" pattern=".{3,15}" required autocomplete="punchmania username"><br>
 		<label>Password:</label><br>
-		<input type="password" name="pw" required><br><br>
-		<input type="submit" value="Registrera dig" class="btn"></form>';
+		<input type="password" name="pw" required autocomplete="punchmania password"><br><br>
+		<input type="submit" value="Register" class="btn"></form>';
 		if (isset($_POST["uname"]) && isset($_POST["pw"])) {
 			$hashpw = password_hash($_POST["pw"], PASSWORD_DEFAULT);
 			$query = $GLOBALS["conn"]->prepare("SELECT Uname FROM user WHERE Uname=:uname");			//check if user exists

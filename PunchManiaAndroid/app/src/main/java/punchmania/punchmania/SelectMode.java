@@ -12,6 +12,7 @@ public class SelectMode extends AppCompatActivity {
     public static final int GAMEMODE = 9;
 
     private Button btnHardPunch, btnFastPunch;
+    private updater updater = new updater();
     private MainActivity main;
 
 
@@ -21,23 +22,62 @@ public class SelectMode extends AppCompatActivity {
 
         btnHardPunch = (Button) findViewById(R.id.btnHardPunch);
         btnFastPunch = (Button) findViewById(R.id.btnFastPunch);
+        setButtons();
+        updater.start();
 
-        btnHardPunch.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                main.staticSend("HARD", GAMEMODE);    // staticSend eller send?
-                String message = "HARDPUNCH ACTIVATED";
-                Toast.makeText(SelectMode.this,  message , Toast.LENGTH_SHORT).show();
+    }
+        private void setButtons() {
 
+
+        if (MainActivity.getQueue().size() == 0) {
+            btnFastPunch.setEnabled(false);
+            btnHardPunch.setEnabled(false);
+
+        } else {
+            btnFastPunch.setEnabled(true);
+            btnHardPunch.setEnabled(true);
+            String message = "Queue is empty";
+            Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
+
+            btnHardPunch.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    main.staticSend("HARD", GAMEMODE);    // staticSend eller send?
+                    String message = "HARDPUNCH ACTIVATED";
+                    Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            btnFastPunch.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    main.staticSend("FAST", GAMEMODE);
+                    String message = "FASTPUNCH ACTIVATED";
+                    Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    public class updater extends Thread {
+        @Override
+        public void run() {
+            while (!isInterrupted()) {
+                try {
+                    synchronized (this) {
+                        wait(1000);
+                        if (!isInterrupted())
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setButtons();
+                                }
+                            });
+
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        });
-
-        btnFastPunch.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                main.staticSend("FAST", GAMEMODE);
-                String message = "FASTPUNCH ACTIVATED";
-                Toast.makeText(SelectMode.this,  message , Toast.LENGTH_SHORT).show();
-            }
-        });
+        }
     }
 
 
