@@ -3,6 +3,7 @@ package punchmania.punchmania;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import java.nio.ByteBuffer;
@@ -19,6 +20,10 @@ class PunchRenderer implements GLSurfaceView.Renderer {
     public float mAngleX = 0.0f;
     public float mAngleY = 0.0f;
     public float mAngleZ = 0.0f;
+    public int mWidth, mHeight;
+    public float prevX = 0, prevY = 0;
+    public float xPos, yPos;
+    private int mActivePointerID = 0;
     private Context mContext;
     private FloatBuffer mVertexBuffer = null;
     private ShortBuffer mTriangleBorderIndicesBuffer = null;
@@ -27,6 +32,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
     private ArrayList<Integer> x, y, z;
     private float mPreviousX;
     private float mPreviousY;
+    private int size;
 
     public PunchRenderer(Context context) {
         arrList = MainActivity.getHighScoreDetails();
@@ -43,18 +49,19 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        gl.glTranslatef(0.0f, 0.0f, -3.0f);
-        gl.glRotatef(mAngleX, 1, 0, 0);
-        gl.glRotatef(mAngleY, 0, 1, 0);
-        gl.glRotatef(mAngleZ, 0, 0, 1);
+        gl.glTranslatef( xPos / 500, -(yPos / 500), -3.0f);
+//        gl.glRotatef(mAngleX, 1, 0, 0);
+//        gl.glRotatef(mAngleY, 0, 1, 0);
+//        gl.glRotatef(mAngleZ, 0, 0, 1);
 
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
 
-        // Set line color to green     gl.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+        gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 
         // Draw all lines
-        gl.glDrawElements(GL10.GL_LINE_STRIP, mNumOfTriangleBorderIndices,
-                GL10.GL_UNSIGNED_SHORT, mTriangleBorderIndicesBuffer);
+//        gl.glDrawElements(GL10.GL_LINE_STRIP, mNumOfTriangleBorderIndices,
+//                GL10.GL_UNSIGNED_SHORT, mTriangleBorderIndicesBuffer);
+        gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, size);
     }
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -63,12 +70,13 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         gl.glEnable(GL10.GL_DEPTH_TEST);
 
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-
         // Get all the buffers ready
         setAllBuffers();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        mWidth = width;
+        mHeight = height;
         gl.glViewport(0, 0, width, height);
         float aspect = (float) width / height;
         gl.glMatrixMode(GL10.GL_PROJECTION);
@@ -86,6 +94,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         } else {
             arraySize = z.size();
         }
+        size = arraySize;
         float vertexlist[] = new float[arraySize * 3];
         fillVertexArray(vertexlist);
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertexlist.length * 4);
@@ -107,18 +116,47 @@ class PunchRenderer implements GLSurfaceView.Renderer {
     }
 
     public boolean onTouchEvent(MotionEvent e) {
-        float x = e.getX();
-        float y = e.getY();
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
-                mAngleY = (mAngleY + (int) (dx * TOUCH_SCALE_FACTOR) + 360) % 360;
-                mAngleX = (mAngleX + (int) (dy * TOUCH_SCALE_FACTOR) + 360) % 360;
+        final int action = e.getActionMasked();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN: {
+                int pointerIndex = e.getActionIndex();
+                final float x = e.getX(pointerIndex);
+                final float y = e.getY(pointerIndex);
+                mPreviousX = x;
+                mPreviousY = y;
+
+                mActivePointerID = e.getPointerId(0);
                 break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                final int pointerIndex = e.findPointerIndex(mActivePointerID);
+                final float x = e.getX(pointerIndex);
+                final float y = e.getY(pointerIndex);
+
+                final float dx = x - mPreviousX;
+                final float dy = y - mPreviousY;
+
+                xPos += dx;
+                yPos += dy;
+
+                mPreviousX = x;
+                mPreviousY = y;
+
+                break;
+            }
+            case MotionEvent.ACTION_POINTER_UP:{
+                final int pointerIndex = e.getActionIndex();
+                final int pointerID = e.getPointerId(pointerIndex);
+
+                if(pointerID == mActivePointerID){
+                    final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                    mPreviousX = e.getX(newPointerIndex);
+                    mPreviousY = e.getY(newPointerIndex);
+                    mActivePointerID = e.getPointerId(newPointerIndex);
+                }
+                break;
+            }
         }
-        mPreviousX = x;
-        mPreviousY = y;
         return true;
     }
 
@@ -141,5 +179,9 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         Log.i("Array", print);
     }
 
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+    }
 }
+
 
