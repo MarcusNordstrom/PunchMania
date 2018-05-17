@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns the queue receiving from input stream.
+     *
      * @return queue
      */
     public static Queue getQueue() {
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns highscore list receiving from input stream.
+     *
      * @return listHard
      */
     public static HighScoreList getHighScoresHard() {
@@ -78,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @return
      */
     public static ArrayList<ArrayList<Integer>> getHighScoreDetails() {
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns the player list for the game mode Hardpunch
+     *
      * @return listPlayerHard
      */
     public static HighScoreList getListPlayerHard() {
@@ -95,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * method returns the player list for the game mode Fastpunch
+     *
      * @return listPlayerFast
      */
     public static HighScoreList getListPlayerFast() {
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns highscore list for the game mode FastPunch
+     *
      * @return Highscore list FastPunch
      */
     public static HighScoreList getHighScoresFast() {
@@ -111,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method searches in the activity_client layout where all the widgets are defined.
+     *
      * @param savedInstanceState
      */
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method displays a popup message given in the String message.
+     *
      * @param message
      */
     public void toastMessage(String message) {
@@ -233,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method is used when object should be send to server via the subclass DataSender.
+     *
      * @param arg1 object we want to send
      * @param arg2 instruction what kind of object we are sending
      */
@@ -243,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method is used when object should be send to server via the subclass StaticDataSender.
+     *
      * @param arg1 object we want to send
      * @param arg2 instruction what kind of object we are sending
      */
@@ -283,29 +291,25 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Subclass sending a message containing an object and instruction to server.
      */
-    public class DataSender extends Thread {
+    public class DataSender {
         private Object send;
         private int instruction;
 
         public DataSender(Object send, int instruction) {
             this.send = send;
             this.instruction = instruction;
-            this.start();
+            sendsome();
         }
 
-        public synchronized void run() {
-            if (connected && send != null && instruction != 0 && !isInterrupted()) {
-                try {
-                    Log.i("DataSender: ", "Trying to send!");
-                    oos.writeObject(new Message(send, instruction));
-                    oos.reset();
-                    oos.flush();
-                    send = null;
-                    instruction = 0;
-                    Log.i("DataSender: ", "Sent!");
-                } catch (IOException e) {
-                    Log.i("DataSender: ", "Socket interrupted");
-                }
+        public void sendsome() {
+            try {
+                oos.writeObject(new Message(send, instruction));
+                oos.reset();
+                oos.flush();
+                send = null;
+                instruction = 0;
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         }
     }

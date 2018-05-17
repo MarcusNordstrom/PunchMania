@@ -191,7 +191,6 @@ public class Server {
 				this.start();
 			}
 
-
 			/*
 			 * Read message from Client and prints it, sends value to calculator.
 			 */
@@ -209,20 +208,20 @@ public class Server {
 						switch (message.getInstruction()) {
 						case 3:
 							ui.print("new user to queue : " + message.getPayload(), 0);
-							String newtoqueue = (String) message.getPayload();
+							String newtoqueue = (String)message.getPayload();
 							addQueue(newtoqueue);
 							broadcastQueue();
 							break;
 
 						case 5:
 							ui.print("HardPunchScore requested for :" + message.getPayload(), 0);
-							String name = (String) message.getPayload();
+							String name = (String)message.getPayload();
 							sendNameScore(name);
 							break;
 
 						case 7: 
 							ui.print("User requested XYZ values", 0); 
-							HighScoreList hslNameScore = (HighScoreList) message.getPayload(); 
+							HighScoreList hslNameScore = (HighScoreList)message.getPayload(); 
 							sendXYZ(hslNameScore.getUser(0).getUser(), hslNameScore.getUser(0).getScore()); 
 							break;
 
@@ -242,7 +241,7 @@ public class Server {
 							
 						case 11:
 							ui.print("FastPunchScore requested for :" + message.getPayload(), 0);
-							String nameFastPunch = (String) message.getPayload();
+							String nameFastPunch = (String)message.getPayload();
 							sendNameScoreFastPunch(nameFastPunch);
 							break;
 						} 
@@ -251,8 +250,10 @@ public class Server {
 							ois.close();
 							oos.close();
 							socket.close();
+							e.printStackTrace();
 						} catch (IOException e2) {
 							System.out.println("Stream close");
+							e.printStackTrace();
 						}
 						connected = false;
 						ui.print("CLIENT DISCONNECTED", 0);
