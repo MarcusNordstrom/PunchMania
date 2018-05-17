@@ -100,7 +100,7 @@ public class MySql{
 			rs.next() ;
 			hs = rs.getInt(3);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println("queue empty");
 		}
 		return hs;
 	}

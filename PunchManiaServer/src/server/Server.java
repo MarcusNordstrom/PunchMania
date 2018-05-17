@@ -29,7 +29,6 @@ public class Server {
 	public static final String FASTPUNCH_MODE = "FAST";
 	public static final String HARDPUNCH_MODE = "HARD";
 
-
 	private Calculator cal = new Calculator(this);
 	private ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
 	private Timer timer = new Timer();
@@ -41,7 +40,6 @@ public class Server {
 	private IS is;
 	private ServerUI ui;
 	public MySql ms;
-
 	private long lastCheckSum;
 
 	public Server(int portIs, int portClient, ServerUI serverui) {
@@ -240,15 +238,14 @@ public class Server {
 							} else {
 								System.err.println("Error, no mode equals: " + mode);
 							}
-							break;	
+							break;
+							
 						case 11:
 							ui.print("FastPunchScore requested for :" + message.getPayload(), 0);
 							String nameFastPunch = (String) message.getPayload();
 							sendNameScoreFastPunch(nameFastPunch);
 							break;
 						} 
-
-
 					} catch (IOException | ClassNotFoundException e) {
 						try {
 							ois.close();
@@ -279,7 +276,11 @@ public class Server {
 			public void sendNameScoreFastPunch(String name) {
 				try {
 					hsList = ms.getFastPunch(name);
+					System.out.println(name);
 					oos.writeObject(new Message(hsList, Message.SERVER_SEND_PLAYERSCORES_FASTPUNCH));
+					for(int i= 0; i < hsList.size(); i++) {
+					System.out.println(hsList.getUser(i).getUser());
+					}
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
@@ -405,6 +406,7 @@ public class Server {
 					return true;
 				} catch (IOException e) {
 					reconnect();
+					e.printStackTrace();
 					return false;
 				}
 			}
@@ -426,12 +428,12 @@ public class Server {
 			}
 			TimerTask task1 = new TimerTask() {
 				public void run() {
-					sendByte((byte)1);
+					reconnect();
 				}
 			};
 			
 			public void start1() {
-				timer1.scheduleAtFixedRate(task1, 0, 300);
+				timer1.scheduleAtFixedRate(task1, 0, 1000);
 			}
 
 			public void run() {
@@ -450,10 +452,9 @@ public class Server {
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
-
 					while(listening) {
-						timer1.cancel();
 						if(mode.equals("HARD")) {
+							timer1.cancel();
 							int size = 0;
 							try {
 								size = dis.available();
@@ -471,8 +472,10 @@ public class Server {
 									ui.print("New score: " + values, 0);
 									listening = false;
 								} catch (IOException e) {
-									reconnect(); 
+									reconnect();
 									connected = false;
+									e.printStackTrace();
+
 								}
 							}
 						} else if(mode.equals("FAST")) {
@@ -493,6 +496,7 @@ public class Server {
 									ms.setFastPunch(ms.popQueue(), i);
 									listening = false;
 								} catch (IOException e) {
+									e.printStackTrace();
 									reconnect(); 
 									connected = false;
 								}
@@ -511,16 +515,15 @@ public class Server {
 			 * with socket recived as parameter. clienthandler run method is started.
 			 */
 			public void run() {
-				ui.print("", 0);
 				while (true) {
 					try {
-						ui.print("IS-port open on: " + serverSocketIs.getLocalPort(), 0);
 						Socket socketIs = serverSocketIs.accept();
 						ui.print("Embedded connected", 0);
 						newHandler(socketIs);
 
 					} catch (IOException e) {
-						System.err.println(e);
+						reconnect();
+						e.printStackTrace();
 					}
 				}
 			}
