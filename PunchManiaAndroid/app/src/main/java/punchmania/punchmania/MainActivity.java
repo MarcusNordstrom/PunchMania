@@ -29,14 +29,6 @@ import common.Queue;
  */
 
 public class MainActivity extends AppCompatActivity {
-    public static final int NEW_QUEUE = 1;
-    public static final int SERVER_SEND_PLAYERSCORES_HARDPUNCH = 6;
-    public static final int SERVER_SEND_PLAYERSCORES_FASTPUNCH = 12;
-    public static final int SERVER_SEND_HSDETAILS = 8;
-    public static final int NEW_HIGHSCORELIST_HARDPUNCH = 2;
-    public static final int NEW_HIGHSCORELIST_FASTPUNCH = 10;
-    public static final int CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH = 5;
-    public static final int CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH = 11;
     public static boolean connected = false;
     private static Queue queue = new Queue();
     private static HighScoreList listHard = new HighScoreList();
@@ -139,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
-                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
+                    send(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                    send(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -162,8 +154,8 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
-                                send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
+                                send(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                                send(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -383,27 +375,27 @@ public class MainActivity extends AppCompatActivity {
                                 Message readMessage = (Message) obj;
                                 Log.i(this.getName(), "Object has arrived!");
                                 switch (readMessage.getInstruction()) {
-                                    case NEW_QUEUE:
+                                    case Message.NEW_QUEUE:
                                         Log.i(this.getName(), "It's a Queue!");
                                         queue = (Queue) readMessage.getPayload();
                                         break;
-                                    case NEW_HIGHSCORELIST_HARDPUNCH:
+                                    case Message.NEW_HIGHSCORELIST_HARDPUNCH:
                                         Log.i(this.getName(), "It's a HighScoreList HardPunch!");
                                         listHard = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case SERVER_SEND_PLAYERSCORES_HARDPUNCH:
+                                    case Message.SERVER_SEND_PLAYERSCORES_HARDPUNCH:
                                         Log.i(this.getName(), "It´s userscores HardPunch!");
                                         listPlayerHard = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case SERVER_SEND_HSDETAILS:
+                                    case Message.SERVER_SEND_HSDETAILS:
                                         Log.i(this.getName(), "It's HighScore details!");
                                         highScoreDetails = (ArrayList<ArrayList<Integer>>) readMessage.getPayload();
                                         break;
-                                    case NEW_HIGHSCORELIST_FASTPUNCH:
+                                    case Message.NEW_HIGHSCORELIST_FASTPUNCH:
                                         Log.i(this.getName(), "It´s a HighScoreList FastPunch");
                                         listFast = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case SERVER_SEND_PLAYERSCORES_FASTPUNCH:
+                                    case Message.SERVER_SEND_PLAYERSCORES_FASTPUNCH:
                                         Log.i(this.getName(), "It´s userscores FastPunch");
                                         listPlayerFast = (HighScoreList) readMessage.getPayload();
                                         break;
