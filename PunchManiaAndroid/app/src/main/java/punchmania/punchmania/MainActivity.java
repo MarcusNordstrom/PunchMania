@@ -17,6 +17,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import common.HighScoreList;
 import common.Message;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "83.248.13.179";
+    private String ip = "10.2.26.26";
     private int port = 9192;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
@@ -131,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
-                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
+                    send(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                    send(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -256,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
     public static class StaticDataSender extends Thread {
         private Object send;
         private int instruction;
+        Random random = new Random();
 
         public StaticDataSender(Object send, int instruction) {
             this.send = send;
@@ -264,8 +266,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public synchronized void run() {
+
             if (connected && send != null && instruction != 0 && !isInterrupted()) {
                 try {
+                    this.sleep(random.nextInt(200));
                     Log.i("DataSender: ", "Trying to send!");
                     oos.reset();
                     oos.writeObject(new Message(send, instruction));
@@ -275,6 +279,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("DataSender: ", "Sent!");
                 } catch (IOException e) {
                     Log.i("DataSender: ", "Socket interrupted");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -298,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Log.i("DataSender: ", "Trying to send!");
                     oos.writeObject(new Message(send, instruction));
+                    Log.i("DataSender", send + "" + instruction );
                     oos.reset();
                     oos.flush();
                     send = null;

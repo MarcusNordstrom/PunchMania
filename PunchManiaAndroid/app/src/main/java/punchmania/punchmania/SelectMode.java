@@ -39,8 +39,6 @@ public class SelectMode extends AppCompatActivity {
         } else {
             btnFastPunch.setEnabled(true);
             btnHardPunch.setEnabled(true);
-            String message = "Queue is empty";
-            Toast.makeText(SelectMode.this, message, Toast.LENGTH_SHORT).show();
             /**
              * When the Hard mode is pressed it sends a object to the server via StaticDataSender. A popup message is also shown when pressed.
              */

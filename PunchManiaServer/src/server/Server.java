@@ -246,7 +246,7 @@ public class Server {
 							sendNameScoreFastPunch(nameFastPunch);
 							break;
 						} 
-						ois.reset();
+
 						
 					} catch (IOException | ClassNotFoundException e) {
 						try {
