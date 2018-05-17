@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "10.2.20.204";
+    private String ip = "83.248.13.179";
     private int port = 9192;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
@@ -131,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
-                    send(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
+                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -267,8 +267,8 @@ public class MainActivity extends AppCompatActivity {
             if (connected && send != null && instruction != 0 && !isInterrupted()) {
                 try {
                     Log.i("DataSender: ", "Trying to send!");
-                    oos.writeObject(new Message(send, instruction));
                     oos.reset();
+                    oos.writeObject(new Message(send, instruction));
                     oos.flush();
                     send = null;
                     instruction = 0;
@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Log.i("DataSender: ", "Trying to send!");
                     oos.writeObject(new Message(send, instruction));
+                    oos.reset();
                     oos.flush();
                     send = null;
                     instruction = 0;

@@ -175,6 +175,7 @@ public class Server {
 		}
 
 		public class ClientHandler extends Thread {
+			private ClientHandler clientHandler = this;
 			private Socket socket;
 			private ObjectOutputStream oos;
 			private ObjectInputStream ois;
@@ -245,6 +246,8 @@ public class Server {
 							sendNameScoreFastPunch(nameFastPunch);
 							break;
 						} 
+						ois.reset();
+						
 					} catch (IOException | ClassNotFoundException e) {
 						try {
 							ois.close();
