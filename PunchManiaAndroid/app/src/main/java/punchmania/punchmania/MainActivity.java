@@ -29,14 +29,6 @@ import common.Queue;
  */
 
 public class MainActivity extends AppCompatActivity {
-    public static final int NEW_QUEUE = 1;
-    public static final int SERVER_SEND_PLAYERSCORES_HARDPUNCH = 6;
-    public static final int SERVER_SEND_PLAYERSCORES_FASTPUNCH = 12;
-    public static final int SERVER_SEND_HSDETAILS = 8;
-    public static final int NEW_HIGHSCORELIST_HARDPUNCH = 2;
-    public static final int NEW_HIGHSCORELIST_FASTPUNCH = 10;
-    public static final int CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH = 5;
-    public static final int CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH = 11;
     public static boolean connected = false;
     private static Queue queue = new Queue();
     private static HighScoreList listHard = new HighScoreList();
@@ -63,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns the queue receiving from input stream.
+     *
      * @return queue
      */
     public static Queue getQueue() {
@@ -71,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns highscore list receiving from input stream.
+     *
      * @return listHard
      */
     public static HighScoreList getHighScoresHard() {
@@ -78,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @return
      */
     public static ArrayList<ArrayList<Integer>> getHighScoreDetails() {
@@ -87,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns the player list for the game mode Hardpunch
+     *
      * @return listPlayerHard
      */
     public static HighScoreList getListPlayerHard() {
@@ -95,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * method returns the player list for the game mode Fastpunch
+     *
      * @return listPlayerFast
      */
     public static HighScoreList getListPlayerFast() {
@@ -103,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method returns highscore list for the game mode FastPunch
+     *
      * @return Highscore list FastPunch
      */
     public static HighScoreList getHighScoresFast() {
@@ -111,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method searches in the activity_client layout where all the widgets are defined.
+     *
      * @param savedInstanceState
      */
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
-                    send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
+                    send(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                    send(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -157,8 +154,8 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                send(newEntry, CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
-                                send(newEntry, CLIENT_REQUEST_PLAYERSCORES_FASTPUNCH);
+                                send(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                                send(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -225,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method displays a popup message given in the String message.
+     *
      * @param message
      */
     public void toastMessage(String message) {
@@ -233,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method is used when object should be send to server via the subclass DataSender.
+     *
      * @param arg1 object we want to send
      * @param arg2 instruction what kind of object we are sending
      */
@@ -243,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method is used when object should be send to server via the subclass StaticDataSender.
+     *
      * @param arg1 object we want to send
      * @param arg2 instruction what kind of object we are sending
      */
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Subclass sending a message containing an object and instruction to server.
      */
-    public class DataSender extends Thread {
+    public class DataSender extends Thread{
         private Object send;
         private int instruction;
 
@@ -298,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Log.i("DataSender: ", "Trying to send!");
                     oos.writeObject(new Message(send, instruction));
-                    oos.reset();
                     oos.flush();
                     send = null;
                     instruction = 0;
@@ -376,27 +375,27 @@ public class MainActivity extends AppCompatActivity {
                                 Message readMessage = (Message) obj;
                                 Log.i(this.getName(), "Object has arrived!");
                                 switch (readMessage.getInstruction()) {
-                                    case NEW_QUEUE:
+                                    case Message.NEW_QUEUE:
                                         Log.i(this.getName(), "It's a Queue!");
                                         queue = (Queue) readMessage.getPayload();
                                         break;
-                                    case NEW_HIGHSCORELIST_HARDPUNCH:
+                                    case Message.NEW_HIGHSCORELIST_HARDPUNCH:
                                         Log.i(this.getName(), "It's a HighScoreList HardPunch!");
                                         listHard = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case SERVER_SEND_PLAYERSCORES_HARDPUNCH:
+                                    case Message.SERVER_SEND_PLAYERSCORES_HARDPUNCH:
                                         Log.i(this.getName(), "It´s userscores HardPunch!");
                                         listPlayerHard = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case SERVER_SEND_HSDETAILS:
+                                    case Message.SERVER_SEND_HSDETAILS:
                                         Log.i(this.getName(), "It's HighScore details!");
                                         highScoreDetails = (ArrayList<ArrayList<Integer>>) readMessage.getPayload();
                                         break;
-                                    case NEW_HIGHSCORELIST_FASTPUNCH:
+                                    case Message.NEW_HIGHSCORELIST_FASTPUNCH:
                                         Log.i(this.getName(), "It´s a HighScoreList FastPunch");
                                         listFast = (HighScoreList) readMessage.getPayload();
                                         break;
-                                    case SERVER_SEND_PLAYERSCORES_FASTPUNCH:
+                                    case Message.SERVER_SEND_PLAYERSCORES_FASTPUNCH:
                                         Log.i(this.getName(), "It´s userscores FastPunch");
                                         listPlayerFast = (HighScoreList) readMessage.getPayload();
                                         break;

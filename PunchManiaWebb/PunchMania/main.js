@@ -125,7 +125,7 @@ if (localStorage !== "undefined") {
 }
 
 function recentColor() {
-    var text = $('#recent').text();
+    var text = document.getElementById("recentText").getAttribute("data-unix-time");
     if (text != "") {
       var CurrentDate = Date.now()/1000.0;
       var PunchDate = Date.parse(text)/1000.0;

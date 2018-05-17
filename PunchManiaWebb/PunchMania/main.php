@@ -271,11 +271,9 @@ function getLastPunch() {
 	$query->execute();
 	$query = $query->fetch();
 	if ($query["fp"] == "fp") {
-		echo "<p class='recent' id='recentText'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in FastPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
-		echo "<p class='hidden' id='recent'>". $query["ti"] ."</p>";
+		echo "<p class='recent' id='recentText' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in FastPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
 	} elseif ($query["fp"] == "hp") {
-		echo "<p class='recent' id='recentText'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in HardPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
-		echo "<p class='hidden' id='recent'>". $query["ti"] ."</p>";
+		echo "<p class='recent' id='recentText' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in HardPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
 	}
 }
 function getLastPunchTime($time) {
