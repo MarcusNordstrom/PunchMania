@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "10.2.26.26";
+    private String ip = "10.2.20.204";
     private int port = 9192;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
@@ -132,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 String newEntry = enterNameEditText.getText().toString();
 
                 if (enterNameEditText.length() != 0) {
-                    send(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
-                    send(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
+                    staticSend(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                    staticSend(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Hejsan", newEntry);
@@ -155,8 +155,8 @@ public class MainActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String newEntry = enterNameEditText.getText().toString();
                             if (enterNameEditText.length() != 0) {
-                                send(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
-                                send(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
+                                staticSend(newEntry, Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH);
+                                staticSend(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("Hejsan", newEntry);
@@ -270,15 +270,15 @@ public class MainActivity extends AppCompatActivity {
             if (connected && send != null && instruction != 0 && !isInterrupted()) {
                 try {
                     this.sleep(random.nextInt(200));
-                    Log.i("DataSender: ", "Trying to send!");
+                    Log.i("StaticDataSender: ", "Trying to send!");
                     oos.reset();
                     oos.writeObject(new Message(send, instruction));
                     oos.flush();
                     send = null;
                     instruction = 0;
-                    Log.i("DataSender: ", "Sent!");
+                    Log.i("StaticDataSender: ", "Sent!");
                 } catch (IOException e) {
-                    Log.i("DataSender: ", "Socket interrupted");
+                    Log.i("StaticDataSender: ", "Socket interrupted");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
