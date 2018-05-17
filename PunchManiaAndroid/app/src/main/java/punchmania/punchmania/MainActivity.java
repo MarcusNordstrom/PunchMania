@@ -291,25 +291,28 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Subclass sending a message containing an object and instruction to server.
      */
-    public class DataSender {
+    public class DataSender extends Thread{
         private Object send;
         private int instruction;
 
         public DataSender(Object send, int instruction) {
             this.send = send;
             this.instruction = instruction;
-            sendsome();
+            this.start();
         }
 
-        public void sendsome() {
-            try {
-                oos.writeObject(new Message(send, instruction));
-                oos.reset();
-                oos.flush();
-                send = null;
-                instruction = 0;
-            } catch (IOException e1) {
-                e1.printStackTrace();
+        public synchronized void run() {
+            if (connected && send != null && instruction != 0 && !isInterrupted()) {
+                try {
+                    Log.i("DataSender: ", "Trying to send!");
+                    oos.writeObject(new Message(send, instruction));
+                    oos.flush();
+                    send = null;
+                    instruction = 0;
+                    Log.i("DataSender: ", "Sent!");
+                } catch (IOException e) {
+                    Log.i("DataSender: ", "Socket interrupted");
+                }
             }
         }
     }
