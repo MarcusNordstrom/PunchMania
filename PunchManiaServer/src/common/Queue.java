@@ -23,7 +23,7 @@ public class Queue implements Serializable {
      */
     public void add(String name) {
         list.add(new UserList(0, name));
-        syso("added user : " + name + " Default gamemode HardPunch ");
+        //syso("added user : " + name + " Default gamemode HardPunch ");
     }
 
     public void add(String name, int mode) {

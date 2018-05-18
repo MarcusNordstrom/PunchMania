@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "10.2.20.204";
+    private String ip = "192.168.1.149";
     private int port = 9192;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                     staticSend(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                    intent.putExtra("Hejsan", newEntry);
+                    intent.putExtra("requested user", newEntry);
                     startActivity(intent);
                 } else {
                     toastMessage("You must put something in the text field");
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                 staticSend(newEntry, Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH);
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                                intent.putExtra("Hejsan", newEntry);
+                                intent.putExtra("requested user", newEntry);
                                 startActivity(intent);
                                 return true;
                             } else {

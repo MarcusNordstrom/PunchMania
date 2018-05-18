@@ -11,40 +11,45 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * Class receives scores from the requested user and shows them in the activity.
+ */
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "searchActivity";
     private TextView usernameTextView;
     private ListView searchListViewHard, searchListViewFast;
 
 
-    @Override
+    /**
+     * Main method starts the other methods.
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
 
         usernameTextView = (TextView) findViewById(R.id.usernameTextView);
         searchListViewHard = (ListView) findViewById(R.id.searchListView);
         searchListViewFast = (ListView) findViewById(R.id.searchListViewFast);
 
         Intent intent = getIntent();
-        String str = intent.getStringExtra("Hejsan");
+        String str = intent.getStringExtra("requested user");
         usernameTextView.setText(str);
         updater updater = new updater();
         updater.start();
-
-
     }
 
+    /**
+     * Creates an array list and copies the content from the receiving list from server.
+     * This array list is placed in a list adapter and shown in UI (activity_search).
+     */
     private void populateListViewHard() {
         ArrayList<String> PlayerHighScoreHard = new ArrayList<>();
         if (MainActivity.getListPlayerHard().size() > 0) {
             for (int i = 0; i < MainActivity.getListPlayerHard().size(); i++) {
                 Log.i(TAG, MainActivity.getListPlayerHard().getUser(i).getScore() + "");
-
                 PlayerHighScoreHard.add(MainActivity.getListPlayerHard().getUser(i).getUser() + "   " + MainActivity.getListPlayerHard().getUser(i).getScore() + "\n");
             }
-
 
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
 
@@ -56,20 +61,21 @@ public class SearchActivity extends AppCompatActivity {
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreHard);
 
             searchListViewHard.setAdapter(adapter);
-
         }
-
     }
 
-
+    /**
+     * Creates an array list and copies the content from the receiving list from server.
+     * This array list is placed in a list adapter and shown in UI (activity_search).
+     */
     private void populateListViewFast() {
         ArrayList<String> PlayerHighScoreFast = new ArrayList<>();
         if (MainActivity.getListPlayerFast().size() > 0) {
             for (int i = 0; i < MainActivity.getListPlayerFast().size(); i++) {
                 Log.i(TAG, MainActivity.getListPlayerFast().getUser(i).getScore() + "");
-
                 PlayerHighScoreFast.add(MainActivity.getListPlayerFast().getUser(i).getUser() + "   " + MainActivity.getListPlayerFast().getUser(i).getScore() + "\n");
             }
+
             ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PlayerHighScoreFast);
 
             searchListViewFast.setAdapter(adapter);
@@ -81,13 +87,13 @@ public class SearchActivity extends AppCompatActivity {
 
             searchListViewFast.setAdapter(adapter);
         }
-
     }
 
+    /**
+     * Inner class running the methods populateListViewHard() and populateListViewFast().
+     */
     public class updater extends Thread {
-        @Override
         public void run() {
-
             try {
                 synchronized (this) {
                     wait(1000);
@@ -99,14 +105,12 @@ public class SearchActivity extends AppCompatActivity {
                                 populateListViewFast();
                             }
                         });
-
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-
 }
 
 
