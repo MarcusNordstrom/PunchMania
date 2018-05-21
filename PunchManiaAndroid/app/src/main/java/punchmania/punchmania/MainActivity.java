@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer2;
     private MediaPlayer mediaPlayer3;
 
-
-
-
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
@@ -72,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newHighscoreSound() {
-        mediaPlayer3 = MediaPlayer.create(this, R.raw.vinnnnn);
+        mediaPlayer3 = MediaPlayer.create(this, R.raw.topscore);
         mediaPlayer3.start();
     }
 
@@ -449,12 +446,10 @@ public class MainActivity extends AppCompatActivity {
                                         String mode = (String) readMessage.getPayload();
                                         if(mode.equals("HARD")){
                                             Log.i("TEST", mode);
-                                            stopSound();
                                             startSound();
                                         }
                                         if(mode.equals("FAST")) {
                                             Log.i("TEST", mode);
-                                            stopSound();
                                             startSound();
                                         }
                                         if(mode.equals("DONE")){
