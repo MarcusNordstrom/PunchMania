@@ -1,10 +1,8 @@
 package punchmania.punchmania;
 
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -74,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newHighscoreSound() {
-        mediaPlayer3 = MediaPlayer.create(this, R.raw.newHS);
+        mediaPlayer3 = MediaPlayer.create(this, R.raw.vinst);
         mediaPlayer3.start();
     }
 
@@ -89,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
     public void stopSound() {
         if (mediaPlayer1 != null || mediaPlayer2 != null) {
             mediaPlayer1.stop();
-            mediaPlayer1.stop();
-            mediaPlayer2.release();
+            mediaPlayer2.stop();
             mediaPlayer1.release();
-            mediaPlayer2 = null;
+            mediaPlayer2.release();
             mediaPlayer1 = null;
+            mediaPlayer2 = null;
         }
     }
     /**
@@ -444,8 +442,7 @@ public class MainActivity extends AppCompatActivity {
                                     case Message.SERVER_SEND_PLAYERSCORES_FASTPUNCH:
                                         Log.i(this.getName(), "It´s userscores FastPunch");
                                         listPlayerFast = (HighScoreList) readMessage.getPayload();
-                                        break;
-                                    case Message.GAMEMODE:
+                                        break; case Message.GAMEMODE:
                                         String mode = (String) readMessage.getPayload();
                                         if(mode.equals("HARD")){
                                             Log.i("TEST", mode);
@@ -461,6 +458,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         break;
                                     case Message.NEW_HS:
+                                        Log.i("TOP", "ny vinst");
                                         newHighscoreSound();
                                         break;
 
