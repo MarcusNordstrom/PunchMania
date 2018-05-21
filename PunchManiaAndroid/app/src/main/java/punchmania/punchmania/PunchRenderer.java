@@ -3,7 +3,6 @@ package punchmania.punchmania;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import java.nio.ByteBuffer;
@@ -23,6 +22,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
     public int mWidth, mHeight;
     public float prevX = 0, prevY = 0;
     public float xPos, yPos;
+    int[] result = new int[1];
     private int mActivePointerID = 0;
     private Context mContext;
     private FloatBuffer mVertexBuffer = null;
@@ -34,6 +34,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
     private float mPreviousY;
     private int size;
 
+
     public PunchRenderer(Context context) {
         arrList = MainActivity.getHighScoreDetails();
         x = arrList.get(0);
@@ -43,35 +44,22 @@ class PunchRenderer implements GLSurfaceView.Renderer {
     }
 
     public void onDrawFrame(GL10 gl) {
-
-
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-        gl.glMatrixMode(GL10.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        gl.glTranslatef( xPos / 500, -(yPos / 500), -3.0f);
-//        gl.glRotatef(mAngleX, 1, 0, 0);
-//        gl.glRotatef(mAngleY, 0, 1, 0);
-//        gl.glRotatef(mAngleZ, 0, 0, 1);
-
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
-
-        gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-
-        // Draw all lines
-//        gl.glDrawElements(GL10.GL_LINE_STRIP, mNumOfTriangleBorderIndices,
-//                GL10.GL_UNSIGNED_SHORT, mTriangleBorderIndicesBuffer);
-        gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, size);
+        gl.glClearColor(0.0f,0.0f,0.0f,1.0f);
+        moveMatrix(gl);
+        drawLine(gl, mVertexBuffer, 1f, size);
     }
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
         gl.glEnable(GL10.GL_DEPTH_TEST);
-
+        gl.glEnable(gl.GL_POINT_SIZE);
+        scaleLines(gl, 5);
+        gl.glEnable(gl.GL_ALIASED_LINE_WIDTH_RANGE);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         // Get all the buffers ready
         setAllBuffers();
+
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -91,6 +79,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
             arraySize = x.size();
         } else if (y.size() < x.size() && y.size() < z.size()) {
             arraySize = y.size();
+
         } else {
             arraySize = z.size();
         }
@@ -102,6 +91,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         mVertexBuffer = vbb.asFloatBuffer();
         mVertexBuffer.put(vertexlist);
         mVertexBuffer.position(0);
+
 
         // Set triangle border buffer with vertex indices
         short trigborderindexlist[] = {
@@ -144,11 +134,11 @@ class PunchRenderer implements GLSurfaceView.Renderer {
 
                 break;
             }
-            case MotionEvent.ACTION_POINTER_UP:{
+            case MotionEvent.ACTION_POINTER_UP: {
                 final int pointerIndex = e.getActionIndex();
                 final int pointerID = e.getPointerId(pointerIndex);
 
-                if(pointerID == mActivePointerID){
+                if (pointerID == mActivePointerID) {
                     final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
                     mPreviousX = e.getX(newPointerIndex);
                     mPreviousY = e.getY(newPointerIndex);
@@ -179,9 +169,33 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         Log.i("Array", print);
     }
 
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+    public void drawLine(GL10 gl, FloatBuffer vertexBuffer, float lineWidth, int vertexSize) {
+        gl.glLineWidth(1);
+        gl.glEnable(gl.GL_LINE_SMOOTH);
+        gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertexBuffer);
+        gl.glEnableClientState(gl.GL_VERTEX_ARRAY);
+        gl.glDrawArrays(gl.GL_LINE_STRIP, 0, vertexSize);
+        gl.glDisableClientState(gl.GL_VERTEX_ARRAY);    
 
     }
+
+    public void scaleLines(GL10 gl, float scale) {
+        gl.glScalef(scale, scale, scale);
+
+    }
+    public void moveMatrix(GL10 gl){
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        gl.glMatrixMode(gl.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glTranslatef(xPos/500,-(yPos/500),-3.0f);
+    }
+    public void rotateModel(GL10 gl, float speed, float x, float y, float z) {
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
+        gl.glMatrixMode(gl.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glRotatef(speed, x, y, z);
+    }
+
 }
 
 
