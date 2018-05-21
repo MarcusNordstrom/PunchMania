@@ -289,9 +289,11 @@ public class Server {
 							ui.print("Game mode chosen :" + message.getPayload(), 0);
 							String mode = (String)message.getPayload();
 							if(mode.equals(FASTPUNCH_MODE)) {
+								sound("FAST");
 								isSendByte((byte)4);
 								System.out.println("FASTPUNCH");
 							} else if(mode.equals(HARDPUNCH_MODE)) {
+								sound("HARD");
 								isSendByte((byte)5);
 								System.out.println("HARDPUNCH");
 							} else {
@@ -356,11 +358,22 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
+			
+			public void sound(String mode) {
+				try {
+					oos.writeObject(new Message(mode, Message.NEW_HIGHSCORELIST_HARDPUNCH));
+					oos.reset();
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			/**
 			 * Send the current highscorelist to all connected clients
 			 */
 			public void sendHardPunchHighscore() {
 				try {
+					sound("DONE");
 					hsList = ms.getAllScore();
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST_HARDPUNCH));
 					oos.reset();
@@ -374,6 +387,7 @@ public class Server {
 			 */
 			public void sendFastPunchHighScore() {
 				try {
+					sound("DONE");
 					hsList = ms.getAllScoreFastPunch();
 					oos.writeObject(new Message(hsList, Message.NEW_HIGHSCORELIST_FASTPUNCH));
 					oos.reset();
