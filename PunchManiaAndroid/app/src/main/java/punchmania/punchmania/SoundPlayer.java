@@ -9,7 +9,6 @@ public class SoundPlayer {
 
     private static SoundPool soundPool;
     private static int startSound;
-    private static int playSound;
 
     public SoundPlayer(Context context)  {
         soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
