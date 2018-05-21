@@ -1,5 +1,6 @@
 function init() {
   $('.uparrow').hide();
+  navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 }
 
 $('.uparrow').click(up());
@@ -123,7 +124,8 @@ if (localStorage !== "undefined") {
     console.log("UUID restored from localStorage");
   }
 }
-
+var PrevTime = "";
+var Startup = false;
 function recentColor() {
     var text = document.getElementById("recentText").getAttribute("data-unix-time");
     if (text != "") {
@@ -137,6 +139,32 @@ function recentColor() {
           red = 63;
         }
         $('#recentText').css("color", "rgb("+ red +", 63, 63)");
+      }
+      if (PrevTime != PunchDate) {
+        PrevTime = PunchDate;
+        if (Startup) {
+          var hs = document.getElementById("recentText").getAttribute("data-highScore");
+          console.log("hs:" + hs);
+          if (hs != "") {
+            switch (hs) {
+              case 'global':
+                console.log("global");
+                navigator.vibrate([300, 200, 300]);
+                break;
+              case 'personal':
+                console.log("personal");
+                navigator.vibrate([200, 100, 200]);
+                break;
+              case 'no':
+                console.log("no");
+                break;
+              default:
+
+              }
+          }
+        } else {
+          Startup = true;
+        }
       }
     }
 }

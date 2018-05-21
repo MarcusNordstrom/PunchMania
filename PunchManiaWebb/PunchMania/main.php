@@ -271,9 +271,40 @@ function getLastPunch() {
 	$query->execute();
 	$query = $query->fetch();
 	if ($query["fp"] == "fp") {
-		echo "<p class='recent' id='recentText' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in FastPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+		$queryfp = $GLOBALS["conn"]->prepare("SELECT * FROM `fastpunch` ORDER BY `Score` DESC LIMIT 1");
+		$queryfp->execute();
+		$queryfp = $queryfp->fetch();
+		if ($query["ti"] == $queryfp["Time"]) {
+			echo "<p class='recent' id='recentText' data-highScore='global' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit a new highscore " . $query["Score"] . " in FastPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+		} else {
+			$queryfpp = $GLOBALS["conn"]->prepare("SELECT * FROM `fastpunch` WHERE `Name`=:uname ORDER BY `Score` DESC LIMIT 1");
+			$queryfpp->bindParam(":uname", $query["Name"]);
+			$queryfpp->execute();
+			$queryfpp = $queryfpp->fetch();
+			if ($query["ti"] == $queryfpp["Time"]) {
+				echo "<p class='recent' id='recentText' data-highScore='personal' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit a new personal highscore " . $query["Score"] . " in FastPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+			} else {
+				echo "<p class='recent' id='recentText' data-highScore='no' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in FastPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+			}
+		}
 	} elseif ($query["fp"] == "hp") {
-		echo "<p class='recent' id='recentText' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in HardPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+		$queryhp = $GLOBALS["conn"]->prepare("SELECT * FROM `hslist` ORDER BY `Score` DESC LIMIT 1");
+		$queryhp->execute();
+		$queryhp = $queryhp->fetch();
+		if ($query["ti"] == $queryhp["Time"]) {
+			echo "<p class='recent' id='recentText' data-highScore='global' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit a new highscore " . $query["Score"] . " in HardPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+		} else {
+			$queryhpp = $GLOBALS["conn"]->prepare("SELECT * FROM `hslist` WHERE `Name`=:uname ORDER BY `Score` DESC LIMIT 1");
+			$queryhpp->bindParam(":uname", $query["Name"]);
+			$queryhpp->execute();
+			$queryhpp = $queryhpp->fetch();
+			if ($query["ti"] == $queryhpp["Time"]) {
+				echo "<p class='recent' id='recentText' data-highScore='personal' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit a new personal highscore " . $query["Score"] . " in HardPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+			} else {
+				echo "<p class='recent' id='recentText' data-highScore='no' data-unix-time='". $query["ti"] ."'><a href='index.php?site=user&user=" .$query["Name"] . "'>". $query["Name"] ."</a> hit " . $query["Score"] . " in HardPunch ". getLastPunchTime($query["ti"]) ." ago</p>";
+			}
+		}
+
 	}
 }
 function getLastPunchTime($time) {
