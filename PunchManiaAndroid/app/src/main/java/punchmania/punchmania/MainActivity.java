@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newHighscoreSound() {
-        mediaPlayer3 = MediaPlayer.create(this, R.raw.vinst);
+        mediaPlayer3 = MediaPlayer.create(this, R.raw.vinnnnn);
         mediaPlayer3.start();
     }
 
@@ -85,13 +85,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void stopSound() {
-        if (mediaPlayer1 != null || mediaPlayer2 != null) {
+        if (mediaPlayer1 != null || mediaPlayer2 != null || mediaPlayer3 != null) {
             mediaPlayer1.stop();
             mediaPlayer2.stop();
+            mediaPlayer3.stop();
             mediaPlayer1.release();
             mediaPlayer2.release();
+            mediaPlayer3.release();
             mediaPlayer1 = null;
             mediaPlayer2 = null;
+            mediaPlayer3 = null;
         }
     }
     /**
@@ -446,10 +449,12 @@ public class MainActivity extends AppCompatActivity {
                                         String mode = (String) readMessage.getPayload();
                                         if(mode.equals("HARD")){
                                             Log.i("TEST", mode);
+                                            stopSound();
                                             startSound();
                                         }
                                         if(mode.equals("FAST")) {
                                             Log.i("TEST", mode);
+                                            stopSound();
                                             startSound();
                                         }
                                         if(mode.equals("DONE")){
