@@ -42,12 +42,16 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<ArrayList<Integer>> highScoreDetails = new ArrayList<>();
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
-    private String ip = "192.168.1.149";
+    private String ip = "10.2.26.21";
     private int port = 9192;
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
     private static long requestedHit = Long.MAX_VALUE;
     private SoundPlayer soundPlayer;
+    private MediaPlayer mediaPlayer;
+    private MediaPlayer mp;
+
+
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -68,6 +72,28 @@ public class MainActivity extends AppCompatActivity {
         return queue;
     }
 
+    public void soundTiger() {
+
+    }
+
+    public void startSound() {
+        mediaPlayer = MediaPlayer.create(this, R.raw.punchmania);
+        mp = MediaPlayer.create(this, R.raw.countdown);
+        mediaPlayer.seekTo(10000);
+        mediaPlayer.start();
+        mp.start();
+    }
+
+    public void stopSound() {
+        if (mediaPlayer != null || mp != null) {
+            mp.stop();
+            mediaPlayer.stop();
+            mp.release();
+            mediaPlayer.release();
+            mp = null;
+            mediaPlayer = null;
+        }
+    }
     /**
      * Method returns highscore list receiving from input stream.
      *
@@ -121,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
         soundPlayer = new SoundPlayer(this);
-        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.punchmania);
 
         dataReader.start();
         //HighScoreListActivity highScoreListActivity = new HighScoreListActivity();
@@ -223,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String password = enterNameEditText.getText().toString();
                 if (password.equals("1337")) {
-                    mediaPlayer.start();
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SelectMode.class);
                     startActivity(intent);
@@ -419,6 +443,22 @@ public class MainActivity extends AppCompatActivity {
                                         Log.i(this.getName(), "It´s userscores FastPunch");
                                         listPlayerFast = (HighScoreList) readMessage.getPayload();
                                         break;
+                                    case Message.GAMEMODE:
+                                        String mode = (String) readMessage.getPayload();
+                                        if(mode.equals("HARD")){
+                                            Log.i("TEST", mode);
+                                            startSound();
+                                        }
+                                        if(mode.equals("FAST")) {
+                                            Log.i("TEST", mode);
+                                            startSound();
+                                        }
+                                        if(mode.equals("DONE")){
+                                            Log.i("TEST", mode);
+                                            stopSound();
+                                        }
+                                        break;
+
                                     default:
                                         Log.i(this.getName(), "get object");
                                         break;

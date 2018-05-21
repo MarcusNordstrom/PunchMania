@@ -361,7 +361,7 @@ public class Server {
 			
 			public void sound(String mode) {
 				try {
-					oos.writeObject(new Message(mode, Message.NEW_HIGHSCORELIST_HARDPUNCH));
+					oos.writeObject(new Message(mode, Message.GAMEMODE));
 					oos.reset();
 					oos.flush();
 				} catch (IOException e) {
