@@ -2,12 +2,10 @@ package server;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -16,10 +14,13 @@ import javax.swing.JTextField;
 import common.HighScoreList;
 import common.Queue;
 import common.UserList;
-
+/**
+ * PunchmaniaUI
+ *
+ */
 public class ServerUI extends JPanel {
 
-
+	private static final long serialVersionUID = 7511514150396821495L;
 	private JTextArea taCmdArea = new JTextArea();
 	private JScrollPane spCmdArea = new JScrollPane(taCmdArea);
 	private JTextField tfCmdField = new JTextField();
@@ -27,7 +28,9 @@ public class ServerUI extends JPanel {
 	private int cmdIndex = 0;
 	private ArrayList<String> lastCmds = new ArrayList<String>();
 
-
+	/**
+	 * Constructor for setting up the looks and feel
+	 */
 	public ServerUI() {
 		setLayout(new BorderLayout());
 		setBackground(Color.BLACK);
@@ -71,6 +74,9 @@ public class ServerUI extends JPanel {
 			}
 		});
 	}
+	/**
+	 * Read the commandline a use corresponding method
+	 */
 	private void readCmd() {
 		String fullCmd = tfCmdField.getText();
 		String[] cmd = fullCmd.split(" ");
@@ -206,16 +212,24 @@ public class ServerUI extends JPanel {
 			print("unknown command: " + fullCmd, 0);
 		}
 
-	}
-
+	}	
+	/**
+	 * Clear the current queue
+	 */
 	public void clearQ() {
 		server.ms.DeleteQueueList();
 	}
-
+	/**
+	 * Get the current queue
+	 */
 	public void getQ() {
 		server.ms.getQueue();
 
 	}
+	/**
+	 * Remove a set of users for the queue
+	 * @param cmd
+	 */
 	private void removeQ(String[] cmd) {
 		for(int i = 1; i < cmd.length;i++) {
 			String name = cmd[i];
@@ -224,6 +238,10 @@ public class ServerUI extends JPanel {
 		}
 		System.out.println("user removed");
 	}
+	/**
+	 * Add a set of users to the queue
+	 * @param cmd
+	 */
 	private void addQ(String[] cmd) {
 		for(int i = 1; i < cmd.length;i++) {
 			String name = cmd[i];
@@ -232,12 +250,18 @@ public class ServerUI extends JPanel {
 
 		}
 	}
-
+	/**
+	 * Removed during development
+	 */
+	@Deprecated
 	private void delayOne() {
 		Queue q = server.getQueue();
 		q.dropOne();
 	}
-
+	/**
+	 * Add new user to HardPunch highscorelist with set score
+	 * @param cmd
+	 */
 	private void add(String[] cmd) {
 		for(int i = 1; i < cmd.length;i+=2) {
 			String name = cmd[i];
@@ -246,7 +270,10 @@ public class ServerUI extends JPanel {
 			print("Adding : " + cmd[i] + " to Highscore" , 0);
 		}
 	}
-
+	/**
+	 * Remove a set of users from Hardpuch highscorelist
+	 * @param cmd
+	 */
 	private void remove(String[] cmd) {
 		for(int i = 1; i < cmd.length;i++) {
 			String name = cmd[i];
@@ -254,45 +281,51 @@ public class ServerUI extends JPanel {
 			print("Removing : " + cmd[i] , 0);
 		}
 	}
+	/**
+	 * Clear the hardpunch highscorelist
+	 */
 	private void clearHS() {
 		server.ms.DeleteHSList();
 	}
+	/**
+	 * Clear the commandline
+	 */
 	private void clear() {
 		taCmdArea.setText("");
 
 	}
-
+	/**
+	 * Get score for specific user from Hardpunch
+	 * @param string
+	 */
 	private void getScore(String string) {
 		print(string,0);
 		server.ms.getUserScore(string);
 		print("" + server.ms.getUserScore(string), 0);
 	}
-
+	/**
+	 * Get the HardPunch highscorelist
+	 */
 	private void getHSList() {
 		HighScoreList list = server.ms.getAllScore();
 		for(UserList score : list.getTopTen()) {
 			print(score.getUser() + ": " + score.getScore(),0);
 		}
 	}
-
+	/**
+	 * Print to the commandline
+	 * @param text
+	 * @param i
+	 */
 	public synchronized void print(String text, int i) {
 		taCmdArea.setText(taCmdArea.getText() + text.substring(i) + "\n");
 	}
-
+	/**
+	 * Connect server to UI
+	 * @param server
+	 */
 	public void addManager(Server server) {
 		this.server = server;
 		print("Server open", 0);
-	}
-
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame = new JFrame("PUNCH MANIA");
-		frame.setResizable(false);
-		frame.setPreferredSize(new Dimension(500, 600));
-		frame.add(new ServerUI());
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }

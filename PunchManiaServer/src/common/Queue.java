@@ -2,7 +2,10 @@ package common;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
+/**
+ * A serializable queue that is used in client broadcast
+ *
+ */
 public class Queue implements Serializable {
     public static final int HARDPUNCH = 0;
     public static final int FASTPUNCH = 1;
@@ -11,7 +14,9 @@ public class Queue implements Serializable {
      */
     private static final long serialVersionUID = -6483005274886522243L;
     private ArrayList<UserList> list;
-
+    /**
+     * Constructor for init
+     */
     public Queue() {
         list = new ArrayList<UserList>();
     }
@@ -121,7 +126,10 @@ public class Queue implements Serializable {
         list.set(0, list.get(1));
         list.set(1, temp);
     }
-
+    /**
+     * returns the queue as an arraylist
+     * @return
+     */
     public ArrayList<String> getList() {
         ArrayList<String> temp = new ArrayList<String>();
         for (UserList s : list) {

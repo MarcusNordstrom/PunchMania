@@ -16,8 +16,15 @@ import common.HighScoreList;
 import common.Message;
 import common.Queue;
 import server.Server.Client.ClientHandler;
-
+/**
+ * Server for managing clients and punchingbags
+ *
+ */
 public class Server {
+	/*
+	 * final instructions for both receive and send methods
+	 * 
+	 */
 	public static final int IS_HIGHSCORE = 3;
 	public static final int QUEUE = 4;
 	public static final int HIGHSCORE = 5;
@@ -41,7 +48,12 @@ public class Server {
 	private ServerUI ui;
 	public MySql ms;
 	private long lastCheckSum;
-
+	/**
+	 *  Server constructor
+	 * @param portIs the bindport for IS
+	 * @param portClient the bind port for clients
+	 * @param serverui reference to the UI
+	 */
 	public Server(int portIs, int portClient, ServerUI serverui) {
 		try {
 			serverSocketIs = new ServerSocket(portIs);
@@ -58,11 +70,17 @@ public class Server {
 		ui.print("SQL connected",0);
 		start();
 	}
-
+	/**
+	 * Send a byte of data to the IS
+	 * @param send
+	 */
 	public void isSendByte(byte send) {
 		is.sendByte(send);
 	}
-
+	
+	/**
+	 * A task running on a separate clock that gets updates form SQL and breadcasts to connected clients
+	 */
 	TimerTask task = new TimerTask() {
 		public void run() {
 			if(lastCheckSum != ms.getCheckSum()) {
@@ -73,7 +91,10 @@ public class Server {
 			}
 		}
 	};
-
+	/**
+	 * Set which mode the server is running
+	 * @param i
+	 */
 	public void setSend(int i) {
 		switch(i) {
 		case 3:
@@ -89,52 +110,80 @@ public class Server {
 			client.clientMethods(SEND_FASTPUNCH_HIGHSCORE);
 		}
 	}
-
+	/**
+	 * Start of thread
+	 */
 	public void start() {
 		lastCheckSum = ms.getCheckSum();
 		timer.scheduleAtFixedRate(task, 500, 500);
 	}
-
+	/**
+	 * Send queue to connected clients
+	 */
 	public void sendQueue() {
 		setSend(QUEUE);
 	}
-
+	/**
+	 * Send the highscore list for HardPunch to connected clients
+	 */
 	public void sendHardPunchHighscore() {
 		setSend(SEND_HARDPUNCH_HIGHSCORE);
 	}
-
+	/**
+	 * Send the highscore list for HardPunch to connected clients
+	 */
 	public void sendFastPunchHighscore() {
 		setSend(SEND_FASTPUNCH_HIGHSCORE);
 	}
-
+	/**
+	 * Tell connected "hosts" that a new highscore has been achived
+	 * @param score
+	 */
 	public void newHs(int score) {
 		if(score > ms.getTop1()) {
 			setSend(IS_HIGHSCORE);
 			client.clientMethods(TOP_HIGHSCORE);
 		}
 	}
-
+	/**
+	 * Set the score for the next player in line
+	 * @param score
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
 	public void setScore(int score, String x, String y, String z) {
 		newHs(score);
 		ms.setMySql(ms.popQueue(), score, x, y, z);
 		client.clientMethods(SEND_HARDPUNCH_HIGHSCORE);
 	}
-
+	/**
+	 * Send queue to connected clients
+	 */
 	public void broadcastQueue() {
 		for(ClientHandler sendq : clientList) {
 			sendq.sendQueue();
 		}
 	}
-
+	/**
+	 * Add new user to queue
+	 * @param name Username
+	 */
 	public void addQueue(String name) {
 		queue.add(name);
 		ms.toQueue(name);
 	}
-
+	/**
+	 * get the current queue
+	 * @return	current queue
+	 */
 	public Queue getQueue() {
 		return queue;
 	}
-
+	/**
+	 * Sub-class for client connections
+	 *
+	 */
 	public class Client {
 		private ServerSocket socket;
 
@@ -146,7 +195,10 @@ public class Server {
 			this.socket = serverSocketClient;
 			new ConnectionClient().start();
 		}
-
+		/**
+		 * switch case for wich method to use
+		 * @param i Method selector
+		 */
 		public void clientMethods(int i) {
 			switch (i) {
 			case 6: 
@@ -173,13 +225,20 @@ public class Server {
 				}
 			}
 		}
-
+		/**
+		 * Sub-class for client management
+		 *
+		 */
 		public class ClientHandler extends Thread {
+			@SuppressWarnings("unused")
 			private ClientHandler clientHandler = this;
 			private Socket socket;
 			private ObjectOutputStream oos;
 			private ObjectInputStream ois;
-
+			/**
+			 * constructor
+			 * @param socketClient
+			 */
 			public ClientHandler(Socket socketClient) {
 				this.socket = socketClient;
 				try {
@@ -265,7 +324,10 @@ public class Server {
 					}
 				}
 			}
-
+			/**
+			 * Send the score belonging to a specific user back to client requesting
+			 * @param name
+			 */
 			public void sendNameScore(String name) {
 				try {
 					hsList = ms.getUserScore(name);
@@ -276,7 +338,10 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
-
+			/**
+			 * Send the score belonging to a specific user back to client requesting
+			 * @param name
+			 */
 			public void sendNameScoreFastPunch(String name) {
 				try {
 					hsList = ms.getFastPunch(name);
@@ -291,7 +356,9 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
-
+			/**
+			 * Send the current highscorelist to all connected clients
+			 */
 			public void sendHardPunchHighscore() {
 				try {
 					hsList = ms.getAllScore();
@@ -302,7 +369,9 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
-
+			/**
+			 * Send the current fastpunchlist to all connected clients
+			 */
 			public void sendFastPunchHighScore() {
 				try {
 					hsList = ms.getAllScoreFastPunch();
@@ -313,7 +382,9 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
-
+			/**
+			 * send the current queue to all connected clients
+			 */
 			public void sendQueue() {
 				try {
 					queue = ms.getQueue();
@@ -325,7 +396,9 @@ public class Server {
 					System.out.println("Request to send queue failed");
 				}
 			}
-
+			/**
+			 * Tell all clients that a new highscore has been achieved
+			 */
 			public void topHighscore() {
 				try {
 					String name = ms.getTop1Name();
@@ -337,7 +410,11 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
-
+			/**
+			 * Send XYZ belonging to a specific punch
+			 * @param name
+			 * @param score
+			 */
 			public void sendXYZ(String name, int score) { 
 				try { 
 					oos.writeObject(new Message(ms.getXYZ(name, score), Message.SERVER_SEND_HSDETAILS)); 
@@ -348,7 +425,10 @@ public class Server {
 				} 
 			}
 		}
-
+		/**
+		 * Sub-class for the client connection listener
+		 *
+		 */
 		private class ConnectionClient extends Thread {
 			/*
 			 * Waiting for connection, if connection is made new clienthandler is created
@@ -369,7 +449,10 @@ public class Server {
 		}
 
 	}
-
+	/**
+	 * Sub-class for the IS client
+	 *
+	 */
 	public class IS extends Thread{
 
 		private DataOutputStream dos;
@@ -380,20 +463,33 @@ public class Server {
 		private String fast = "FAST";
 		private boolean listening;
 		private Socket isSocket; 
-
+		/**
+		 * constructor for IS client
+		 * @param serverSocketIs
+		 */
 		public IS(ServerSocket serverSocketIs) {
 			new ConnectionIs().start();
 		}
-		
+		/**
+		 * Try establishing a new connection to IS
+		 */
 		public void reconnect() { 
 			new ConnectionIs().start(); 
 		} 
+		/**
+		 * Create a new IS manager
+		 * @param socket
+		 */
 		public void newHandler(Socket socket) {
 			isSocket = socket; 
 			ish = new ISHandler(socket);
 			ish.run();
 		}
-
+		/**
+		 * Send 1 byte of rawdata to IS
+		 * @param send
+		 * @return
+		 */
 		public boolean sendByte(byte send) {
 			if (dos != null) {
 				try {
@@ -416,11 +512,18 @@ public class Server {
 			}
 			return false;
 		}
-
+		/**
+		 * Sub-class manager for IS client
+		 * @author Sebastian Carlsson
+		 *
+		 */
 		public class ISHandler implements Runnable {
 			private Socket socket;
 			private Timer timer1 = new Timer();
-
+			/**
+			 * constructor for IS manager
+			 * @param socket
+			 */
 			public ISHandler(Socket socket) {
 				try {
 					this.socket = socket;
@@ -430,16 +533,23 @@ public class Server {
 					e.printStackTrace();
 				}
 			}
+			/**
+			 * Try connection on a clock
+			 */
 			TimerTask task1 = new TimerTask() {
 				public void run() {
 					reconnect();
 				}
 			};
-			
+			/**
+			 * Start the timer
+			 */
 			public void start1() {
 				timer1.scheduleAtFixedRate(task1, 0, 1000);
 			}
-
+			/**
+			 * Read data from IS and respond accordingliy
+			 */
 			public void run() {
 				System.out.println("run started");
 				boolean connected = true;
@@ -511,7 +621,10 @@ public class Server {
 			}
 		}
 
-
+		/**
+		 * Sub-class for IS connection listener
+		 *
+		 */
 		private class ConnectionIs extends Thread {
 
 			/*
@@ -533,7 +646,10 @@ public class Server {
 			}
 		}
 	}
-
+	/**
+	 * Start the server
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		ServerUI serverui = new ServerUI();
@@ -545,6 +661,7 @@ public class Server {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		@SuppressWarnings("unused")
 		Server server = new Server(12345, 9192, serverui);
 	}
 

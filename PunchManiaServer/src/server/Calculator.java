@@ -1,12 +1,15 @@
 package server;
 
 
-import java.sql.Array;
 import java.util.ArrayList;
-
+/**
+ * Score calculations class 
+ *
+ */
 public class Calculator {
 	private String newString ="";
 	private char semi = ';';
+	@SuppressWarnings("unused")
 	private char col= ',';
 	int X;
 	int Y;
@@ -18,11 +21,17 @@ public class Calculator {
 	private ArrayList<Integer> x = new ArrayList<Integer>();
 	private ArrayList<Integer> y = new ArrayList<Integer>();
 	private ArrayList<Integer> z = new ArrayList<Integer>();
-
+	/**
+	 * Connect calculator to server
+	 * @param server
+	 */
 	public Calculator(Server server) {
 		this.server = server;
 	}
-
+	/**
+	 * Return next X in queue
+	 * @return
+	 */
 	public int popX() {
 		if(x.size() == 0) {
 			return 0;
@@ -31,7 +40,10 @@ public class Calculator {
 		x.remove(0);
 		return xint;
 	}
-
+	/**
+	 * Return next Y in queue
+	 * @return
+	 */
 	public int popY() {
 		if(y.size() == 0) {
 			return 0;
@@ -40,7 +52,10 @@ public class Calculator {
 		y.remove(0);
 		return yint;
 	}
-
+	/**
+	 * Return next Z in queue
+	 * @return
+	 */
 	public int popZ() {
 		if(z.size() == 0) {
 			return 0;
@@ -49,7 +64,11 @@ public class Calculator {
 		z.remove(0);
 		return zint;
 	}
-
+	/**
+	 * Check if inputted string is an integer
+	 * @param s
+	 * @return
+	 */
 	public static boolean isInteger(String s) {
 		try { 
 			Integer.parseInt(s); 
@@ -61,7 +80,10 @@ public class Calculator {
 		// only got here if we didn't return false
 		return true;
 	}
-
+	/**
+	 * Split inputted string into 3 int arrays X,Y,Z
+	 * @param values
+	 */
 	public void splitter(String values) {
 
 		for(int i=0; i < values.length(); i++) {
@@ -110,6 +132,9 @@ public class Calculator {
 			}
 		}
 	}
+	/**
+	 * Calculate the Score
+	 */
 	public void force() {
 		int avrgX = 0;
 		for(int i=0; i< x.size(); i++) {
@@ -134,11 +159,16 @@ public class Calculator {
 		score = (int)(componentXYZ * 10);
 		System.out.println("SCORE: " + score);
 	}
-
+	/**
+	 * Return the score
+	 * @return
+	 */
 	public int getScore() {
 		return score;
 	}
-
+	/**
+	 * Reset the Calculator
+	 */
 	private void clearPrevious() {
 		newString = "";
 		section = "";
@@ -148,7 +178,11 @@ public class Calculator {
 		z.clear();
 		score = 0;
 	}
-
+	/**
+	 * Use input string to calculate your score
+	 * @param values 
+	 * @return score
+	 */
 	public int calculateScore(String values) {
 		clearPrevious();
 		splitter(values);
