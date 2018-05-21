@@ -1,7 +1,10 @@
 package common;
 
 import java.io.Serializable;
-
+/**
+ * Contains a serializable user that is used in lists
+ *
+ */
 public class UserList implements Serializable {
     /**
      *

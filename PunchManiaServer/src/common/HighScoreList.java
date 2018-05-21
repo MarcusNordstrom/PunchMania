@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
+/**
+ * Contains a serializable list of users
+ *
+ */
 public class HighScoreList implements Serializable {
 
     /**
@@ -12,7 +15,9 @@ public class HighScoreList implements Serializable {
      */
     private static final long serialVersionUID = -5796106356303659629L;
     private ArrayList<UserList> ul;
-
+    /**
+     * Constructor to init
+     */
     public HighScoreList() {
         ul = new ArrayList<UserList>();
     }
@@ -39,11 +44,6 @@ public class HighScoreList implements Serializable {
         ul.add(new UserList(score, user));
         sort();
     }
-//	
-//	public void add(String user, int score, String time) {
-//		ul.add(new UserList(score, user));
-//		sort();
-//	}
 
     /**
      * This method appends all of the elements in the specified collection to the end of the list.
@@ -61,7 +61,6 @@ public class HighScoreList implements Serializable {
      */
     public void remove(String user) {
         ArrayList<UserList> temp = new ArrayList<UserList>();
-        int i = 0;
         for (UserList ul : ul) {
             if (ul.getUser().equals(user)) {
                 temp.add(ul);
@@ -90,14 +89,11 @@ public class HighScoreList implements Serializable {
     public int size() {
         return ul.size();
     }
-
-    public void syso() {
-        for (UserList u : ul) {
-            System.out.println(u.getUser() + " " + u.getScore());
-        }
-        System.out.println();
-    }
-
+    /**
+     * returns the user at a specific index
+     * @param i
+     * @return
+     */
     public UserList getUser(int i) {
         return ul.get(i);
     }
