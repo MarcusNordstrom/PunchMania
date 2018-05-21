@@ -48,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private static boolean dataReaderRunning = false;
     private static long requestedHit = Long.MAX_VALUE;
     private SoundPlayer soundPlayer;
-    private MediaPlayer mediaPlayer;
-    private MediaPlayer mp;
+    private MediaPlayer mediaPlayer1;
+    private MediaPlayer mediaPlayer2;
+    private MediaPlayer mediaPlayer3;
 
 
 
@@ -72,26 +73,27 @@ public class MainActivity extends AppCompatActivity {
         return queue;
     }
 
-    public void soundTiger() {
-
+    public void newHighscoreSound() {
+        mediaPlayer3 = MediaPlayer.create(this, R.raw.newHS);
+        mediaPlayer3.start();
     }
 
     public void startSound() {
-        mediaPlayer = MediaPlayer.create(this, R.raw.punchmania);
-        mp = MediaPlayer.create(this, R.raw.countdown);
-        mediaPlayer.seekTo(10000);
-        mediaPlayer.start();
-        mp.start();
+        mediaPlayer1 = MediaPlayer.create(this, R.raw.punchmania);
+        mediaPlayer2 = MediaPlayer.create(this, R.raw.countdown);
+        mediaPlayer1.seekTo(10000);
+        mediaPlayer1.start();
+        mediaPlayer2.start();
     }
 
     public void stopSound() {
-        if (mediaPlayer != null || mp != null) {
-            mp.stop();
-            mediaPlayer.stop();
-            mp.release();
-            mediaPlayer.release();
-            mp = null;
-            mediaPlayer = null;
+        if (mediaPlayer1 != null || mediaPlayer2 != null) {
+            mediaPlayer1.stop();
+            mediaPlayer1.stop();
+            mediaPlayer2.release();
+            mediaPlayer1.release();
+            mediaPlayer2 = null;
+            mediaPlayer1 = null;
         }
     }
     /**
@@ -457,6 +459,9 @@ public class MainActivity extends AppCompatActivity {
                                             Log.i("TEST", mode);
                                             stopSound();
                                         }
+                                        break;
+                                    case Message.NEW_HS:
+                                        newHighscoreSound();
                                         break;
 
                                     default:
