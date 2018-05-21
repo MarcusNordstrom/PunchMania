@@ -1,7 +1,10 @@
 package punchmania.punchmania;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private DataReader dataReader = new DataReader();
     private static boolean dataReaderRunning = false;
     private static long requestedHit = Long.MAX_VALUE;
+    private SoundPlayer soundPlayer;
+
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -111,9 +116,13 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param savedInstanceState
      */
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
+        soundPlayer = new SoundPlayer(this);
+        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.punchmania);
+
         dataReader.start();
         //HighScoreListActivity highScoreListActivity = new HighScoreListActivity();
         //highScoreListActivity.onCreate(savedInstanceState);
@@ -123,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         btnViewHighScoreFast = (Button) findViewById(R.id.btnViewHSFast);
         btnPunch = (Button) findViewById(R.id.btnPunch);
         enterNameEditText = (EditText) findViewById(R.id.enterNameEditText);
+
 
         /**
          * This method make sure that when the search button is pushed it start another activity.
@@ -137,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("requested user", newEntry);
+                    soundPlayer.playStartSound();
                     startActivity(intent);
                 } else {
                     toastMessage("You must put something in the text field");
@@ -212,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String password = enterNameEditText.getText().toString();
                 if (password.equals("1337")) {
+                    mediaPlayer.start();
                     enterNameEditText.setText("");
                     Intent intent = new Intent(MainActivity.this, SelectMode.class);
                     startActivity(intent);

@@ -9,7 +9,6 @@ import common.Queue;
 
 /**
  * 
- * @author Jake
  *
  * This class connects Java-server and SQL-server together. The SQL-backend contains and handles Users, Queue and Highscore. 
  * The Users table consists of ID, Username and Password. The queue table consists of ID and Name. 
@@ -361,7 +360,10 @@ public class MySql{
 		return size;
 	}
 
-
+	/**
+	 * Returns the current checksum value
+	 * @return
+	 */
 	public synchronized Long getCheckSum() {
 		Long checkSum = null;
 		Statement Stmt;
@@ -377,7 +379,11 @@ public class MySql{
 
 		return checkSum;
 	}
-
+	/**
+	 * Add user to Fastpunch highscore list with set score
+	 * @param name
+	 * @param score
+	 */
 	public synchronized void setFastPunch(String name, int score) {
 		try {
 			PreparedStatement stmt = myConn.prepareStatement("INSERT INTO fastpunch(Name, Score) VALUES (?,?)");
@@ -388,7 +394,11 @@ public class MySql{
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Get score from specific user
+	 * @param name
+	 * @return
+	 */
 	public synchronized HighScoreList getFastPunch(String name){
 		HighScoreList hsl = new HighScoreList();
 		try {
@@ -404,7 +414,10 @@ public class MySql{
 		}
 		return hsl;
 	}
-	
+	/**
+	 * Return the Fastpunch highscorelist
+	 * @return
+	 */
 	public synchronized HighScoreList getAllScoreFastPunch() {
 		Statement Stmt;
 		HighScoreList hsl = new HighScoreList();
@@ -420,7 +433,10 @@ public class MySql{
 		}
 		return hsl;
 	}
-
+	/**
+	 * Init SQL
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		MySql ms = new MySql();
 		ms.getFastPunch("Jake");	

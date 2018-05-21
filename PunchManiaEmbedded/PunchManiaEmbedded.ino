@@ -203,7 +203,7 @@ void loop(){
   connect();
 }
 
-
+//calubrate adxl values to dX, dY, dZ
 void calibrate(){
     
     calibrationCounter++;
@@ -253,13 +253,15 @@ void calibrate(){
   y -= calibrationYOffset;
   z -= calibrationZOffset;
 }
-
+//Hardpunch
 void doHardPunch(){
   calibrate();
+  //Green led
   setLed(1);
-
+  
   hitValue = 200;
-  if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {
+  if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {//If dX, dY, dZ have pased our threshold
+    //Yellow led
     setLed(2);
     hit_detected = true;
     Serial.println("h:");
@@ -268,6 +270,7 @@ void doHardPunch(){
     Serial.println(z);
   }
   if (hit_detected) {
+    //Store
     if (counter < 1000) {
       counter++;
       storage += String(x);
@@ -281,9 +284,11 @@ void doHardPunch(){
       hit_detected = false;
       hitCount = 0;
       startTime = 0;
+      //Write to buffer
       byte ret[storage.length()];
       storage.getBytes(ret, storage.length());
       client.write(ret, 900);
+      //flush buffer
       client.flush();
       Serial.println("Data sent");
       //client.write(buff, 2000);
@@ -298,21 +303,24 @@ void doHardPunch(){
 }
 
 int hitRegX, hitRegY, hitRegZ;
+//Fastpunch
 void doFastPunch(){
   adxl.readAccel(&x,&y,&z);
   hitValue = 200;
-  if(startTime == 0){
-    startTime = millis();
+  if(startTime == 0){//Did we just start?
+    startTime = millis(); //Reset starttime
   }
   unsigned long currentTime = millis();
 
-
-  if(currentTime - startTime <= 16000){
-    if(currentTime - startTime <= 3000){
+  
+  if(currentTime - startTime <= 16000){//Have 16000ms passed?
+    if(currentTime - startTime <= 3000){//Have 3000ms passed
+      //Yellow led
       setLed(2);
     }else {
+      //Green led
       setLed(1);
-      if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) && !hit_detected ){
+      if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) && !hit_detected ){//If dX, dY, dZ have pased our threshold
         hit_detected = true;
         hitRegX = x;
         hitRegY = y;
@@ -323,7 +331,7 @@ void doFastPunch(){
         if(hit_detected_counter < 20){
           hit_detected_counter++;
         }else{
-        if(x * hitRegX < 0 || y * hitRegY < 0 || z * hitRegZ < 0){
+        if(x * hitRegX < 0 || y * hitRegY < 0 || z * hitRegZ < 0){ //Have dX, dY, dZ changed direction
           hit_detected_counter = 0;
           hit_detected = false;
           currentTime = currentTime - 100;
@@ -338,6 +346,7 @@ void doFastPunch(){
     Serial.println(sizeof(hitCount));
     client.print(hitCount);
     Serial.println(hitCount);
+    //Send hitcount
     client.flush();
     finished = true;
     hitCount = 0;
