@@ -22,6 +22,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
     public int mWidth, mHeight;
     public float prevX = 0, prevY = 0;
     public float xPos, yPos;
+    int[] result = new int[1];
     private int mActivePointerID = 0;
     private Context mContext;
     private FloatBuffer mVertexBuffer = null;
