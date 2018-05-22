@@ -256,9 +256,33 @@ void calibrate(){
 //Hardpunch
 void doHardPunch(){
   calibrate();
-  //Green led
+  if(startTime == 0){//Did we just start?
+    startTime = millis(); //Reset starttime
+  }
+  unsigned long currentTime = millis();
+
+  if(currentTime - startTime <= 4000){//Have 3000ms passed
+      //Yellow led
+          if(currentTime - startTime > 800){
+              setLed(4);
+           }
+              if(currentTime - startTime > 1300){
+              setLed(5);
+          }
+              if(currentTime - startTime > 1800){
+              setLed(4);
+          }
+          if(currentTime - startTime > 2300){
+              setLed(5);
+          }
+              if(currentTime - startTime > 2800){
+              setLed(4);
+          }
+          if(currentTime - startTime > 3300){
+              setLed(5);
+          } 
+    }else{
   setLed(1);
-  
   hitValue = 200;
   if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {//If dX, dY, dZ have pased our threshold
     //Yellow led
@@ -301,6 +325,7 @@ void doHardPunch(){
     }
   }
 }
+}
 
 int hitRegX, hitRegY, hitRegZ;
 //Fastpunch
@@ -314,9 +339,27 @@ void doFastPunch(){
 
   
   if(currentTime - startTime <= 16000){//Have 16000ms passed?
-    if(currentTime - startTime <= 3000){//Have 3000ms passed
+    if(currentTime - startTime <= 4000){//Have 3000ms passed
       //Yellow led
-      setLed(2);
+          if(currentTime - startTime > 800){
+              setLed(4);
+           }
+              if(currentTime - startTime > 1300){
+              setLed(5);
+          }
+              if(currentTime - startTime > 1800){
+              setLed(4);
+          }
+          if(currentTime - startTime > 2300){
+              setLed(5);
+          }
+              if(currentTime - startTime > 2800){
+              setLed(4);
+          }
+          if(currentTime - startTime > 3300){
+              setLed(5);
+          }
+          
     }else {
       //Green led
       setLed(1);
