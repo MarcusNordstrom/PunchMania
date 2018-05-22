@@ -7,7 +7,7 @@
 
 //USERCONFIG
 //Ethernet
-IPAddress server(192,168,1,20);    //Ip address for server
+IPAddress server(192, 168, 1, 20); //Ip address for server
 int port = 12345;                     //Port for server
 IPAddress ip(192, 168, 1, 101);       //This device
 //Sensitivity
@@ -137,34 +137,34 @@ void setup() {
 }
 
 
-  int next_state = 0;
-  int state = 0;
-  int x;
-  int y;
-  int z;  
+int next_state = 0;
+int state = 0;
+int x;
+int y;
+int z;
 //main programloop
-void loop(){
+void loop() {
   Serial.println("Entered loop");
   calibrate();
-  while(client.connected()){
-    adxl.readAccel(&x,&y,&z);
-    if(client.available() && !finished){
+  while (client.connected()) {
+    adxl.readAccel(&x, &y, &z);
+    if (client.available() && !finished) {
       byte recived = client.read();
       Serial.println("Client sent message");
-      switch(recived){  
-        
+      switch (recived) {
+
         //1 enable 2 disable 3 new hs 4 Fast 5 Hard
-        
+
         //hardpunch
         case 5:
           Serial.println("Entering Hardpunch");
           next_state = 1;
-          break;  
+          break;
         //fastpunch
         case 4:
           Serial.println("Entering Fastpunch");
           next_state = 2;
-          break;  
+          break;
         //calibrate
         case 2: case 1:
           next_state = 0;
@@ -177,19 +177,19 @@ void loop(){
           break;
       }
     }
-    switch(state){
+    switch (state) {
       case 1:
-      
+
         doHardPunch();
-        if(finished){
+        if (finished) {
           next_state = 0;
           finished = false;
         }
         break;
       case 2:
-        
+
         doFastPunch();
-        if(finished){
+        if (finished) {
           next_state = 0;
           finished = false;
         }
@@ -204,42 +204,42 @@ void loop(){
 }
 
 //calubrate adxl values to dX, dY, dZ
-void calibrate(){
-    
-    calibrationCounter++;
-    switch (calibrationCounter) {
-          case 50:
-            calibrationXStorage[0] = x;
-            calibrationYStorage[0] = y;
-            calibrationZStorage[0] = z;
-            break;
-          case 100:
-            calibrationXStorage[1] = x;
-            calibrationYStorage[1] = y;
-            calibrationZStorage[1] = z;
-            break;
-          case 150:
-            calibrationXStorage[2] = x;
-            calibrationYStorage[2] = y;
-            calibrationZStorage[2] = z;
-            break;
-          case 200:
-            calibrationXStorage[3] = x;
-            calibrationYStorage[3] = y;
-            calibrationZStorage[3] = z;
-            break;
-          case 250:
-            calibrationXStorage[4] = x;
-            calibrationYStorage[4] = y;
-            calibrationZStorage[4] = z;
-            break;
-          case 300:
-            calibrationXStorage[5] = x;
-            calibrationYStorage[5] = y;
-            calibrationZStorage[5] = z;
-            calibrationCounter = 0;
-            break;
-    }
+void calibrate() {
+
+  calibrationCounter++;
+  switch (calibrationCounter) {
+    case 50:
+      calibrationXStorage[0] = x;
+      calibrationYStorage[0] = y;
+      calibrationZStorage[0] = z;
+      break;
+    case 100:
+      calibrationXStorage[1] = x;
+      calibrationYStorage[1] = y;
+      calibrationZStorage[1] = z;
+      break;
+    case 150:
+      calibrationXStorage[2] = x;
+      calibrationYStorage[2] = y;
+      calibrationZStorage[2] = z;
+      break;
+    case 200:
+      calibrationXStorage[3] = x;
+      calibrationYStorage[3] = y;
+      calibrationZStorage[3] = z;
+      break;
+    case 250:
+      calibrationXStorage[4] = x;
+      calibrationYStorage[4] = y;
+      calibrationZStorage[4] = z;
+      break;
+    case 300:
+      calibrationXStorage[5] = x;
+      calibrationYStorage[5] = y;
+      calibrationZStorage[5] = z;
+      calibrationCounter = 0;
+      break;
+  }
 
   for (int i = 0; i < 6; i++) {
     calibrationXOffset += calibrationXStorage[i];
@@ -254,152 +254,156 @@ void calibrate(){
   z -= calibrationZOffset;
 }
 //Hardpunch
-void doHardPunch(){
+void doHardPunch() {
   calibrate();
-  if(startTime == 0){//Did we just start?
+  if (startTime == 0) { //Did we just start?
     startTime = millis(); //Reset starttime
   }
   unsigned long currentTime = millis();
 
-  if(currentTime - startTime <= 4000){//Have 3000ms passed
-      //Yellow led
-          if(currentTime - startTime > 800){
-              setLed(4);
-           }
-              if(currentTime - startTime > 1300){
-              setLed(5);
-          }
-              if(currentTime - startTime > 1800){
-              setLed(4);
-          }
-          if(currentTime - startTime > 2300){
-              setLed(5);
-          }
-              if(currentTime - startTime > 2800){
-              setLed(4);
-          }
-          if(currentTime - startTime > 3300){
-              setLed(5);
-          } 
-    }else{
-  setLed(1);
-  hitValue = 200;
-  if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {//If dX, dY, dZ have pased our threshold
+  if (currentTime - startTime <= 4000) { //Have 3000ms passed
     //Yellow led
-    setLed(2);
-    hit_detected = true;
-    Serial.println("h:");
-    Serial.println(x);
-    Serial.println(y);
-    Serial.println(z);
-  }
-  if (hit_detected) {
-    //Store
-    if (counter < 1000) {
-      counter++;
-      storage += String(x);
-      storage += ",";
-      storage += String(y);
-      storage += ",";
-      storage += String(z);
-      storage += ";";
-    } else {
-      counter = 0;
-      hit_detected = false;
-      hitCount = 0;
-      startTime = 0;
-      //Write to buffer
-      byte ret[storage.length()];
-      storage.getBytes(ret, storage.length());
-      client.write(ret, 900);
-      //flush buffer
-      client.flush();
-      Serial.println("Data sent");
-      //client.write(buff, 2000);
-      Serial.println(storage);
-      Serial.println(sizeof(ret));
+    if (currentTime - startTime > 800) {
+      setLed(4);
+    }
+    if (currentTime - startTime > 1300) {
+      setLed(5);
+    }
+    if (currentTime - startTime > 1800) {
+      setLed(4);
+    }
+    if (currentTime - startTime > 2300) {
+      setLed(5);
+    }
+    if (currentTime - startTime > 2800) {
+      setLed(4);
+    }
+    if (currentTime - startTime > 3300) {
+      setLed(5);
+    }
+  } else {
+    setLed(1);
+    hitValue = 200;
+    if (x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) {//If dX, dY, dZ have pased our threshold
+      //Yellow led
       setLed(2);
-      finished = true;
-      storage = "";
-      next_state = 0;
+      hit_detected = true;
+      Serial.println("h:");
+      Serial.println(x);
+      Serial.println(y);
+      Serial.println(z);
+    }
+    if (hit_detected) {
+      //Store
+      if (counter < 1000) {
+        counter++;
+        storage += String(x);
+        storage += ",";
+        storage += String(y);
+        storage += ",";
+        storage += String(z);
+        storage += ";";
+      } else {
+        counter = 0;
+        hit_detected = false;
+        hitCount = 0;
+        startTime = 0;
+        //Write to buffer
+        byte ret[storage.length()];
+        storage.getBytes(ret, storage.length());
+        client.write(ret, 900);
+        //flush buffer
+        client.flush();
+        Serial.println("Data sent");
+        //client.write(buff, 2000);
+        Serial.println(storage);
+        Serial.println(sizeof(ret));
+        setLed(2);
+        finished = true;
+        storage = "";
+        next_state = 0;
+      }
     }
   }
 }
-}
 
 int hitRegX, hitRegY, hitRegZ;
+int ledNummer = 1;
 //Fastpunch
-void doFastPunch(){
-  adxl.readAccel(&x,&y,&z);
+void doFastPunch() {
+  adxl.readAccel(&x, &y, &z);
   hitValue = 200;
-  if(startTime == 0){//Did we just start?
+  if (startTime == 0) { //Did we just start?
     startTime = millis(); //Reset starttime
   }
   unsigned long currentTime = millis();
 
-  
-  if(currentTime - startTime <= 16000){//Have 16000ms passed?
-    if(currentTime - startTime <= 4000){//Have 3000ms passed
+
+  if (currentTime - startTime <= 16000) { //Have 16000ms passed?
+    if (currentTime - startTime <= 4000) { //Have 3000ms passed
       //Yellow led
-          if(currentTime - startTime > 800){
-              setLed(4);
-           }
-              if(currentTime - startTime > 1300){
-              setLed(5);
-          }
-              if(currentTime - startTime > 1800){
-              setLed(4);
-          }
-          if(currentTime - startTime > 2300){
-              setLed(5);
-          }
-              if(currentTime - startTime > 2800){
-              setLed(4);
-          }
-          if(currentTime - startTime > 3300){
-              setLed(5);
-          }
-          
-    }else {
+      if (currentTime - startTime > 800) {
+        setLed(4);
+      }
+      if (currentTime - startTime > 1300) {
+        setLed(5);
+      }
+      if (currentTime - startTime > 1800) {
+        setLed(4);
+      }
+      if (currentTime - startTime > 2300) {
+        setLed(5);
+      }
+      if (currentTime - startTime > 2800) {
+        setLed(4);
+      }
+      if (currentTime - startTime > 3300) {
+        setLed(5);
+      }
+
+    } else {
       //Green led
-      int led = 1;
-      setLed(1);
-      if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) && !hit_detected ){//If dX, dY, dZ have pased our threshold
+      if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) && !hit_detected ) { //If dX, dY, dZ have pased our threshold
         hit_detected = true;
-        if(led == 1) {
-            setLed(1);
-            led=2;
-          }
-          if(led == 2) {
-            setLed(2);
-            led=3;
-          }
-          if(led == 3) {
-            setLed(3);
-            led=1;
-          }
+        switch(ledNummer) {
+          case 1:
+          setLed(ledNummer);
+          ledNummer = 2;
+          break;
           
+          case 2:
+          setLed(ledNummer);
+          ledNummer = 3;
+          break;
+          
+          case 3:
+          setLed(ledNummer);
+          ledNummer = 1;
+          break;
+        }
+        
         hitRegX = x;
         hitRegY = y;
         hitRegZ = z;
-        
+
       }
-      if(hit_detected){
-        if(hit_detected_counter < 20){
+      
+      if (hit_detected) {
+        if (hit_detected_counter < 20) {
           hit_detected_counter++;
-        }else{
-        if(x * hitRegX < 0 || y * hitRegY < 0 || z * hitRegZ < 0){ //Have dX, dY, dZ changed direction
-          hit_detected_counter = 0;
-          hit_detected = false;
-          currentTime = currentTime - 100;
-          hitCount++;
-          Serial.println(hitCount);
-          
+        } else {
+          if (x * hitRegX < 0 || y * hitRegY < 0 || z * hitRegZ < 0) { //Have dX, dY, dZ changed direction
+            hit_detected_counter = 0;
+            hit_detected = false;
+            currentTime = currentTime - 100;
+            hitCount++;
+            Serial.println(hitCount);
+
           }
         }
       }
     }
-  }else{
+  } else {
     storage = "";
     Serial.println(sizeof(hitCount));
     client.print(hitCount);
@@ -408,7 +412,7 @@ void doFastPunch(){
     client.flush();
     finished = true;
     hitCount = 0;
-    
+
     startTime = 0;
     next_state = 0;
     setLed(2);
