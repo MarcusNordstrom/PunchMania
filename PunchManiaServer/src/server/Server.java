@@ -150,6 +150,7 @@ public class Server {
 		if(score > ms.getTop1Fast()) {
 			setSend(IS_HIGHSCORE);
 			client.clientMethods(TOP_HIGHSCORE);
+			System.out.println("NEW FAST HS");
 		}
 	}
 	/**
@@ -631,6 +632,7 @@ public class Server {
 									System.out.println(str);
 									int i = Integer.parseInt(str);
 									ms.setFastPunch(ms.popQueue(), i);
+									System.out.println(i);
 									newFastHs(i);
 									listening = false;
 								} catch (IOException e) {
