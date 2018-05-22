@@ -175,7 +175,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertexBuffer);
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY);
         gl.glDrawArrays(gl.GL_LINE_STRIP, 0, vertexSize);
-        gl.glDisableClientState(gl.GL_VERTEX_ARRAY);    
+        gl.glDisableClientState(gl.GL_VERTEX_ARRAY);
 
     }
 
