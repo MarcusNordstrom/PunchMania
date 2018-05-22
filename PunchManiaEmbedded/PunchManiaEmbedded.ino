@@ -362,9 +362,23 @@ void doFastPunch(){
           
     }else {
       //Green led
+      int led = 1;
       setLed(1);
       if ((x > hitValue || x < -hitValue || y > hitValue || y < -hitValue || z > hitValue || z < -hitValue) && !hit_detected ){//If dX, dY, dZ have pased our threshold
         hit_detected = true;
+        if(led == 1) {
+            setLed(1);
+            led=2;
+          }
+          if(led == 2) {
+            setLed(2);
+            led=3;
+          }
+          if(led == 3) {
+            setLed(3);
+            led=1;
+          }
+          
         hitRegX = x;
         hitRegY = y;
         hitRegZ = z;
@@ -380,6 +394,7 @@ void doFastPunch(){
           currentTime = currentTime - 100;
           hitCount++;
           Serial.println(hitCount);
+          
           }
         }
       }
