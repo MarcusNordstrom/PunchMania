@@ -145,6 +145,14 @@ public class Server {
 			client.clientMethods(TOP_HIGHSCORE);
 		}
 	}
+	
+	public void newFastHs(int score) {
+		if(score > ms.getTop1Fast()) {
+			setSend(IS_HIGHSCORE);
+			client.clientMethods(TOP_HIGHSCORE);
+			System.out.println("NEW FAST HS");
+		}
+	}
 	/**
 	 * Set the score for the next player in line
 	 * @param score
@@ -414,15 +422,17 @@ public class Server {
 			 * Tell all clients that a new highscore has been achieved
 			 */
 			public void topHighscore() {
-				try {
-					String name = ms.getTop1Name();
-					oos.writeObject(new Message(name, Message.NEW_HS));
-					System.out.println("TOP USER SENT");
-					oos.reset();
-					oos.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+//				try {
+					sound("DONE");
+					sound("TOP");
+//					String name = ms.getTop1Name();
+//					oos.writeObject(new Message("TEST", Message.NEW_HS));
+//					System.out.println("TOP USER SENT");
+//					oos.reset();
+//					oos.flush();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
 			}
 			/**
 			 * Send XYZ belonging to a specific punch
@@ -622,6 +632,8 @@ public class Server {
 									System.out.println(str);
 									int i = Integer.parseInt(str);
 									ms.setFastPunch(ms.popQueue(), i);
+									System.out.println(i);
+									newFastHs(i);
 									listening = false;
 								} catch (IOException e) {
 									e.printStackTrace();
@@ -675,7 +687,6 @@ public class Server {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		@SuppressWarnings("unused")
 		Server server = new Server(12345, 9192, serverui);
 	}
 

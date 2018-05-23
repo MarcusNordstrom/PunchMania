@@ -47,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private static long requestedHit = Long.MAX_VALUE;
     private SoundPlayer soundPlayer;
     private MediaPlayer mediaPlayer1;
-    private MediaPlayer mediaPlayer2;
-    private MediaPlayer mediaPlayer3;
+    private Boolean playing = false;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -69,29 +68,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newHighscoreSound() {
-        mediaPlayer3 = MediaPlayer.create(this, R.raw.topscore);
-        mediaPlayer3.start();
+        mediaPlayer1 = MediaPlayer.create(this, R.raw.test);
+        Log.i("SOUND", "START WINNING SONG");
+        mediaPlayer1.start();
     }
 
     public void startSound() {
         mediaPlayer1 = MediaPlayer.create(this, R.raw.punchmania);
-        mediaPlayer2 = MediaPlayer.create(this, R.raw.countdown);
+        Log.i("SOUND", "START TIGER");
         mediaPlayer1.seekTo(10000);
         mediaPlayer1.start();
-        mediaPlayer2.start();
+    }
+
+    public void startCount() {
+        mediaPlayer1 = MediaPlayer.create(this, R.raw.countdown);
+        Log.i("SOUND", "START COUNTDOWN");
+        mediaPlayer1.start();
     }
 
     public void stopSound() {
-        if (mediaPlayer1 != null || mediaPlayer2 != null || mediaPlayer3 != null) {
-            mediaPlayer1.stop();
-            mediaPlayer2.stop();
-            mediaPlayer3.stop();
-            mediaPlayer1.release();
-            mediaPlayer2.release();
-            mediaPlayer3.release();
-            mediaPlayer1 = null;
-            mediaPlayer2 = null;
-            mediaPlayer3 = null;
+        Log.i("SOUND", "STOPSTARTED");
+        if(!playing){
+            Log.i("SOUND", "PLAYING FALSE");
+            if (mediaPlayer1 != null) {
+                Log.i("SOUND", "STOP");
+                mediaPlayer1.stop();
+                mediaPlayer1.release();
+                mediaPlayer1 = null;
+            }
         }
     }
     /**
@@ -196,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("requested user", newEntry);
+                                soundPlayer.playStartSound();
                                 startActivity(intent);
                                 return true;
                             } else {
@@ -442,26 +447,39 @@ public class MainActivity extends AppCompatActivity {
                                     case Message.SERVER_SEND_PLAYERSCORES_FASTPUNCH:
                                         Log.i(this.getName(), "It´s userscores FastPunch");
                                         listPlayerFast = (HighScoreList) readMessage.getPayload();
-                                        break; case Message.GAMEMODE:
-                                        String mode = (String) readMessage.getPayload();
-                                        if(mode.equals("HARD")){
-                                            Log.i("TEST", mode);
-                                            startSound();
-                                        }
-                                        if(mode.equals("FAST")) {
-                                            Log.i("TEST", mode);
-                                            startSound();
-                                        }
-                                        if(mode.equals("DONE")){
-                                            Log.i("TEST", mode);
-                                            stopSound();
-                                        }
                                         break;
-                                    case Message.NEW_HS:
-                                        Log.i("TOP", "ny vinst");
-                                        newHighscoreSound();
-                                        break;
+                                        case Message.GAMEMODE:
+                                            String mode = (String) readMessage.getPayload();
+                                            switch(mode){
+                                                case "HARD":
+                                                    Log.i("SOUND", mode);
+                                                    playing = true;
+                                                    Log.i("SOUND", playing + "");
+                                                    startCount();
+                                                    playing = false;
+                                                    break;
+                                                case "FAST":
+                                                    Log.i("SOUND", mode);
+                                                    playing = true;
+                                                    Log.i("SOUND", playing + "");
+                                                    startCount();
+                                                    startSound();
+                                                    playing = false;
+                                                    break;
+                                                case "TOP":
+                                                    Log.i("SOUND", mode);
+                                                    playing = true;
+                                                    Log.i("SOUND", playing + "");
+                                                    newHighscoreSound();
+                                                    break;
+                                                case "DONE":
+                                                    Log.i("SOUND", mode);
+                                                    Log.i("SOUND", playing + "");
+                                                    stopSound();
+                                                    break;
 
+                                            }
+                                        break;
                                     default:
                                         Log.i(this.getName(), "get object");
                                         break;

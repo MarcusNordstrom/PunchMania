@@ -104,6 +104,21 @@ public class MySql{
 		}
 		return hs;
 	}
+	
+	public synchronized int getTop1Fast() {
+		Statement Stmt;
+		int hs = 0;
+		try {
+			Stmt = myConn.createStatement();
+			String sql = "SELECT * FROM fastpunch ORDER BY Score DESC LIMIT 1";
+			ResultSet rs = Stmt.executeQuery(sql);
+			rs.next() ;
+			hs = rs.getInt(3);
+		} catch (SQLException e) {
+			System.err.println("queue empty");
+		}
+		return hs;
+	}
 
 	/*
 	 * Used when a user gets the new TOP 1 score, we return the name and send it to client to display it when the highscore is beaten
