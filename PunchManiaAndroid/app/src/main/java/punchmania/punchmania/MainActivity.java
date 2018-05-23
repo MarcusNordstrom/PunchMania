@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                                 enterNameEditText.setText("");
                                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                 intent.putExtra("requested user", newEntry);
+                                soundPlayer.playStartSound();
                                 startActivity(intent);
                                 return true;
                             } else {
