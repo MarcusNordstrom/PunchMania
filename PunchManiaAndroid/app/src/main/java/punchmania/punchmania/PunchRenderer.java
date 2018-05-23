@@ -1,7 +1,9 @@
 package punchmania.punchmania;
 
 import android.content.Context;
+import android.graphics.Camera;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -33,6 +35,7 @@ class PunchRenderer implements GLSurfaceView.Renderer {
     private float mPreviousX;
     private float mPreviousY;
     private int size;
+    private Camera camera;
 
 
     public PunchRenderer(Context context) {
@@ -43,10 +46,77 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         mContext = context;
     }
 
+    public float[] acceltopath(int division) {
+
+        ArrayList<Float> xF = new ArrayList<Float>();
+        ArrayList<Float> yF = new ArrayList<Float>();
+        ArrayList<Float> zF = new ArrayList<Float>();
+
+        Log.i("AccelToPath", "Before Derivate X: \n" + x.toString() + "\n" + x.size());
+        Log.i("AccelToPath", "Before Derivate Y: \n" + y.toString() + "\n" + y.size());
+        Log.i("AccelToPath", "Before Derivate Z: \n" + z.toString() + "\n" + z.size());
+        for (Integer convert : x) {
+            xF.add((float) convert);
+        }
+        for (Integer convert : y) {
+            yF.add((float) convert);
+        }
+        for (Integer convert : z) {
+            zF.add((float) convert);
+        }
+        xF = derivate(xF);
+        xF = derivate(xF);
+
+        yF = derivate(yF);
+        yF = derivate(yF);
+
+        zF = derivate(zF);
+        zF = derivate(zF);
+        Log.i("AccelToPath", "After Derivate X: \n" + xF.toString() + "\n" + xF.size());
+        Log.i("AccelToPath", "After Derivate Y: \n" + yF.toString() + "\n" + yF.size());
+        Log.i("AccelToPath", "After Derivate Z: \n" + zF.toString() + "\n" + zF.size());
+
+        float[] ret = new float[size * 3];
+        int index = 0;
+        for (int i = 0; i < (ret.length / 3); i++) {
+            index = 1 + (i * 3);
+            ret[index - 1] = (xF.get(i) / division);
+            ret[index] = (yF.get(i) / division);
+            ret[index + 1] = (zF.get(i) / division);
+        }
+        String print = "";
+        for (int i = 0; i < ret.length; i++) {
+            print += ret[i] + ", ";
+        }
+        Log.i("AccelToPath", "Float Array with dividing by " + division + ": \n" + print);
+        return ret;
+    }
+
+    public ArrayList<Float> derivate(ArrayList<Float> x) {
+        int N = x.size();
+        ArrayList<Float> t = new ArrayList<Float>();
+        ArrayList<Float> s = new ArrayList<Float>();
+        s.add(0.0f);
+        for (int i = 0; i < N - 1; i++) {
+            t.add(x.get(i) + x.get(i + 1));
+        }
+        for (int i = 0; i < t.size(); i++) {
+            Float temp = 0.0f;
+            for (int j = 0; j <= i; j++) {
+                temp = temp + t.get(j);
+            }
+            s.add(0.5f * temp);
+        }
+        return s;
+    }
+
     public void onDrawFrame(GL10 gl) {
-        gl.glClearColor(0.0f,0.0f,0.0f,1.0f);
-        moveMatrix(gl);
-        drawLine(gl, mVertexBuffer, 1f, size);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        gl.glMatrixMode(gl.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glTranslatef(xPos / 500, -(yPos / 500), -2.0f);
+        drawLine(gl,mVertexBuffer,1,size);
     }
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -54,7 +124,6 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
         gl.glEnable(GL10.GL_DEPTH_TEST);
         gl.glEnable(gl.GL_POINT_SIZE);
-        scaleLines(gl, 5);
         gl.glEnable(gl.GL_ALIASED_LINE_WIDTH_RANGE);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         // Get all the buffers ready
@@ -84,8 +153,8 @@ class PunchRenderer implements GLSurfaceView.Renderer {
             arraySize = z.size();
         }
         size = arraySize;
-        float vertexlist[] = new float[arraySize * 3];
-        fillVertexArray(vertexlist);
+        float vertexlist[] = acceltopath(1000);
+
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertexlist.length * 4);
         vbb.order(ByteOrder.nativeOrder());
         mVertexBuffer = vbb.asFloatBuffer();
@@ -93,16 +162,16 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         mVertexBuffer.position(0);
 
 
-        // Set triangle border buffer with vertex indices
-        short trigborderindexlist[] = {
-                4, 0, 4, 1, 4, 2, 4, 3, 0, 1, 1, 3, 3, 2, 2, 0, 0, 3
-        };
-        mNumOfTriangleBorderIndices = trigborderindexlist.length;
-        ByteBuffer tbibb = ByteBuffer.allocateDirect(trigborderindexlist.length * 2);
-        tbibb.order(ByteOrder.nativeOrder());
-        mTriangleBorderIndicesBuffer = tbibb.asShortBuffer();
-        mTriangleBorderIndicesBuffer.put(trigborderindexlist);
-        mTriangleBorderIndicesBuffer.position(0);
+//        // Set triangle border buffer with vertex indices
+//        short trigborderindexlist[] = {
+//                4, 0, 4, 1, 4, 2, 4, 3, 0, 1, 1, 3, 3, 2, 2, 0, 0, 3
+//        };
+//        mNumOfTriangleBorderIndices = trigborderindexlist.length;
+//        ByteBuffer tbibb = ByteBuffer.allocateDirect(trigborderindexlist.length * 2);
+//        tbibb.order(ByteOrder.nativeOrder());
+//        mTriangleBorderIndicesBuffer = tbibb.asShortBuffer();
+//        mTriangleBorderIndicesBuffer.put(trigborderindexlist);
+//        mTriangleBorderIndicesBuffer.position(0);
     }
 
     public boolean onTouchEvent(MotionEvent e) {
@@ -150,24 +219,6 @@ class PunchRenderer implements GLSurfaceView.Renderer {
         return true;
     }
 
-    public void fillVertexArray(float[] floatArray) {
-        float dx = 0, dy = 0, dz = 0;
-        int index = 0;
-        for (int i = 0; i < (floatArray.length / 3); i++) {
-            index = 1 + (i * 3);
-            dx += (float) x.get(i);
-            dy += (float) y.get(i);
-            dz += (float) z.get(i);
-            floatArray[index - 1] = dx / 1000;
-            floatArray[index] = dy / 1000;
-            floatArray[index + 1] = dz / 1000;
-        }
-        String print = "\n";
-        for (int i = 0; i < floatArray.length; i += 3) {
-            print += floatArray[i] + " " + floatArray[i + 1] + " " + floatArray[i + 2] + "\n";
-        }
-        Log.i("Array", print);
-    }
 
     public void drawLine(GL10 gl, FloatBuffer vertexBuffer, float lineWidth, int vertexSize) {
         gl.glLineWidth(1);
@@ -179,16 +230,13 @@ class PunchRenderer implements GLSurfaceView.Renderer {
 
     }
 
-    public void scaleLines(GL10 gl, float scale) {
-        gl.glScalef(scale, scale, scale);
-
-    }
-    public void moveMatrix(GL10 gl){
+    public void moveMatrix(GL10 gl) {
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glMatrixMode(gl.GL_MODELVIEW);
         gl.glLoadIdentity();
-        gl.glTranslatef(xPos/500,-(yPos/500),-3.0f);
+        gl.glTranslatef(xPos / 500, -(yPos / 500), -5.0f);
     }
+
     public void rotateModel(GL10 gl, float speed, float x, float y, float z) {
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
         gl.glMatrixMode(gl.GL_MODELVIEW);
