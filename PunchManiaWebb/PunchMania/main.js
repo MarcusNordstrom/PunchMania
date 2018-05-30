@@ -1,3 +1,5 @@
+// Author Marcus Nordström
+
 function init() {
   $('.uparrow').hide();
   navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
@@ -5,8 +7,6 @@ function init() {
 
 $('.uparrow').click(up());
 $('.downarrow').click(down());
-
-
 
 function freeze() {
   if ($("html").css("position") != "fixed") {
@@ -23,7 +23,6 @@ function freeze() {
   }
 }
 
-//Unfreeze page content scrolling
 function unfreeze() {
   if ($("html").css("position") == "fixed") {
     $("html").css("position", "static");
@@ -38,7 +37,6 @@ function unfreeze() {
   }
 }
 var current_elem = "info";
-// unfreeze();$('html,body').scrollTop($(".info").offset().top);freeze();
 function down() {
   unfreeze();
   switch (current_elem) {
@@ -79,13 +77,11 @@ function up() {
   freeze();
 }
 
-if (navigator.serviceWorker.controller) {
-  console.log('active service worker found, no need to register')
-} else {
+if (!navigator.serviceWorker.controller) {
   navigator.serviceWorker.register('sw_offline.js', {
     scope: './'
   }).then(function(reg) {
-    console.log('sw_offline.js has been registered for scope:' + reg.scope);
+    console.log('sw_offline.js @ ' + reg.scope);
   });
 }
 
@@ -115,13 +111,10 @@ function setCookie(cname, cvalue, exdays) {
 if (localStorage !== "undefined") {
   if (getCookie('uuid') != "" && localStorage.getItem('uuid') == null) {
     localStorage.setItem('uuid', getCookie('uuid'));
-    console.log("UUID pushed to localStorage");
   } else if (getCookie('uuid') == "NaN" && localStorage.getItem('uuid') != null) {
     localStorage.removeItem('uuid');
-    console.log("UUID cleared from localStorage")
   } else if (getCookie('uuid') == "" && localStorage.getItem('uuid') != null) {
     setCookie('uuid', localStorage.getItem('uuid'), 365);
-    console.log("UUID restored from localStorage");
   }
 }
 var PrevTime = "";
@@ -144,19 +137,15 @@ function recentColor() {
         PrevTime = PunchDate;
         if (Startup) {
           var hs = document.getElementById("recentText").getAttribute("data-highScore");
-          console.log("hs:" + hs);
           if (hs != "") {
             switch (hs) {
               case 'global':
-                console.log("global");
-                navigator.vibrate([300, 200, 300]);
+                navigator.vibrate([400, 300, 400]);
                 break;
               case 'personal':
-                console.log("personal");
-                navigator.vibrate([200, 100, 200]);
+                navigator.vibrate([300, 200, 300]);
                 break;
               case 'no':
-                console.log("no");
                 break;
               default:
 

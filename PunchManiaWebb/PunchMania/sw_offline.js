@@ -3,7 +3,6 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     fetch(offlinePage).then(function(response) {
       return caches.open('offline').then(function(cache) {
-        console.log('Cached offline page during Install ' + response.url);
         return cache.put(offlinePage, response);
       });
     }));
@@ -15,7 +14,7 @@ self.addEventListener('fetch', function(event) {
   }
   event.respondWith(
     fetch(event.request).catch(function(error) {
-      console.error('Network request Failed. Serving offline page ' + error);
+      console.error(error);
       return caches.open('offline').then(function(cache) {
         return cache.match('offline.html');
       });
@@ -24,7 +23,6 @@ self.addEventListener('fetch', function(event) {
 
 self.addEventListener('refreshOffline', function(response) {
   return caches.open('offline').then(function(cache) {
-    console.log('Offline page updated from refreshOffline event: ' + response.url);
     return cache.put(offlinePage, response);
   });
 });

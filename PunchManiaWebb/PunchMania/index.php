@@ -5,6 +5,7 @@ require 'main.php';
 <html lang="se">
 <head>
   <title>PunchMania</title>
+  <meta name="author" content="Marcus Nordström">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="description" content="Best game in the world!">

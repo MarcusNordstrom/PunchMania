@@ -1,4 +1,5 @@
 <?php
+// Author Marcus Nordström
 header('Access-Control-Allow-Origin: *');
 session_start();
 $servername = "ddwap.mah.se:3306/ah7115";
