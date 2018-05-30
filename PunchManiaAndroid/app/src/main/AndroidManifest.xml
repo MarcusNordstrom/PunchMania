@@ -47,9 +47,6 @@
             android:name=".SearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".HighScoreDetails"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".HighScoreFast"
             android:screenOrientation="portrait" />
         <activity
