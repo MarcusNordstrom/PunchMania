@@ -3,7 +3,7 @@ package common;
 import java.io.Serializable;
 /**
  * Contains a serializable user that is used in lists
- *
+ *@author Sebastian Carlsson
  */
 public class UserList implements Serializable {
     /**

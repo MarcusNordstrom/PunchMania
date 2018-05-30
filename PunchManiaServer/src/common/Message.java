@@ -3,7 +3,7 @@ package common;
 import java.io.Serializable;
 /**
  * A serializable message class used to send all kinds of data between "hosts"
- *
+ *@author Sebastian Carlsson
  */
 public class Message implements Serializable {
 
