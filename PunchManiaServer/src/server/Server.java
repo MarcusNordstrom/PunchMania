@@ -18,7 +18,7 @@ import common.Queue;
 import server.Server.Client.ClientHandler;
 /**
  * Server for managing clients and punchingbags
- *
+ *@author Sebastian Carlsson
  */
 public class Server {
 	/*
