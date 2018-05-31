@@ -9,6 +9,11 @@ import common.HighScoreList;
 import common.Queue;
 import common.UserList;
 
+/**
+ * A window showing high score list for HardPunch.
+ * @author Anna Brondin
+ *
+ */
 public class UIHighScore extends JPanel {
 	private JLabel lblHighScore = new JLabel("High Score");
 	private JTextArea taNames = new JTextArea();

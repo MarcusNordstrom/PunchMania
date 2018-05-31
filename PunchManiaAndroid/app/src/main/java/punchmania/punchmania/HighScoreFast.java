@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 /**
  * Class is receiving the FastPunch highscorelist from server.
+ *
+ * @author Anna Brondin
  */
 public class HighScoreFast extends AppCompatActivity {
 

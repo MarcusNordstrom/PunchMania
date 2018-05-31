@@ -9,6 +9,11 @@ import android.widget.Button;
 import android.widget.Toast;
 import common.Message;
 
+/**
+ * This class is for choosing game mode for next punch.
+ *
+ * @author Anna Brondin
+ */
 public class SelectMode extends AppCompatActivity {
     private Button btnHardPunch, btnFastPunch;
     private updater updater = new updater();

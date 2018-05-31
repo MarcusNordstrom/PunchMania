@@ -28,6 +28,8 @@ import common.Queue;
  * Connecting client to server via port and ip-address.
  * Sending and receiving objects from server using output- and input streams.
  * Starts other classes and activities.
+ *
+ * @author Anna Brondin
  */
 
 public class MainActivity extends AppCompatActivity {
