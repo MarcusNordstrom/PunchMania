@@ -333,7 +333,7 @@ int ledNummer = 1;
 //Fastpunch
 void doFastPunch() {
   adxl.readAccel(&x, &y, &z);
-  hitValue = 200;
+  hitValue = 180;
   if (startTime == 0) { //Did we just start?
     startTime = millis(); //Reset starttime
   }
@@ -407,7 +407,7 @@ void doFastPunch() {
   } else {
     storage = "";
     Serial.println(sizeof(hitCount));
-    client.print(hitCount);
+    client.print((hitCount*23));
     Serial.println(hitCount);
     //Send hitcount
     client.flush();

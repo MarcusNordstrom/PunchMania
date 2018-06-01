@@ -15,6 +15,9 @@ import common.Queue;
  * The Highscore table consists of ID, Name, Score, Timestamps, and X,Y,Z vectors. 
  * This class takes advantage of ther SQL commands to either send info to server or receive and act on each request. 
  * Examples of requests: Upload a name to the queue/highscore in SQL-Table, remove, select by name(wildcard, does not have to be full name), get top 10, top 1....
+ *
+ * @author Jake O´Donnell
+ * @author Marcus Nordström
  */
 public class MySql{
 	private String URL = "jdbc:mysql://ddwap.mah.se:3306/ah7115";

@@ -4,6 +4,8 @@ package server;
 import java.util.ArrayList;
 /**
  * Score calculations class 
+ * @author Jake O´Donnell
+ * @author Marcus Nordström
  *
  */
 public class Calculator {

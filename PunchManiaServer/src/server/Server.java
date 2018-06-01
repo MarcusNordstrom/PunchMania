@@ -19,6 +19,8 @@ import server.Server.Client.ClientHandler;
 /**
  * Server for managing clients and punchingbags
  *@author Sebastian Carlsson
+ *@author Marcus Nordström
+ *@author Jake O´Donnell
  */
 public class Server {
 	/*
@@ -608,6 +610,7 @@ public class Server {
 									System.out.println(str);
 									int values = cal.calculateScore(str);
 									ui.print("New score: " + values, 0);
+									dis.reset(); // TA BORT HÄR
 									listening = false;
 								} catch (IOException e) {
 									reconnect();
@@ -634,6 +637,7 @@ public class Server {
 									ms.setFastPunch(ms.popQueue(), i);
 									System.out.println(i);
 									newFastHs(i);
+									dis.reset(); // TA BORT HÄR
 									listening = false;
 								} catch (IOException e) {
 									e.printStackTrace();
