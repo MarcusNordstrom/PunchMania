@@ -1,4 +1,4 @@
-//Author: Sebastian Carlsson, Marcus, Petar
+//Author: Sebastian Carlsson, Marcus Nordström, Petar, Jake O´Donnell
 //INCLUDES
 //ADXL345
 #include <SparkFun_ADXL345.h>
