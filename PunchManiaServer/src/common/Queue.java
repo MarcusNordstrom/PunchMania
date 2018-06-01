@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 /**
  * A serializable queue that is used in client broadcast
- *@author Sebastian Carlsson
+ *@author Sebastian Carlsson, Benjamin Zakrisson
  */
 public class Queue implements Serializable {
     public static final int HARDPUNCH = 0;

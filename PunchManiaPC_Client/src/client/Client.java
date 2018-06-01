@@ -11,7 +11,11 @@ import javax.swing.UIManager;
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
-
+/**
+ * Sprint 1 Client.
+ * @author Benjamin Zakrisson
+ *
+ */
 public class Client extends Thread {
 	private Socket socket;
 	private ObjectOutputStream oos;

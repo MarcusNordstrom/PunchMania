@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 /**
  * Contains a serializable list of users
- *@author Sebastian Carlsson
+ *@author Sebastian Carlsson, Benjamin Zakrisson
  */
 public class HighScoreList implements Serializable {
 

@@ -16,7 +16,7 @@ import common.Queue;
 import common.UserList;
 /**
  * PunchmaniaUI
- *@author Sebastian Carlsson
+ *@author Sebastian Carlsson, Benjamin Zakrisson
  */
 public class ServerUI extends JPanel {
 

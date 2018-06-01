@@ -5,6 +5,9 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
+/**
+ * @author Benjamin Zakrisson
+ */
 public class OpenGLES20Activity extends Activity {
     private GLSurfaceView mView;
     private PunchRenderer mRenderer;
