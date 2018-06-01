@@ -8,6 +8,7 @@ import android.widget.RemoteViews;
 
 /**
  * Implementation of App Widget functionality.
+ * @author Petar Novkovic
  */
 public class Widget extends AppWidgetProvider {
 

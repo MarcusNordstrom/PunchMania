@@ -7,7 +7,7 @@ public class Queue implements Serializable {
     public static final int HARDPUNCH = 0;
     public static final int FASTPUNCH = 1;
     /**
-     *
+     *@author Petar Novkovic
      */
     private static final long serialVersionUID = -6483005274886522243L;
     private ArrayList<UserList> list;

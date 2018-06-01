@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * Class is receiving the FastPunch highscorelist from server.
  *
  * @author Anna Brondin
+ * @author Petar Novkovic
  */
 public class HighScoreFast extends AppCompatActivity {
 

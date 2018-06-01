@@ -10,6 +10,10 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Unfinished code
+ * @author Petar Novkovic
+ */
 public class LocationTester extends Activity {
     public String ProviderName;
     LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

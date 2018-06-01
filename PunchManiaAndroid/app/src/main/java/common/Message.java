@@ -2,6 +2,10 @@ package common;
 
 import java.io.Serializable;
 
+/**
+ * @author Petar Novkovic
+ */
+
 public class Message implements Serializable {
 
     private static final long serialVersionUID = 3569987578043775700L;

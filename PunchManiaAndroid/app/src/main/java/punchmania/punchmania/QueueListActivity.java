@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 /**
  * Class is receiving the queue list from server.
+ * @author Petar Novkovic
  */
 public class QueueListActivity extends AppCompatActivity {
 

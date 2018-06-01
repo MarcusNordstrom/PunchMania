@@ -32,6 +32,7 @@ import common.Queue;
  *
  * @author Anna Brondin
  * @author Jake O´Donnell
+ * @author Petar Novkovic
  */
 
 public class MainActivity extends AppCompatActivity {

@@ -8,7 +8,7 @@ import java.util.Comparator;
 public class HighScoreList implements Serializable {
 
     /**
-     *
+     * @author Petar Novkovic
      */
     private static final long serialVersionUID = -5796106356303659629L;
     private ArrayList<UserList> ul;
