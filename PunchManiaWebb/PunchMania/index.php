@@ -4,6 +4,7 @@ require 'main.php';
 <!doctype html>
 <html lang="se">
 <head>
+  <!--Author Marcus Nordström -->
   <title>PunchMania</title>
   <meta name="author" content="Marcus Nordström">
   <meta charset="utf-8">
