@@ -17,6 +17,7 @@ import common.HighScoreList;
 
 /**
  * Class is receiving the HardPunch highscorelist from server.
+ * @author Benjamin Zakrisson
  */
 public class HighScoreListActivity extends AppCompatActivity {
 

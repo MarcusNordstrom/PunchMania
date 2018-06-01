@@ -28,6 +28,7 @@ import common.Queue;
  * Connecting client to server via port and ip-address.
  * Sending and receiving objects from server using output- and input streams.
  * Starts other classes and activities.
+ * @author Benjamin Zakrisson
  *
  * @author Anna Brondin
  * @author Jake O´Donnell

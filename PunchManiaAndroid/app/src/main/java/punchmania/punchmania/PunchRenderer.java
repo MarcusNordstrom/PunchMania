@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * @author Benjamin Zakrisson
+ */
 class PunchRenderer implements GLSurfaceView.Renderer {
     private final float TOUCH_SCALE_FACTOR = 0.6f;
     public float mAngleX = 0.0f;
