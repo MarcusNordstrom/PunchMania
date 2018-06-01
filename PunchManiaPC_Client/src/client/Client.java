@@ -11,10 +11,12 @@ import javax.swing.UIManager;
 import common.HighScoreList;
 import common.Message;
 import common.Queue;
+
 /**
- * Sprint 1 Client.
+ * Main class for client connecting to server, sending names to 
+ * queue and receiving updated high score list and queue list. 
+ * @author Anna Brondin
  * @author Benjamin Zakrisson
- *
  */
 public class Client extends Thread {
 	private Socket socket;

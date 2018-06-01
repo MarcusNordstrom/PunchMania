@@ -3,9 +3,13 @@ package client;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
 import common.Queue;
 
+/**
+ * A window showing the queue. Also possible to set new names in line.  
+ * @author Anna Brondin
+ * 
+ */
 public class UIQueue extends JPanel implements ActionListener {
 	private JTextArea taQueue = new JTextArea();
 	private JTextField tfName = new JTextField();
@@ -28,14 +32,13 @@ public class UIQueue extends JPanel implements ActionListener {
 		frame.setPreferredSize(new Dimension(500, 600));
 		frame.add(this);
 		frame.pack();
-		// frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.add(panelCenter(), BorderLayout.CENTER);
 		frame.add(panelSouth(), BorderLayout.SOUTH);
-
 		btnSend.addActionListener(this);
+		
 		/**
 		 * Making the enter key useful.
 		 */
@@ -79,7 +82,6 @@ public class UIQueue extends JPanel implements ActionListener {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(lblName, BorderLayout.NORTH);
 		panel.add(tfName, BorderLayout.CENTER);
-		// panel.add(btnSend, BorderLayout.SOUTH);
 		return panel;
 	}
 

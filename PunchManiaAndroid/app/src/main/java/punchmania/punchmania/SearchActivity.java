@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 /**
  * Class receives scores from the requested user and shows them in the activity.
+ *
+ * @author Anna Brondin
  */
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "searchActivity";
