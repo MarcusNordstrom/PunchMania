@@ -276,26 +276,26 @@ public class Server {
 						Message message = (Message) ois.readObject();
 						System.out.println(message.getInstruction());
 						switch (message.getInstruction()) {
-						case 3:
+						case Message.NEW_USER_TO_QUEUE:
 							ui.print("new user to queue : " + message.getPayload(), 0);
 							String newtoqueue = (String)message.getPayload();
 							addQueue(newtoqueue);
 							broadcastQueue();
 							break;
 
-						case 5:
+						case Message.CLIENT_REQUEST_PLAYERSCORES_HARDPUNCH:
 							ui.print("HardPunchScore requested for :" + message.getPayload(), 0);
 							String name = (String)message.getPayload();
 							sendNameScore(name);
 							break;
 
-						case 7: 
+						case Message.CLIENT_REQUEST_HSDETAILS: 
 							ui.print("User requested XYZ values", 0); 
 							HighScoreList hslNameScore = (HighScoreList)message.getPayload(); 
 							sendXYZ(hslNameScore.getUser(0).getUser(), hslNameScore.getUser(0).getScore()); 
 							break;
 
-						case 9:
+						case Message.GAMEMODE:
 							ui.print("Game mode chosen :" + message.getPayload(), 0);
 							String mode = (String)message.getPayload();
 							if(mode.equals(FASTPUNCH_MODE)) {
@@ -311,7 +311,7 @@ public class Server {
 							}
 							break;
 							
-						case 11:
+						case Message.CLIENT_REQUES_PLAYERSCORES_FASTPUNCH:
 							ui.print("FastPunchScore requested for :" + message.getPayload(), 0);
 							String nameFastPunch = (String)message.getPayload();
 							sendNameScoreFastPunch(nameFastPunch);
