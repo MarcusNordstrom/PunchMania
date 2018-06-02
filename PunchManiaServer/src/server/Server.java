@@ -20,7 +20,7 @@ import server.Server.Client.ClientHandler;
  * Server for managing clients and punchingbags
  *@author Sebastian Carlsson
  *@author Marcus Nordström
- *@author Jake O´Donnell
+ *@author Jake O�Donnell
  */
 public class Server {
 	/*
@@ -99,16 +99,16 @@ public class Server {
 	 */
 	public void setSend(int i) {
 		switch(i) {
-		case 3:
+		case IS_HIGHSCORE:
 			isSendByte((byte)3);
 			break;
-		case 4:
+		case QUEUE:
 			client.clientMethods(SEND_QUEUE);
 			break;
-		case 7:
+		case SEND_HARDPUNCH_HIGHSCORE:
 			client.clientMethods(SEND_HARDPUNCH_HIGHSCORE);
 			break;
-		case 9:
+		case SEND_FASTPUNCH_HIGHSCORE:
 			client.clientMethods(SEND_FASTPUNCH_HIGHSCORE);
 		}
 	}
@@ -211,24 +211,24 @@ public class Server {
 		 */
 		public void clientMethods(int i) {
 			switch (i) {
-			case 6: 
+			case TOP_HIGHSCORE: 
 				for (ClientHandler sendTop : clientList) {
 					sendTop.topHighscore();
 				}	
 				break;
 
-			case 7: 
+			case SEND_HARDPUNCH_HIGHSCORE: 
 				for (ClientHandler sendHardPunchHighscore : clientList) {
 					sendHardPunchHighscore.sendHardPunchHighscore();
 					broadcastQueue();
 				}
 				break;
-			case 8: 
+			case SEND_QUEUE: 
 				for (ClientHandler sendQueue : clientList) {
 					sendQueue.sendQueue();
 				}
 				break;
-			case 9:
+			case SEND_FASTPUNCH_HIGHSCORE:
 				for(ClientHandler sendFastPunchHighscore : clientList) {
 					sendFastPunchHighscore.sendFastPunchHighScore();
 					broadcastQueue();
