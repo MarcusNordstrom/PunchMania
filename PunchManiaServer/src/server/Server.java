@@ -424,17 +424,9 @@ public class Server {
 			 * Tell all clients that a new highscore has been achieved
 			 */
 			public void topHighscore() {
-//				try {
 					sound("DONE");
 					sound("TOP");
-//					String name = ms.getTop1Name();
-//					oos.writeObject(new Message("TEST", Message.NEW_HS));
-//					System.out.println("TOP USER SENT");
-//					oos.reset();
-//					oos.flush();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
+
 			}
 			/**
 			 * Send XYZ belonging to a specific punch
