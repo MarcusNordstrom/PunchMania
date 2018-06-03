@@ -21,6 +21,7 @@ import server.Server.Client.ClientHandler;
  *@author Sebastian Carlsson
  *@author Marcus Nordstr√∂m
  *@author Jake O¥Donnell
+ *@author Benjamin Jonsson Zakrisson
  */
 public class Server {
 	/*
